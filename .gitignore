@@ -1,0 +1,12 @@
+.*
+!/.gitignore
+
+*.xml
+
+settings.py
+
+*.pyc
+
+.idea/vcs.xml
+
+.idea/workspace.xml
