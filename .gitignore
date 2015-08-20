@@ -1,12 +1,6 @@
-.*
-!/.gitignore
-
-*.xml
 
 settings.py
 
-*.pyc
+settings.pyc
 
-.idea/vcs.xml
-
-.idea/workspace.xml
+.idea/
