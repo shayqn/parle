@@ -2,11 +2,11 @@ import sys
 from flask import Flask
 from flask import render_template
 import psycopg2
-
+from settings import DBNAME, DBUSER, DBPASSWORD
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
-conn = psycopg2.connect("dbname=postgres user=postgres password = roastb33f")
+conn = psycopg2.connect("dbname=" + DBNAME + " user=" + DBUSER + " password = " + DBPASSWORD)
 
 # Open a cursor to perform database operations
 cur = conn.cursor()
