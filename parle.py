@@ -1,45 +1,56 @@
+"""
+Main controller for app. Defines app, app routes, and related functions.
+
+Functions:
+    get_index: loads front-end template, returns main React app
+    get_initial: pre-compiles JSON data for React app initial display and search
+    get_pol: returns JSON data for politician profiles
+    get_bill: returns JSON data for bills
+
+Modules:
+    sys: to fix our unicode issues
+    flask: flask
+    politicians: for all politician/profile related functions
+    bills: for all bill related functions
+"""
 import sys
-from flask import Flask
-from flask import render_template
-import psycopg2
-from settings import DBHOST, DBNAME, DBUSER, DBPASSWORD
+from flask import Flask, render_template
+from politicians import get_initial_json, get_pol_json
+from bills import get_bill_json
+
+
+# fixes encoding issues with database data (would be nice to know more about why)
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
-conn = psycopg2.connect("host=" + DBHOST + " dbname=" + DBNAME + " user=" + DBUSER + " password = " + DBPASSWORD)
 
-# Open a cursor to perform database operations
-cur = conn.cursor()
-
+# declare our app
 app = Flask(__name__)
 
-cur.execute("SELECT name,id FROM core_politician WHERE gender NOT LIKE '' ORDER BY name_family")
-nameID = cur.fetchmany(10)
 
-def getPolInfo(politician_id):
-    cur.execute("SELECT votequestion_id \
-FROM bills_membervote \
-WHERE politician_id = '" + str(politician_id) + "' AND \
-votequestion_id IN \
-(SELECT id FROM bills_votequestion \
-WHERE description_en LIKE ('%Bill be now read a third time and do pass%')) \
-ORDER BY votequestion_id")
-
-    memberVoteID = cur.fetchall()
-    print memberVoteID
-    return memberVoteID
-
-print nameID
-
+# ROUTES
+# Top level
 @app.route('/')
-def def_index():
-    return render_template('index.html',nameID = nameID)
+def get_index():
+    return render_template('index.html')
 
-@app.route('/<id>')
-def politican_page(id):
-    memberVoteID = getPolInfo(id)
-    return render_template('pol.html',memberVoteID = memberVoteID)
+# Initializing of data (used rarely, will want to restrict access to this eventually)
+@app.route('/initialize', methods=['GET'])
+def get_initial():
+    return get_initial_json()
 
+# Route used by React to fetch information for politician profiles
+@app.route('/pol/<int:pol_id>')
+def get_pol(pol_id):
+    return get_pol_json(pol_id)
+
+# Route used by React to fetch information for individual bills
+@app.route('/bill/<int:bill_id>')
+def get_bill(bill_id):
+    return get_bill_json(bill_id)
+
+
+# Run
 if __name__ == '__main__':
-    app.debug = True
+    app.debug = True    # useful for debugging, but remember to remove in production
     app.run()
