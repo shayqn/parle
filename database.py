@@ -19,4 +19,5 @@ db = psycopg2.connect(host=DBHOST, database=DBNAME, user=DBUSER, password=DBPASS
 # Open a cursor to perform database operations
 # We use the psycopg2.extra RealDictCursor to get results in a Python dictionary instead of tuples
 # This is useful because it preserves a {key1: value2, key2: value2} relationship as opposed to (value1, value2,)
+# see http://initd.org/psycopg/docs/extras.html#real-dictionary-cursor for more information
 cursor = db.cursor(cursor_factory=RealDictCursor)
