@@ -6,7 +6,8 @@
 
 html, body {
     height: 100%;
-    width: 100vw;overflow-x: hidden;
+    width: 100vw;
+    overflow-x: hidden;
     overflow-y: scroll;
     position: relative;
 }
@@ -17,9 +18,7 @@ body {
     background-color: #ccc;
     z-index: -1;
 }
-body{
 
-}
 .searchBox {
     width: 100%;
     min-height: 100%;
@@ -118,7 +117,7 @@ color: #f1f1f1;
     transform: translate3d(-30px,-50%,0) scale3d(1,1,1);
     position: absolute;
     width: 7vw;
-    height: 7vw;
+    height: auto;
     text-indent: 100px;
     overflow: hidden;
     right: 0;
@@ -229,7 +228,7 @@ position: relative;
     background: rgba(118,117,128,0.1);
 }
 
-.searchContent .searchStack h3 {
+.searchContent .searchStack a h3 {
     vertical-align: middle;
     font-size: 1.4em;
     display: inline-block;
@@ -237,6 +236,9 @@ position: relative;
     margin: 0 0 0 0;
     color: rgba(145,145,145,0.7);
     font-family: 'Open Sans', sans-serif;
+}
+.searchContent .searchStack a.active h3 {
+    color: rgba(236,90,98,0.9);
 }
 .searchContent .searchStack a:hover h3 {
     color: rgba(236,90,98,1);
