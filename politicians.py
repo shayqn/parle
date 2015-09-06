@@ -30,8 +30,15 @@ def get_pol_json(politician_id, cursor=cursor):
     # <SHAY> BUILD THIS QUERY
     # Build our query with all the desired relevant info we want to display about the politician.
     # Add any parameters using (%s) or (%(name)s). More information below.
+
+    #right now this is returning the votequestion_id and the vote. Obviously we only want to display the vote
+    #I couldn't quickly figure out how to get the bill ID - it would involve a join query that I couldn't quite
+    #solve yet. I think it might be easier to just give bills.py the votequestion_id and get the bill_id from there.
+
+    #note: votequestion_id is the same as 'id' in bills_votequestion (makes sense given the names).
+
     query = (
-        "SELECT votequestion_id "
+        "SELECT votequestion_id, vote "
         "FROM bills_membervote "
         "WHERE politician_id = (%s)"
         "AND votequestion_id IN "
