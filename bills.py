@@ -13,7 +13,6 @@ from flask import jsonify
 
 def get_bill_json(votequestion_id, cursor=cursor):
 
-def get_bill_json(bill_id, cursor=cursor):
     """
     Returns the JSON data for information on a single specific bill within a politician's profile.
     Is requested as the <Profile /> component is built in React.
