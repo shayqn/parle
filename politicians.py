@@ -54,13 +54,13 @@ def get_pol_json(politician_id, cursor=cursor):
     # added new join query to get all the bill/vote info for the table in one go. replaces the above query.
     # bill JSON will be changed to use the bill ID instead
     query = (
-        "SELECT m.votequestion_id,m.vote,b.number,b.name_en,b.law,b.short_title_en,b.institution "
+        "SELECT m.votequestion_id,m.vote,b.number,b.name_en,b.law,b.short_title_en "
         "FROM bills_membervote m, bills_votequestion v, bills_bill b "
         "WHERE m.politician_id = (%s) "
         "AND v.id = m.votequestion_id "
         "AND v.description_en LIKE (\'%%Bill be now read a third time and do pass%%\') "
         "AND b.id = v.bill_id "
-        "ORDER BY m.votequestion_id"
+        "ORDER BY v.date DESC"
     )
     # If any parameters are used in the above query, insert them in the parameters tuple
     # Insert parameters in the order used in the query unless using %(name)s placeholders
@@ -92,12 +92,13 @@ def get_initial_json(cursor=cursor):
     # This is a somewhat different looking SQL statement as it's doing inner joins across three tables.
     # The three tables are all given notations (p, c, e) so their fields can be distinguished.
     cursor.execute(
-        "SELECT p.id, p.name, p.name_family, p.headshot, c.slug, c.short_name, e.end_date "
-        "FROM core_politician p, core_party c, core_electedmember e "   # table_name abbreviation, ...
+        "SELECT p.id, p.name, p.name_family, p.headshot, c.slug, c.short_name, e.end_date, r.name AS riding_name "
+        "FROM core_politician p, core_party c, core_electedmember e, core_riding r "   # table_name abbreviation, ...
         "WHERE p.gender NOT LIKE '' "   # appears to help filter for "real" MPs?
         "AND p.headshot NOT LIKE '' "   # appears to help filter for "real" MPs?
         "AND p.id = e.politician_id "   # joins politician info with elected member rows (multiple if re-elected)
         "AND e.party_id = c.id "        # joins elected member rows with associated party rows
+        "AND r.id = e.riding_id "
         "AND e.start_date = "           # we only want their most recent party data, so let's pick that one
         "( "                            # we want (e.start_date = most recent e.start_date)
         "  SELECT start_date "
@@ -127,7 +128,8 @@ def get_initial_json(cursor=cursor):
             'imgurl': row['headshot'].split('/')[-1],   # extracts filename only, no directory data
             'party_slug': row['slug'],
             'party_name': row['short_name'],
-            'active': False if row['end_date'] else True})  # boolean: if an end_date exists, they are no longer active
+            'active': False if row['end_date'] else True,
+            'riding' : row['riding_name']})  # boolean: if an end_date exists, they are no longer active
 
     # Write data to file initial.json for React to access
     with open('initial.json', 'w') as outfile:
