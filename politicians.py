@@ -38,7 +38,7 @@ def get_pol_json(politician_id, cursor=cursor):
     #note: votequestion_id is the same as 'id' in bills_votequestion (makes sense given the names).
 
     query = (
-        "SELECT votequestion_id "
+        "SELECT votequestion_id, vote "
         "FROM bills_membervote "
         "WHERE politician_id = (%s)"
         "AND votequestion_id IN "
@@ -49,6 +49,18 @@ def get_pol_json(politician_id, cursor=cursor):
         "  LIKE (\'%%Bill be now read a third time and do pass%%\')"
         ") "
         "ORDER BY votequestion_id"
+    )
+
+    # added new join query to get all the bill/vote info for the table in one go. replaces the above query.
+    # bill JSON will be changed to use the bill ID instead
+    query = (
+        "SELECT m.votequestion_id,m.vote,b.number,b.name_en,b.law,b.short_title_en,b.institution "
+        "FROM bills_membervote m, bills_votequestion v, bills_bill b "
+        "WHERE m.politician_id = (%s) "
+        "AND v.id = m.votequestion_id "
+        "AND v.description_en LIKE (\'%%Bill be now read a third time and do pass%%\') "
+        "AND b.id = v.bill_id "
+        "ORDER BY m.votequestion_id"
     )
     # If any parameters are used in the above query, insert them in the parameters tuple
     # Insert parameters in the order used in the query unless using %(name)s placeholders
