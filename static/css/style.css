@@ -22,11 +22,29 @@ body {
   background-color: #ccc;
   z-index: -1; }
 
+.searchBox-noscroll {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  -moz-transition-property: width;
+  -o-transition-property: width;
+  -webkit-transition-property: width;
+  transition-property: width;
+  -moz-transition: all 0.4s;
+  -o-transition: all 0.4s;
+  -webkit-transition: all 0.4s;
+  transition: all 0.4s; }
+  .searchBox-noscroll.sidebar {
+    width: 380px; }
+
 .searchBox {
   width: 100%;
-  min-height: 100%;
   background: #f1f1f1;
-  position: absolute;
+  position: fixed;
+  height: 100vh;
+  overflow-y: auto;
   top: 0px;
   left: 0px;
   -moz-transition-property: width;
@@ -83,40 +101,40 @@ body {
       -o-transition: all 0.4s;
       -webkit-transition: all 0.4s;
       transition: all 0.4s; }
-  .searchBox input {
-    width: 100%;
-    height: 100%;
-    padding: 0 10% 0 10px;
-    font-size: 7vw;
-    font-weight: 700;
-    border: none;
-    background: transparent;
-    color: #ec5a62;
-    -webkit-appearance: textfield;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    -moz-transition-property: font-size;
-    -o-transition-property: font-size;
-    -webkit-transition-property: font-size;
-    transition-property: font-size;
-    -moz-transition: all 0.4s;
-    -o-transition: all 0.4s;
-    -webkit-transition: all 0.4s;
-    transition: all 0.4s; }
-    .searchBox input:focus {
-      outline: none; }
-    .searchBox input::-ms-clear {
-      /* remove cross in IE */
-      display: none; }
-    .searchBox input:-ms-input-placeholder {
-      color: #c2c2c2; }
-    .searchBox input:-moz-placeholder {
-      color: #c2c2c2; }
-    .searchBox input::-moz-placeholder {
-      color: #c2c2c2; }
-    .searchBox input::-webkit-input-placeholder {
-      color: #c2c2c2; }
+    .searchBox form input {
+      width: 100%;
+      height: 100%;
+      padding: 0 10% 0 10px;
+      font-size: 7vw;
+      font-weight: 700;
+      border: none;
+      background: transparent;
+      color: #ec5a62;
+      -webkit-appearance: textfield;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+      -moz-transition-property: font-size;
+      -o-transition-property: font-size;
+      -webkit-transition-property: font-size;
+      transition-property: font-size;
+      -moz-transition: all 0.4s;
+      -o-transition: all 0.4s;
+      -webkit-transition: all 0.4s;
+      transition: all 0.4s; }
+      .searchBox form input:focus {
+        outline: none; }
+      .searchBox form input::-ms-clear {
+        /* remove cross in IE */
+        display: none; }
+      .searchBox form input:-ms-input-placeholder {
+        color: #c2c2c2; }
+      .searchBox form input:-moz-placeholder {
+        color: #c2c2c2; }
+      .searchBox form input::-moz-placeholder {
+        color: #c2c2c2; }
+      .searchBox form input::-webkit-input-placeholder {
+        color: #c2c2c2; }
   .searchBox .searchContent {
     opacity: 1;
     height: auto;
@@ -246,8 +264,7 @@ body {
         .searchBox .searchContent .searchStack a.green.hover span, .searchBox .searchContent .searchStack a.green.active span {
           color: rgba(60, 155, 52, 0.5); }
   .searchBox.sidebar {
-    width: 380px;
-    min-height: 100%; }
+    width: 400px; }
     .searchBox.sidebar form {
       width: 90%;
       height: 40px;
@@ -270,54 +287,129 @@ body {
         -o-transition: all 0.4s;
         -webkit-transition: all 0.4s;
         transition: all 0.4s; }
+    .searchBox.sidebar::-webkit-scrollbar {
+      display: none; }
 
 .profileBox {
   position: absolute;
   left: 100%;
   display: block;
-  width: calc(100% - 380px);
+  width: 100vw;
   height: 100vh;
-  overflow-y: scroll;
   background-color: #ccc;
   z-index: -1;
   -moz-transition: all 0.4s;
   -o-transition: all 0.4s;
   -webkit-transition: all 0.4s;
   transition: all 0.4s; }
-  .profileBox h2 {
-    margin-top: 10px;
-    font-size: 6em;
-    color: #ec5a62; }
-    @media screen and (max-width: 736px), (max-device-width: 736px) {
-      .profileBox h2 {
-        margin-top: 0px;
-        font-size: 4em; } }
   .profileBox .profile {
-    padding: 40px; }
-  .profileBox .billStack tr:nth-child(odd) {
-    background-color: rgba(255, 255, 255, 0.3); }
-  .profileBox .billStack tr th {
-    color: #fff;
-    background-color: #333;
-    padding: 20px; }
-  .profileBox .billStack tr td {
-    padding: 20px; }
-    .profileBox .billStack tr td.vote {
-      text-transform: uppercase;
-      font-weight: 800;
-      text-align: center;
-      background-color: rgba(117, 117, 117, 0.8); }
-      .profileBox .billStack tr td.vote.yes {
-        background-color: rgba(39, 174, 96, 0.8); }
-      .profileBox .billStack tr td.vote.no {
-        background-color: rgba(192, 57, 43, 0.8); }
-    .profileBox .billStack tr td.law {
-      text-transform: uppercase;
-      font-weight: 800;
-      text-align: center;
-      background-color: rgba(230, 126, 33, 0.8); }
-      .profileBox .billStack tr td.law.passed {
-        background-color: rgba(40, 127, 185, 0.8); }
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-top: 20px;
+    padding-bottom: 20px; }
+    .profileBox .profile h2 {
+      margin-top: 10px;
+      margin-bottom: -15px;
+      display: inline-block;
+      font-size: 5em;
+      color: #ec5a62; }
+      @media screen and (max-width: 736px), (max-device-width: 736px) {
+        .profileBox .profile h2 {
+          margin-top: 0px;
+          font-size: 4em; } }
+    .profileBox .profile .info {
+      display: inline-block;
+      margin-left: 2em; }
+      .profileBox .profile .info h3 {
+        font-family: Open Sans;
+        font-size: 2em;
+        font-weight: 100;
+        line-height: 0.75em; }
+      .profileBox .profile .info .riding {
+        margin-bottom: -20px; }
+      .profileBox .profile .info .party {
+        text-transform: uppercase; }
+    .profileBox .profile .billSearch form {
+      width: 98%;
+      position: relative;
+      border-bottom: 1px dashed rgba(0, 0, 0, 0.16); }
+      .profileBox .profile .billSearch form input {
+        width: 100%;
+        height: 100%;
+        font-size: 2vw;
+        font-weight: 200;
+        border: none;
+        background: transparent;
+        color: #ec5a62;
+        -webkit-appearance: textfield;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box; }
+        .profileBox .profile .billSearch form input :focus {
+          outline: none; }
+        .profileBox .profile .billSearch form input::-ms-clear {
+          /* remove cross in IE */
+          display: none; }
+        .profileBox .profile .billSearch form input:-ms-input-placeholder {
+          color: #999; }
+        .profileBox .profile .billSearch form input:-moz-placeholder {
+          color: #999; }
+        .profileBox .profile .billSearch form input::-moz-placeholder {
+          color: #999; }
+        .profileBox .profile .billSearch form input::-webkit-input-placeholder {
+          color: #999; }
+  .profileBox .votes .billStack {
+    width: 100%; }
+    .profileBox .votes .billStack tr {
+      background-color: #ccc; }
+      .profileBox .votes .billStack tr:nth-child(odd) {
+        background-color: rgba(255, 255, 255, 0.3); }
+      .profileBox .votes .billStack tr th {
+        color: #fff;
+        background-color: #333;
+        padding: 20px; }
+      .profileBox .votes .billStack tr td {
+        padding: 20px; }
+        .profileBox .votes .billStack tr td.shortname {
+          font-family: Open Sans; }
+        .profileBox .votes .billStack tr td.number {
+          text-transform: uppercase;
+          font-weight: 800;
+          text-align: center;
+          width: 10%; }
+        .profileBox .votes .billStack tr td.vote {
+          text-transform: uppercase;
+          font-weight: 800;
+          text-align: center;
+          width: 10%;
+          background-color: rgba(117, 117, 117, 0.8); }
+          .profileBox .votes .billStack tr td.vote.yes {
+            background-color: rgba(39, 174, 96, 0.8); }
+          .profileBox .votes .billStack tr td.vote.no {
+            background-color: rgba(192, 57, 43, 0.8); }
+        .profileBox .votes .billStack tr td.law {
+          text-transform: uppercase;
+          font-weight: 800;
+          text-align: center;
+          width: 20%;
+          background-color: rgba(230, 126, 33, 0.8); }
+          .profileBox .votes .billStack tr td.law.passed {
+            background-color: rgba(40, 127, 185, 0.8); }
+      .profileBox .votes .billStack tr:hover {
+        background-color: rgba(236, 90, 98, 0.3) !important; }
+      .profileBox .votes .billStack tr:first-child, .profileBox .votes .billStack tr:last-child {
+        padding: 0px;
+        width: 5%; }
+      .profileBox .votes .billStack tr.empty {
+        visibility: hidden; }
+  .profileBox .votes .no-results {
+    display: block;
+    position: relative;
+    width: auto;
+    text-align: center;
+    font-size: 3em;
+    font-weight: 600;
+    vertical-align: bottom; }
   .profileBox .close {
     display: block;
     width: 36px;
@@ -355,69 +447,22 @@ body {
     .profileBox .close:hover::before, .profileBox .close:hover::after {
       opacity: 1; }
   .profileBox.show {
-    left: 380px;
+    left: 0%;
+    margin-left: 380px;
+    padding-right: 380px;
     -moz-transition: all 0.4s;
     -o-transition: all 0.4s;
     -webkit-transition: all 0.4s;
     transition: all 0.4s; }
     @media screen and (max-width: 736px), (max-device-width: 736px) {
       .profileBox.show {
-        position: absolute;
-        left: 0px;
-        display: block;
-        width: 100%;
-        height: 100%;
-        background-color: #ccc;
-        z-index: -1; } }
+        margin-left: 0px;
+        padding-right: 0px; } }
     .profileBox.show .close {
       opacity: 1; }
-  .profileBox.hide .close {
-    opacity: 0; }
-
-@media screen and (max-width: 800px), (max-device-width: 736px) {
-  .searchContent {
-    padding: 0 5px; }
-
-  .searchContent .searchStack {
-    width: 90vw; }
-
-  .searchContent .searchStack h3 {
-    font-size: 1.3em; }
-
-  .searchContent .searchStack h2 {
-    font-size: 2em;
-    padding: 0; }
-
-  .searchBox form {
-    width: 90%;
-    height: 10vw; }
-
-  .searchBox.sidebar {
-    left: -380px;
-    -moz-transition: all 0.4s;
-    -o-transition: all 0.4s;
-    -webkit-transition: all 0.4s;
-    transition: all 0.4s; }
-
-  .profileBox.show {
-    position: absolute;
-    left: 0px;
-    display: block;
-    width: 100%;
-    height: 100%;
-    background-color: #ccc;
-    z-index: -1;
-    -moz-transition: all 0.4s;
-    -o-transition: all 0.4s;
-    -webkit-transition: all 0.4s;
-    transition: all 0.4s; }
-
-  .profileBox h2 {
-    margin-top: 0px;
-    font-size: 4em;
-    color: #ec5a62; } }
-@media screen and (max-width: 480px), (max-device-width: 480px) {
-  .searchContent .searchStack h2 {
-    font-size: 1.5em; } }
+  .profileBox.hide {
+    overflow: hidden; }
+    .profileBox.hide .close {
+      opacity: 0; }
 
 /*# sourceMappingURL=style.css.map */
