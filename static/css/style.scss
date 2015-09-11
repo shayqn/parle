@@ -56,12 +56,24 @@ body {
     background-color: #ccc;
     z-index: -1;
 }
-
+.searchBox-noscroll {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    @include transition-property(width);
+    @include transition-duration;
+    &.sidebar {
+        width: 380px;
+    }
+}
 .searchBox {
     width: 100%;
-    min-height: 100%;
     background: #f1f1f1;
-    position: absolute;
+    position: fixed;
+    height:100vh;
+    overflow-y:auto;
     top: 0px;
     left: 0px;
     @include transition-property(width);
@@ -102,30 +114,31 @@ body {
             @include transition-property(width, height);
             @include transition-duration;
         }
+        input {
+            width: 100%;
+            height: 100%;
+            padding: 0 10% 0 10px;
+            font-size: 7vw;
+            font-weight: 700;
+            border: none;
+            background: transparent;
+            color: $primary-color;
+            -webkit-appearance: textfield;
+            &:focus {
+                outline: none;
+            }
+            &::-ms-clear { /* remove cross in IE */
+                display: none;
+            }
+            @include box-sizing(border-box);
+            @include transition-property(font-size);
+            @include transition-duration;
+            @include placeholder {
+                color: #c2c2c2;
+            }
+        }
     }
-    input {
-        width: 100%;
-        height: 100%;
-        padding: 0 10% 0 10px;
-        font-size: 7vw;
-        font-weight: 700;
-        border: none;
-        background: transparent;
-        color: $primary-color;
-        -webkit-appearance: textfield;
-        &:focus {
-            outline: none;
-        }
-        &::-ms-clear { /* remove cross in IE */
-            display: none;
-        }
-        @include box-sizing(border-box);
-        @include transition-property(font-size);
-        @include transition-duration;
-        @include placeholder {
-            color: #c2c2c2;
-        }
-    }
+    
     .searchContent {
         opacity: 1;
         height: auto;
@@ -275,8 +288,7 @@ body {
         }
     }
     &.sidebar{
-        width: 380px;
-        min-height: 100%;
+        width: 400px;
         form {
             width: 90%;
             height: 40px;
@@ -303,6 +315,9 @@ body {
                 }
             } 
         }
+        &::-webkit-scrollbar {
+            display:none;
+        }
     }
 }
 
@@ -310,59 +325,138 @@ body {
     position: absolute;
     left: 100%;
     display: block;
-    width: calc(100% - 380px);
+    width: 100vw;
     height: 100vh;
-    overflow-y: scroll;
-    background-color:#ccc;
+    background-color: #ccc;
     z-index: -1;
     @include transition-duration;
-    h2 {
-        margin-top: 10px;
-        font-size: 6em;
-        color: $primary-color;
-        @include tablet-breakpoint {
-            margin-top: 0px;
-            font-size: 4em;
+    .profile {
+        padding-left: 40px;
+        padding-right: 40px;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        h2 {
+            margin-top: 10px;
+            margin-bottom: -15px;
+            display: inline-block;
+            font-size: 5em;
+            color: $primary-color;
+            @include tablet-breakpoint {
+                margin-top: 0px;
+                font-size: 4em;
+            }
+        }
+        .info {
+            display: inline-block;
+            margin-left: 2em;
+            h3 {
+                font-family: Open Sans;
+                font-size: 2em;
+                font-weight: 100;
+                line-height: 0.75em;
+            }
+            .riding {
+                margin-bottom: -20px;
+            }
+            .party {
+                text-transform: uppercase;
+            }
+        }
+        .billSearch {
+            form {
+                width: 98%;
+                position: relative;
+                border-bottom: 1px dashed rgba(0, 0, 0, 0.16);
+                input {
+                    width: 100%;
+                    height: 100%;
+                    font-size: 2vw;
+                    font-weight: 200;
+                    border: none;
+                    background: transparent;
+                    color: $primary-color;
+                    -webkit-appearance: textfield;
+                    :focus {
+                        outline: none;
+                    }
+                    &::-ms-clear { /* remove cross in IE */
+                        display: none;
+                    }
+                    @include box-sizing(border-box);
+                    @include placeholder {
+                    color: #999;
+                    }
+                }
+            }
         }
     }
-    .profile {
-        padding: 40px;
-    }
-    .billStack {
-        tr {
-            &:nth-child(odd) {
-                background-color: rgba(255, 255, 255, 0.3);
-            }
-            th {
-                color: #fff;
-                background-color: #333;
-                padding: 20px;
-            }
-            td {
-                padding: 20px;
-                @mixin bill-fonts {
-                    text-transform: uppercase;
-                    font-weight: 800;
-                    text-align: center;
+    .votes {
+        .billStack {
+            width: 100%;
+            tr {
+                background-color: #ccc;
+                &:nth-child(odd) {
+                    background-color: rgba(255, 255, 255, 0.3);
                 }
-                &.vote {
-                    @include bill-fonts;
-                    background-color: rgba(117, 117, 117, 0.8);
-                    &.yes {
-                        background-color: rgba(39, 174, 96, 0.8);
+                th {
+                    color: #fff;
+                    background-color: #333;
+                    padding: 20px;
+                }
+                td {
+                    padding: 20px;
+                    @mixin bill-fonts {
+                        text-transform: uppercase;
+                        font-weight: 800;
+                        text-align: center;
                     }
-                    &.no {
-                        background-color: rgba(192, 57, 43, 0.8);
+                    &.shortname {
+                        font-family: Open Sans;
+                    }
+                    &.number {
+                        @include bill-fonts;
+                        width: 10%;
+                    }
+                    &.vote {
+                        @include bill-fonts;
+                        width: 10%;
+                        background-color: rgba(117, 117, 117, 0.8);
+                        &.yes {
+                            background-color: rgba(39, 174, 96, 0.8);
+                        }
+                        &.no {
+                            background-color: rgba(192, 57, 43, 0.8);
+                        }
+                    }
+                    &.law {
+                        @include bill-fonts;
+                        width: 20%;
+                        background-color: rgba(230, 126, 33, 0.8);
+                        &.passed {
+                            background-color: rgba(40, 127, 185, 0.8);
+                        }
                     }
                 }
-                &.law {
-                    @include bill-fonts;
-                    background-color: rgba(230, 126, 33, 0.8);
-                    &.passed {
-                        background-color: rgba(40, 127, 185, 0.8);
-                    }
+                &:hover {
+                    background-color: rgba(236, 90, 98, 0.3) !important;
+                }
+                &:first-child, &:last-child {
+                    padding: 0px;
+                    width: 5%;
+                }
+                &.empty {
+                    visibility: hidden;
                 }
             }
+        }
+        .no-results {
+            display: block;
+            position: relative;
+            width: auto;
+            text-align: center;
+            font-size: 3em;
+            font-weight: 600;
+            vertical-align: bottom;
         }
     }
     .close {
@@ -403,68 +497,22 @@ body {
         }
     }
     &.show {
-        left: 380px;
+        left: 0%;
+        margin-left: 380px;
+        padding-right: 380px;
         @include transition-duration;
         @include tablet-breakpoint {
-            position: absolute;
-            left: 0px;
-            display: block;
-            width: 100%;
-            height: 100%;
-            background-color:#ccc;
-            z-index: -1;
+            margin-left: 0px;
+            padding-right: 0px;
         }
         .close {
             opacity: 1;
         }
     }
     &.hide {
+        overflow: hidden;
         .close {
             opacity: 0;
         }
-    }
-}
-
-@media screen and (max-width: 800px), (max-device-width : 736px)  {
-    .searchContent {
-        padding: 0 5px;
-    }
-    .searchContent .searchStack {
-        width: 90vw;
-    }
-    .searchContent .searchStack h3 {
-    font-size: 1.3em;
-    }
-    .searchContent .searchStack h2 {
-        font-size: 2em;
-        padding: 0;
-    }
-    .searchBox form {
-        width: 90%;
-        height: 10vw;
-    }
-    .searchBox.sidebar {
-        left: -380px;
-        @include transition-duration;
-    }
-    .profileBox.show {
-        position: absolute;
-        left: 0px;
-        display: block;
-        width: 100%;
-        height: 100%;
-        background-color:#ccc;
-        z-index: -1;
-        @include transition-duration;
-    }
-    .profileBox h2 {
-        margin-top: 0px;
-        font-size: 4em;
-        color: $primary-color;
-    }
-}
-@media screen and (max-width: 480px), (max-device-width : 480px) {
-    .searchContent .searchStack h2 {
-        font-size: 1.5em;
     }
 }
