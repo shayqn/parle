@@ -47,12 +47,10 @@ html {
     height: 100%;
     width: 100vw;
     overflow-x: hidden;
-    overflow-y: scroll;
     position: relative;
 }
 
 body {
-    @extend html;
     font-size: 1em;
     font-family: 'Raleway', Arial, sans-serif;
     background-color: #ccc;
@@ -313,10 +311,10 @@ body {
     left: 100%;
     display: block;
     width: calc(100% - 380px);
-    height: 100%;
+    height: 100vh;
+    overflow-y: scroll;
     background-color:#ccc;
     z-index: -1;
-    padding: 40px;
     @include transition-duration;
     h2 {
         margin-top: 10px;
@@ -325,6 +323,46 @@ body {
         @include tablet-breakpoint {
             margin-top: 0px;
             font-size: 4em;
+        }
+    }
+    .profile {
+        padding: 40px;
+    }
+    .billStack {
+        tr {
+            &:nth-child(odd) {
+                background-color: rgba(255, 255, 255, 0.3);
+            }
+            th {
+                color: #fff;
+                background-color: #333;
+                padding: 20px;
+            }
+            td {
+                padding: 20px;
+                @mixin bill-fonts {
+                    text-transform: uppercase;
+                    font-weight: 800;
+                    text-align: center;
+                }
+                &.vote {
+                    @include bill-fonts;
+                    background-color: rgba(117, 117, 117, 0.8);
+                    &.yes {
+                        background-color: rgba(39, 174, 96, 0.8);
+                    }
+                    &.no {
+                        background-color: rgba(192, 57, 43, 0.8);
+                    }
+                }
+                &.law {
+                    @include bill-fonts;
+                    background-color: rgba(230, 126, 33, 0.8);
+                    &.passed {
+                        background-color: rgba(40, 127, 185, 0.8);
+                    }
+                }
+            }
         }
     }
     .close {
