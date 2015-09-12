@@ -17,6 +17,7 @@ import sys
 from flask import Flask, render_template
 from politicians import get_initial_json, get_pol_json
 from bills import get_bill_json
+from sessions import get_sessions_json
 
 
 # fixes encoding issues with database data (would be nice to know more about why)
@@ -48,6 +49,11 @@ def get_pol(pol_id):
 @app.route('/bill/<int:votequestion_id>')
 def get_bill(votequestion_id):
     return get_bill_json(votequestion_id)
+
+# Route used by React to fetch information for sessions
+@app.route('/sessions')
+def get_sessions():
+    return get_sessions_json()
 
 
 # Run
