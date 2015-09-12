@@ -9,7 +9,10 @@ var AppBox = React.createClass({
       profile: '',
       searching: false,
       votes: [],
-      retrievingVotes: false
+      retrievingVotes: false,
+      session: '',
+      sessionsList: [],
+      sessionToggle: false,
     };
   },
   changeClass: function(object, event) {
@@ -19,7 +22,8 @@ var AppBox = React.createClass({
         profileClass : 'show',
         profile : object,
         votes: [],
-        retrievingVotes: true
+        retrievingVotes: true,
+        session: ''
       });
       this.getPoliticianVotes(object.id);
     }
@@ -28,7 +32,8 @@ var AppBox = React.createClass({
         searchClass : 'full',
         profileClass: 'hide',
         profile : '',
-        retrievingVotes: true
+        retrievingVotes: true,
+        session: ''
       });
       this.getPoliticianVotes(object.id);
     }
@@ -36,7 +41,8 @@ var AppBox = React.createClass({
       this.setState({
         profile : object,
         votes: [],
-        retrievingVotes: true
+        retrievingVotes: true,
+        session: ''
       });
       this.getPoliticianVotes(object.id);
     }
@@ -45,7 +51,8 @@ var AppBox = React.createClass({
         searchClass : 'full',
         profileClass: 'hide',
         profile : '',
-        retrievingVotes: false
+        retrievingVotes: false,
+        session: ''
       });
     }
   },
@@ -55,7 +62,8 @@ var AppBox = React.createClass({
         profileClass: 'hide',
         profile: '',
         votes: [],
-        retrievingVotes: false
+        retrievingVotes: false,
+        session: ''
       });
   },
   onSearchChange: function(event) {
@@ -70,11 +78,31 @@ var AppBox = React.createClass({
       billSearchValue: event.target.value
     });
   },
+  onSessionSelectToggle: function(event) {
+    this.setState({
+      sessionToggle: !this.state.sessionToggle,
+    });
+  },
+  onSessionSelect: function(object, event) {
+    console.log(object);
+    if (object !='') {
+      this.setState({
+        sessionToggle: false,
+        session: object.id,
+      });
+    }
+    else {
+      this.setState({
+        sessionToggle: false,
+        session: '',
+      });
+    }
+  },
   render: function() {
     if (this.state.searching && this.state.searchValue) {
       var regex = new RegExp(this.state.searchValue, "i");
       var filteredList = this.state.politicians.filter(function (pol) {
-        return pol.name.search(regex) > -1 || pol.party_name.search(regex) > -1 || pol.party_slug.search(regex) > -1;
+        return pol.name.search(regex) > -1 || pol.party_name.search(regex) > -1 || pol.party_slug.search(regex) > -1 || pol.riding.search(regex) > -1;
       });
       if (this.state.searchClass == 'full') {
         var max = 50;
@@ -97,11 +125,47 @@ var AppBox = React.createClass({
     else {
       var voteList = this.state.votes;
     }
+    var sessionsVotes = {};
+    var sessionsSum = 0;
+    for(var i=0; i<this.state.sessionsList.length; i++){
+        sessionsVotes[this.state.sessionsList[i].id]=0;
+    }
+    for(var i=0; i<this.state.votes.length; i++){
+      sessionsSum += 1;
+      sessionsVotes[this.state.votes[i].session_id] += 1;
+    }
+    sessionsVotes['sum'] = sessionsSum;
+    if (this.state.session) {
+      var sessionRegex = new RegExp(this.state.session, "i");
+      var voteList = voteList.filter(function (vote) {
+        return vote.session_id.search(sessionRegex) > -1;
+      });
+    }
     var classes = 'box ' + this.state.searchClass;
     return (
       <div className={classes}>
-        <SearchBox searchClass={this.state.searchClass} politicians={politicianList} changeClass={this.changeClass} onSearchChange={this.onSearchChange} profile={this.state.profile} />
-        <ProfileBox profileClass={this.state.profileClass} profile={this.state.profile} closeProfile={this.closeProfile} votes={voteList} onBillSearchChange={this.onBillSearchChange} retrievingVotes={this.state.retrievingVotes} />
+
+        <SearchBox 
+          searchClass={this.state.searchClass} 
+          politicians={politicianList} 
+          changeClass={this.changeClass} 
+          onSearchChange={this.onSearchChange} 
+          profile={this.state.profile} />
+
+        <ProfileBox 
+          profileClass={this.state.profileClass} 
+          profile={this.state.profile} 
+          closeProfile={this.closeProfile} 
+          votes={voteList} 
+          onBillSearchChange={this.onBillSearchChange} 
+          onSessionSelectToggle={this.onSessionSelectToggle}
+          onSessionSelect={this.onSessionSelect}
+          sessionsList = {this.state.sessionsList}
+          session = {this.state.session}
+          sessionToggle = {this.state.sessionToggle}
+          sessionsVotes = {sessionsVotes}
+          retrievingVotes={this.state.retrievingVotes} />
+
       </div>
     );
   },
@@ -120,6 +184,9 @@ var AppBox = React.createClass({
                           retrievingVotes: false
                         });
         }
+        else if (type == 'sessions') {
+          this.setState({sessionsList: data['results']});
+        }
         else {
           console.log('type not politician or votes');
         }
@@ -135,13 +202,15 @@ var AppBox = React.createClass({
     request.send();
   },
   getPoliticianVotes: function(id) {
-    url = '/pol/' + id;
+    var url = '/pol/' + id;
     this.fetchJSON(url, 'votes');
   },
   componentDidMount: function() {
     // temporary measure - is supposed to read from file
-    url = '/initialize';
-    this.fetchJSON(url, 'politicians');
+    var initializeURL = '/initialize';
+    this.fetchJSON(initializeURL, 'politicians');
+    var sessionsURL = '/sessions';
+    this.fetchJSON(sessionsURL, 'sessions');
   },
 });
 var ProfileBox = React.createClass({
@@ -154,16 +223,26 @@ var ProfileBox = React.createClass({
     else {
       var partyName = this.props.profile.party_slug;
     }
+    
     return (
       <div className={classes}>
         <div className="profile">
           <a className={closeClass} onClick={this.props.closeProfile} href="#"></a>
           <h2 className="name">{this.props.profile.name}</h2>
           <span className="info"><h3 className="riding">{this.props.profile.riding}</h3><h3 className="party">{partyName}</h3></span>
-          <BillSearch onBillSearchChange={this.props.onBillSearchChange} />
+          <BillSearch 
+            onBillSearchChange={this.props.onBillSearchChange}
+            onSessionSelectToggle={this.props.onSessionSelectToggle}
+            onSessionSelect={this.props.onSessionSelect}
+            sessionsList={this.props.sessionsList}
+            sessionToggle = {this.props.sessionToggle}
+            session={this.props.session}
+            sessionsVotes = {this.props.sessionsVotes} />
         </div>
         <div className="votes">
-          <BillStack votes={this.props.votes} retrievingVotes={this.props.retrievingVotes} />
+          <BillStack 
+            votes={this.props.votes} 
+            retrievingVotes={this.props.retrievingVotes} />
         </div>
       </div>
     );
@@ -171,33 +250,31 @@ var ProfileBox = React.createClass({
 });
 var BillStack = React.createClass({
   render: function() {
-    console.log(this.props.votes == true);
     if (this.props.votes.length  > 0) {
-      console.log('truly yours');
       var objectNodes = this.props.votes.map(function (object, i) {
         if (object.vote == 'Y') {
-          voteClass = voteText = 'yes ';
+          var voteClass = voteText = 'yes ';
         }
         else if (object.vote == 'N') {
-          voteClass = voteText = 'no ';
+          var voteClass = voteText = 'no ';
         }
         else {
-          voteClass = '';
-          voteText = 'no vote';
-          console.log('no vote');
+          var voteClass = '';
+          var voteText = 'no vote';
         }
         voteClass += 'vote';
         var lawText = object.law ? 'passed' : 'failed';
-        lawClass = 'law ' + lawText;
+        var lawClass = 'law ' + lawText;
         if (object.short_title_en) {
-          name = object.short_title_en;
+          var name = object.short_title_en;
         }
         else {
-          name = object.name_en;
+          var name = object.name_en;
         }
         return (
           <tr key={i}>
             <td></td>
+            <td className="session">{object.session_id}</td>
             <td className="number">{object.number}</td>
             <td className={voteClass}>{voteText}</td>
             <td className="shortname">{name}</td>
@@ -212,6 +289,7 @@ var BillStack = React.createClass({
             <thead>
               <tr>
                 <th></th>
+                <th className="session">Session</th>
                 <th className="number">Number</th>
                 <th className="vote">Vote</th>
                 <th className="shortname">Name</th>
@@ -227,7 +305,6 @@ var BillStack = React.createClass({
       );
     }
     else {
-      console.log('falsely accused');
       if (this.props.retrievingVotes) {
         var loader = <div className="loader"></div>;
       }
@@ -240,6 +317,7 @@ var BillStack = React.createClass({
             <thead>
               <tr>
                 <th></th>
+                <th className="session">Session</th>
                 <th className="number">Number</th>
                 <th className="vote">Vote</th>
                 <th className="shortname">Name</th>
@@ -249,7 +327,8 @@ var BillStack = React.createClass({
             </thead>
             <tbody>
               <tr className="empty">
-              <td colspan=""></td>
+              <td></td>
+              <th className="session">empty</th>
               <td className="number">empty</td>
               <td className="vote">empty</td>
               <td className="shortname">empty</td>
@@ -268,10 +347,33 @@ var BillStack = React.createClass({
 });
 var BillSearch = React.createClass({
   render: function() {
+    if (this.props.session == '') {
+      var selectText = 'any session';
+    }
+    else {
+      var selectText = this.props.session;
+    }
+    var sessionsVotes = this.props.sessionsVotes;
+    var toggleClass = 'sessionSelect' + (this.props.sessionToggle ? '' : ' collapsed');
+
+    var objectNodes = this.props.sessionsList.map(function (object, i) {
+        var sum = sessionsVotes[object.id];
+        var string = object.id + ' - (' + sum + ')';
+        return (
+          <li onClick={this.props.onSessionSelect.bind(null,object)} key={i}><span className="session">{object.id}</span> <span className="sum">{sum}</span></li>
+        );
+    }.bind(this));
     return (
       <div className="billSearch">
         <form>
-          <input type="search" placeholder="Search bills by name or number..." onChange={this.props.onBillSearchChange} />
+          <input type="search" placeholder="Search bills by name or number..." onChange={this.props.onBillSearchChange} />  
+          <div className={toggleClass}>    
+          <span className="select" onClick={this.props.onSessionSelectToggle}>{selectText}</span>  
+          <ul>
+            <li onClick={this.props.onSessionSelect.bind(null,'')}><span className="session">any session</span> <span className="sum">{sessionsVotes['sum']}</span></li>
+            {objectNodes}
+          </ul>
+          </div>
         </form>
       </div>
       

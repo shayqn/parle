@@ -54,7 +54,7 @@ def get_pol_json(politician_id, cursor=cursor):
     # added new join query to get all the bill/vote info for the table in one go. replaces the above query.
     # bill JSON will be changed to use the bill ID instead
     query = (
-        "SELECT m.votequestion_id,m.vote,b.number,b.name_en,b.law,b.short_title_en "
+        "SELECT m.votequestion_id,m.vote,b.number,b.name_en,b.law,b.short_title_en, v.session_id "
         "FROM bills_membervote m, bills_votequestion v, bills_bill b "
         "WHERE m.politician_id = (%s) "
         "AND v.id = m.votequestion_id "
