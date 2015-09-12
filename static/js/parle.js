@@ -13,6 +13,11 @@ var AppBox = React.createClass({
       session: '',
       sessionsList: [],
       sessionToggle: false,
+      billInfo: [],
+      billText: [],
+      currentVote: 0,
+      billText: '',
+      route: window.location.hash.substr(1),
     };
   },
   changeClass: function(object, event) {
@@ -98,7 +103,47 @@ var AppBox = React.createClass({
       });
     }
   },
+  getBillInfo: function(object, event) {
+    if (object.votequestion_id == this.state.currentVote) {
+      this.setState({currentVote: 0,
+                    billInfo: [],
+                    billText: [],
+                    });
+    }
+    else {
+      var url = '/bill/' + object.votequestion_id;
+      this.setState({currentVote: object.votequestion_id});
+      this.fetchJSON(url, 'bill_info');
+      console.log(this.state.billInfo);
+    }
+  },
+  getBillText: function(object, event) {
+    var url = '/bill/text/' + 1;
+    this.fetchJSON(url, 'bill_text');
+  },
   render: function() {
+    var urlParameters = this.state.route.split('/').filter(function(n){ return n != '' });
+    if (!urlParameters) {
+      var box = 'search';
+      var id = '';
+    }
+    else {
+      var box = urlParameters[0];
+      switch (box) {
+        case 'profile': break;
+        case 'bill': break;
+        default: 'search';
+      }
+      if (urlParameters.length >= 2) {
+        var id = !isNaN(urlParameters[1]) ? urlParameters[1] : '';
+      }
+      else {
+        var id = '';
+      }
+    }
+    console.log('box is: ' + box);
+    console.log('id is: ' + id);
+
     if (this.state.searching && this.state.searchValue) {
       var regex = new RegExp(this.state.searchValue, "i");
       var filteredList = this.state.politicians.filter(function (pol) {
@@ -164,7 +209,13 @@ var AppBox = React.createClass({
           session = {this.state.session}
           sessionToggle = {this.state.sessionToggle}
           sessionsVotes = {sessionsVotes}
-          retrievingVotes={this.state.retrievingVotes} />
+          retrievingVotes={this.state.retrievingVotes}
+          getBillInfo = {this.getBillInfo}
+          getBillText = {this.getBillText}
+          currentVote = {this.state.currentVote}
+          billInfo = {this.state.billInfo} />
+
+          <BillTextBox billText={this.state.BillText} />
 
       </div>
     );
@@ -187,6 +238,12 @@ var AppBox = React.createClass({
         else if (type == 'sessions') {
           this.setState({sessionsList: data['results']});
         }
+        else if (type == 'bill_info') {
+          this.setState({billInfo: data['results'][0]});
+        }
+        else if (type == 'bill_text') {
+          this.setState({billText: data['results']});
+        }
         else {
           console.log('type not politician or votes');
         }
@@ -207,6 +264,11 @@ var AppBox = React.createClass({
   },
   componentDidMount: function() {
     // temporary measure - is supposed to read from file
+    window.addEventListener('hashchange', () => {
+      this.setState({
+        route: window.location.hash.substr(1)
+      })
+    })
     var initializeURL = '/initialize';
     this.fetchJSON(initializeURL, 'politicians');
     var sessionsURL = '/sessions';
@@ -242,7 +304,11 @@ var ProfileBox = React.createClass({
         <div className="votes">
           <BillStack 
             votes={this.props.votes} 
-            retrievingVotes={this.props.retrievingVotes} />
+            retrievingVotes={this.props.retrievingVotes}
+            getBillInfo = {this.props.getBillInfo}
+            getBillText = {this.props.getBillText}
+            currentVote = {this.props.currentVote}
+            billInfo = {this.props.billInfo} />
         </div>
       </div>
     );
@@ -250,6 +316,8 @@ var ProfileBox = React.createClass({
 });
 var BillStack = React.createClass({
   render: function() {
+    var currentVote = this.props.currentVote;
+    var billInfo = this.props.billInfo;
     if (this.props.votes.length  > 0) {
       var objectNodes = this.props.votes.map(function (object, i) {
         if (object.vote == 'Y') {
@@ -262,45 +330,63 @@ var BillStack = React.createClass({
           var voteClass = '';
           var voteText = 'no vote';
         }
-        voteClass += 'vote';
+        voteClass += 'vote col';
         var lawText = object.law ? 'passed' : 'failed';
-        var lawClass = 'law ' + lawText;
+        var lawClass = 'col law ' + lawText;
         if (object.short_title_en) {
           var name = object.short_title_en;
         }
         else {
           var name = object.name_en;
         }
+        var infoClass = "row info";
+        var infoText = '';
+        if (object.votequestion_id == currentVote) {
+          infoClass += ' current';
+          infoText = billInfo['name_en'];
+          console.log(billInfo);
+        }
+        var titleString = 'Full title: ' + infoText;
+        var lawString =  'Law: ' + lawText;
+        var statusString = 'Status: ' + billInfo['status_code'];
+        var billInfo_output = <div className="col billInfo">{titleString}{lawString}{statusString}</div>;
         return (
-          <tr key={i}>
-            <td></td>
-            <td className="session">{object.session_id}</td>
-            <td className="number">{object.number}</td>
-            <td className={voteClass}>{voteText}</td>
-            <td className="shortname">{name}</td>
-            <td className={lawClass}>{lawText}</td>
-            <td></td>
-          </tr>
+          <div className="voteRow row" key={i}>
+            <div onClick={this.props.getBillInfo.bind(null,object)} className="main row" key={i}>
+              <div className="col spacer"></div>
+              <div className="col session">{object.session_id}</div>
+              <div className="col number">{object.number}</div>
+              <div className={voteClass}>{voteText}</div>
+              <div className="col shortname">{name}</div>
+              <div className={lawClass}>{lawText}</div>
+              <div className="col spacer"></div> 
+            </div>
+            <div className={infoClass}>
+                <div className="col spacer"></div>
+                {billInfo_output}
+                <div className="col goToBillText">
+                  <span>full text</span>
+                  <ArrowButton />
+                </div>
+                <div className="col spacer"></div>
+            </div>
+          </div>
         );
       }.bind(this));
       return (
         <div className='stickyHelper'>
-          <table className='billStack'>
-            <thead>
-              <tr>
-                <th></th>
-                <th className="session">Session</th>
-                <th className="number">Number</th>
-                <th className="vote">Vote</th>
-                <th className="shortname">Name</th>
-                <th className="law">Law</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
+          <div className='billStack'>
+              <div className="row header">
+                <div className="col spacer"></div>
+                <div className="col session">Session</div>
+                <div className="col number">Number</div>
+                <div className="col vote">Vote</div>
+                <div className="col shortname">Name</div>
+                <div className="col law">Law</div>
+                <div className="col spacer"></div>
+              </div>
               {objectNodes}
-            </tbody>
-          </table>
+          </div>
         </div>
       );
     }
@@ -313,36 +399,39 @@ var BillStack = React.createClass({
       }
       return (
         <div className='stickyHelper'>
-          <table className='billStack'>
-            <thead>
-              <tr>
-                <th></th>
-                <th className="session">Session</th>
-                <th className="number">Number</th>
-                <th className="vote">Vote</th>
-                <th className="shortname">Name</th>
-                <th className="law">Law</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="empty">
-              <td></td>
-              <th className="session">empty</th>
-              <td className="number">empty</td>
-              <td className="vote">empty</td>
-              <td className="shortname">empty</td>
-              <td className="law">empty</td>
-              <td></td>
-            </tr>
-            </tbody>
-          </table>
+          <div className='billStack'>
+              <div className="row header">
+                <div className="col spacer"></div>
+                <div className="col session">Session</div>
+                <div className="col number">Number</div>
+                <div className="col vote">Vote</div>
+                <div className="col shortname">Name</div>
+                <div className="col law">Law</div>
+                <div className="col spacer"></div>
+              </div>
+              <div className="row empty">
+                <div className="col"></div>
+            </div>
+          </div>
           {loader}
         </div>
       );
         
     }
     
+  }
+});
+var ArrowButton = React.createClass({
+  render: function () {
+    return (
+      <button class="arrow right">
+        <svg width="60px" height="80px" viewBox="0 0 50 80">
+          <polyline fill="none" stroke="#FFFFFF" strokeWidth="1" stroke-linecap="round" strokeLinejoin="round" points="
+        0.375,0.375 45.63,38.087 0.375,75.8 "/>
+        </svg>
+      </button>
+    );
+
   }
 });
 var BillSearch = React.createClass({
@@ -432,6 +521,15 @@ var SearchStack = React.createClass({
       <div className={classString}>
         <h2>Members of Parliament</h2>
         {objectNodes}
+      </div>
+    );
+  }
+});
+var BillTextBox = React.createClass({
+  render: function() {
+    return (
+      <div className="billTextBox">
+        <div className="billText">{this.props.billText}</div>
       </div>
     );
   }
