@@ -551,10 +551,6 @@ body {
                                 font-weight: normal;
                             }
                         }
-                        .goToBillText {
-                            background-color: rgba(0, 0, 0, .1);
-                            width: 10%;
-                        }
                         &.current {
                             display: table;
                             border-top: 1px solid #eee;
@@ -649,53 +645,4 @@ body {
  display: table; 
  table-layout: fixed; }
 .col { display: table-cell; }
-.goToBillText {
-    position: relative;
-    padding: 0px;
-  }
- .goToBillText button {
-    -webkit-appearance: none;
-    background: transparent;
-    border: 0;
-    outline:0;
-    cursor: pointer;
-    position: absolute;
-    top: 50%;
-    margin-top: -40px;
-    right: 0;
-    width: 70px;
-    height: 90px;
-  }
-  svg {
-    padding: 5px;
-    width: 50%;
-  }
-  
-  .goToBillText span {
-  font-family: Open Sans;
-  font-weight: 700;
-  font-size: 0.9em;
-  position: absolute;
-  display: block;
-  left: 1em;
-    text-transform: uppercase;
-    top: 50%;
-    transform: translateY(-40%);
-    -webkit-transform: translateY(-40%);
-    color: #eee;
-      transition: all 250ms;
-  }
-  .goToBillText:hover span {
-  
-    color: #fff;
-  }
-  
 
- .goToBillText button:hover polyline,
- .goToBillText button:focus polyline {
-    stroke-width: 3;
-  }
-
-  polyline {
-    transition: all 250ms;
-  }
