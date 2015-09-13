@@ -86,7 +86,6 @@ var AppBox = React.createClass({
     if (object.votequestion_id == this.state.currentVote) {
       this.setState({currentVote: 0,
                     billInfo: [],
-                    billText: [],
                     });
     }
     else {
@@ -95,19 +94,6 @@ var AppBox = React.createClass({
       this.fetchJSON(url, 'bill_info');
       console.log(this.state.billInfo);
     }
-  },
-  changeBill: function (billID) {
-    console.log('change bill'); 
-    console.log(billID); 
-    if (billID) {
-      console.log('get bill function'); 
-      this.getBillText(billID);
-    }
-  },
-  getBillText: function(billID) {
-    console.log('get bill text');
-    var url = '/bill/text/' + billID;
-    this.fetchJSON(url, 'bill_text');
   },
   filterPoliticians: function() {
     if (this.state.searching && this.state.searchValue) {
@@ -192,16 +178,10 @@ var AppBox = React.createClass({
         }
         if (urlParameters.length >= 2) {
           id = !isNaN(urlParameters[1]) ? urlParameters[1] : '';
-          if ((urlParameters.length >= 4) && (urlParameters[2]=='bill') && (!isNaN(urlParameters[3]))) {
-            billID = urlParameters[3];
-            box = 'bill';
-          }
-
         }
       }
       console.log('box is: ' + box);
       console.log('id is: ' + id);
-      console.log('bill id is: ' + billID);
     console.log(this.state.billID); 
       this.setState({
         box: box,
@@ -211,7 +191,6 @@ var AppBox = React.createClass({
       });
     console.log(this.state.billID); 
       this.changePolitician();
-      this.changeBill(billID);
   },
   getIdArray: function() {
     var idArray = {};
@@ -258,16 +237,8 @@ var AppBox = React.createClass({
           sessionsVotes = {sessionVotes}
           retrievingVotes={this.state.retrievingVotes}
           getBillInfo = {this.getBillInfo}
-          getBillText = {this.getBillText}
           currentVote = {this.state.currentVote}
           billInfo = {this.state.billInfo} />
-
-        <BillTextBox 
-          box={this.state.box}
-          id = {this.state.id}
-          billText={this.state.billText} 
-          billID={this.state.billID} />
-
       </div>
     );
   },
@@ -367,7 +338,6 @@ var ProfileBox = React.createClass({
             votes={this.props.votes} 
             retrievingVotes={this.props.retrievingVotes}
             getBillInfo = {this.props.getBillInfo}
-            getBillText = {this.props.getBillText}
             currentVote = {this.props.currentVote}
             billInfo = {this.props.billInfo} />
         </div>
@@ -409,12 +379,10 @@ var BillStack = React.createClass({
           var titleString = 'Full title: ' + infoText;
           var lawString =  'Law: ' + lawText;
           var statusString = 'Status: ' + billInfo['status_code'];
-          var billURL = '/#/profile/' + this.props.id + '/bill/' + billInfo['id'];
           var voteInformation = 
               <div className={infoClass}>
                 <div className="col spacer"></div>
                 <div className="col billInfo">{titleString}{lawString}{statusString}</div>
-                <a href={billURL} onClick={getBillText}><div className="col goToBillText"><span>full text</span><ArrowButton /></div></a>
               </div>;
         }
         else {
@@ -483,19 +451,6 @@ var BillStack = React.createClass({
         
     }
     
-  }
-});
-var ArrowButton = React.createClass({
-  render: function () {
-    return (
-      <button className="arrow right">
-        <svg width="60px" height="80px" viewBox="0 0 50 80">
-          <polyline fill="none" stroke="#FFFFFF" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" points="
-        0.375,0.375 45.63,38.087 0.375,75.8 "/>
-        </svg>
-      </button>
-    );
-
   }
 });
 var BillSearch = React.createClass({
@@ -588,22 +543,6 @@ var SearchStack = React.createClass({
       <div className={classString}>
         <h2>Members of Parliament</h2>
         {objectNodes}
-      </div>
-    );
-  }
-});
-var BillTextBox = React.createClass({
-  render: function() {
-    var className = 'billTextBox ' + this.props.box;
-    var href = '/#/profile/' + this.props.id;
-    console.log(unescape(this.props.billText));
-    var find = '\n';
-    var re = new RegExp(find, 'g')
-    var html = this.props.billText.replace(re, '<br /><br />');
-    return (
-      <div className={className}>
-        <a href={href}><div className="goBack"><span>back</span><ArrowButton /></div></a>
-        <div className="billText" dangerouslySetInnerHTML={{__html: this.props.billText}}></div>
       </div>
     );
   }
