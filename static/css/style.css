@@ -38,7 +38,7 @@ body {
   -o-transition: all 0.4s;
   -webkit-transition: all 0.4s;
   transition: all 0.4s; }
-  .searchBox-noscroll.sidebar {
+  .searchBox-noscroll.profile {
     width: 380px; }
 
 .searchBox {
@@ -265,38 +265,57 @@ body {
           color: rgba(8, 59, 113, 0.5); }
         .searchBox .searchContent .searchStack a.green.hover span, .searchBox .searchContent .searchStack a.green.active span {
           color: rgba(60, 155, 52, 0.5); }
-  .searchBox.sidebar {
+  .searchBox.profile, .searchBox.bill {
     width: 400px; }
-    .searchBox.sidebar form {
+    .searchBox.profile form, .searchBox.bill form {
       width: 90%;
       height: 40px;
       margin: 0 auto; }
-      .searchBox.sidebar form button {
+      .searchBox.profile form button, .searchBox.bill form button  {
         width: 30px;
         height: 30px;
         text-indent: 100px; }
-    .searchBox.sidebar input {
+    .searchBox.profile input, .searchBox.bill input {
       font-size: 2em; }
+      
+      
+      
     @media screen and (max-width: 736px), (max-device-width: 736px) {
-      .searchBox.sidebar {
+      .searchBox.profile {
         left: -380px; } }
-    .searchBox.sidebar .searchContent .searchStack {
+        
+        
+        
+    .searchBox.profile .searchContent .searchStack, .searchBox.bill .searchContent .searchStack {
       width: 100%; }
-      .searchBox.sidebar .searchContent .searchStack h2 {
+      .searchBox.profile .searchContent .searchStack h2, .searchBox.bill .searchContent .searchStack h2 {
         font-size: 1.4em;
         padding: 0;
         -moz-transition: all 0.4s;
         -o-transition: all 0.4s;
         -webkit-transition: all 0.4s;
         transition: all 0.4s; }
-    .searchBox.sidebar::-webkit-scrollbar {
+    .searchBox.profile::-webkit-scrollbar, .searchBox.bill::-webkit-scrollbar {
       display: none; }
+      
+      
+.searchBox.bill {
+  width: 400px;
+}
+.searchBox-noscroll.bill {
+  left: -400px;
+  width: 380px; }
+      .searchBox.bill {
+        left: -400px; }
+      
+      
+      
 
 .profileBox {
   position: absolute;
   left: 100%;
   display: block;
-  width: 100vw;
+  width: calc(100vw - 400px);
   height: 100vh;
   background-color: #ccc;
   z-index: -1;
@@ -451,7 +470,8 @@ body {
           visibility: hidden; }
   .profileBox .votes .billStack {
     width: 100%; }
-
+    .profileBox .votes .billStack .row {
+      background-color: #ccc; }
       .profileBox .votes .billStack .row:nth-child(odd) {
         background-color: rgba(255, 255, 255, 0.3); }
       .profileBox .votes .billStack .row .col {
@@ -485,10 +505,49 @@ body {
         .profileBox .votes .billStack .row .col.spacer {
           width: 5%;
           padding: 0px; }
-      .profileBox .votes .billStack .row:hover {
-        background-color: rgba(236, 90, 98, 0.3) !important; }
+          
+          .profileBox .votes .billStack .row .main.row {
+            -moz-transition: all 0.4s;
+            -o-transition: all 0.4s;
+            -webkit-transition: all 0.4s;
+            transition: all 0.4s; }
+            
+      .profileBox .votes .billStack .row .main.row:hover {
+        background-color: rgba(236, 90, 98, 0.1);}
+        
+        
+        
+      .profileBox .votes .billStack .row .row.info {
+        max-height: 0em;
+        display: block;
+        z-index: 0;
+        -moz-transition: all 0.4s;
+        -o-transition: all 0.4s;
+        -webkit-transition: max-height 0.4s;
+        transition: all 0.4s; }
+        
+        .profileBox .votes .billStack .row .row.info .billInfo {
+          width: 80%; }
+          
+          .profileBox .votes .billStack .row .row.info .billInfo span {
+            font-family: Open Sans;
+            font-weight: normal; }
+            
+        
+          
+        .profileBox .votes .billStack .row .row.info.current {
+          display: table;
+          border-top: 1px solid #eee;
+          border-bottom: 1px solid #eee;
+          min-height: 6em;
+          max-height: 10em;
+          background-color: rgba(255, 255, 255, 0.3); 
+          position: relative;
+    }
+          
       .profileBox .votes .billStack .row.empty {
         visibility: hidden; }
+        
       .profileBox .votes .billStack .row.header .col {
         text-transform: uppercase;
         font-weight: 800;
@@ -496,40 +555,6 @@ body {
         color: #fff;
         background-color: #333; }
         
-        
-        
-        
-      .profileBox .votes .billStack .row.infoRow {
-        max-height: 0px;
-        overflow: hidden;
-        display: block;
-        
-        -moz-transition: all 0.4s;
-        -o-transition: all 0.4s;
-        -webkit-transition: all 0.4s;
-        transition: all 0.4s;
-        position: relative;
-        z-index: -1; }
-      .profileBox .votes .billStack .row.infoRow.current {
-      border-top: 1px solid #eee;
-      border-bottom: 1px solid #eee;
-        max-height: 10em;
-        overflow: hidden;
-          background-color: rgba(255, 255, 255, 0.3); }
-          .row.infoRow.current col.billInfo {
-            max-width: 60%!important;
-            overflow: hidden;
-            display: none;
-          }
-          .billInfo span {
-            font-family: Open Sans;
-            font-weight: normal;
-          }
-          .goToBillText {
-            background-color: #444;
-          }
-        
-
         
         
   .profileBox .votes .no-results {
@@ -576,23 +601,22 @@ body {
       background: #000; }
     .profileBox .close:hover::before, .profileBox .close:hover::after {
       opacity: 1; }
-  .profileBox.show {
+  .profileBox.profile {
     left: 0%;
     margin-left: 380px;
-    padding-right: 380px;
     -moz-transition: all 0.4s;
     -o-transition: all 0.4s;
     -webkit-transition: all 0.4s;
     transition: all 0.4s; }
     @media screen and (max-width: 736px), (max-device-width: 736px) {
-      .profileBox.show {
+      .profileBox.profile {
         margin-left: 0px;
         padding-right: 0px; } }
-    .profileBox.show .close {
+    .profileBox.profile .close {
       opacity: 1; }
-  .profileBox.hide {
+  .profileBox.search {
     overflow: hidden; }
-    .profileBox.hide .close {
+    .profileBox.search .close {
       opacity: 0; }
 
 .row {
@@ -602,5 +626,99 @@ body {
 
 .col {
   display: table-cell; }
+.profileBox .votes .billStack .row .row.info .goToBillText {
+  background-color: rgba(0, 0, 0, 0.1); }
+.goToBillText {padding: 0px!important;
+margin: 0px!important; 
+position: absolute;
+right: 0;
+bottom: 0;
+top: 0;
+width: 2.5em;
+overflow: hidden;
+-moz-transition: all 0.4s;
+-o-transition: all 0.4s;
+-webkit-transition: all 0.4s;
+transition: all 0.4s;
+}
+
+.row.info:hover .goToBillText {
+  width: 5%;
+}
+
+.goToBillText button {
+  -webkit-appearance: none;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  margin-top: -40px;
+  right: 40%;
+  width: 70px;
+  height: 90px; }
+
+svg {
+  padding: 5px;
+  width: 50%; }
+
+.goToBillText span {
+  width: 80px;
+  position: absolute;
+  right: -12px;
+  
+  top: calc(50% - 0.3em);
+  display: block;
+  font-family: Open Sans;
+  font-weight: 700;
+  font-size: 0.9em;
+  text-transform: uppercase;
+  transform: rotate(90deg);
+  -webkit-transform: translateZ(0) rotate(90deg);
+  color: #eee;
+  transition: all 250ms; }
+  
+
+
+.goToBillText button:hover polyline,
+.goToBillText button:focus polyline {
+  stroke-width: 3; }
+
+polyline {
+  transition: all 250ms; }
 
 /*# sourceMappingURL=style.css.map */
+ .profileBox.bill {
+   left: -100%;
+   margin-left: 380px;
+   padding-right: 380px;
+   -moz-transition: all 0.4s;
+   -o-transition: all 0.4s;
+   -webkit-transition: all 0.4s;
+   transition: all 0.4s; }
+.billTextBox {
+  background-color: #fff;
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 50;
+  -moz-transition: all 0.4s;
+  -o-transition: all 0.4s;
+  -webkit-transition: all 0.4s;
+  transition: all 0.4s;
+-moz-transition: all 0.4s;
+-o-transition: all 0.4s;
+-webkit-transition: all 0.4s;
+transition: all 0.4s;
+}
+.billTextBox.profile, .billTextBox.search {
+  left: 100%;
+  -moz-transition: all 0.4s;
+  -o-transition: all 0.4s;
+  -webkit-transition: all 0.4s;
+  transition: all 0.4s;
+}
