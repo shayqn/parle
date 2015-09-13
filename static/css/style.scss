@@ -64,7 +64,7 @@ body {
     overflow-x: hidden;
     @include transition-property(width);
     @include transition-duration;
-    &.sidebar {
+    &.profile {
         width: 380px;
     }
 }
@@ -287,7 +287,7 @@ body {
             }
         }
     }
-    &.sidebar{
+    &.profile{
         width: 400px;
         form {
             width: 90%;
@@ -392,8 +392,8 @@ body {
                 }
                 .sessionSelect {
                     width: 11em;
-                    -webkit-transform: translate3d(-30px, -50%, 0) scale3d(1, 1, 1);
-                    transform: translate3d(-30px, -50%, 0) scale3d(1, 1, 1);
+                    -webkit-transform: translate3d(0px, -50%, 0) scale3d(1, 1, 1);
+                    transform: translate3d(0px, -50%, 0) scale3d(1, 1, 1);
                     position: absolute;
                     right: 0;
                     top: 50%;
@@ -487,28 +487,25 @@ body {
     .votes {
         .billStack {
             width: 100%;
-            tr {
+            .row {
+                @mixin bill-fonts {
+                    text-transform: uppercase;
+                    font-weight: 800;
+                    text-align: center;
+                }
                 background-color: #ccc;
                 &:nth-child(odd) {
                     background-color: rgba(255, 255, 255, 0.3);
                 }
-                th {
-                    color: #fff;
-                    background-color: #333;
-                    padding: 20px;
-                }
-                td {
+                .col {
                     cursor: pointer;
                     padding: 20px;
-                    @mixin bill-fonts {
-                        text-transform: uppercase;
-                        font-weight: 800;
-                        text-align: center;
-                    }
                     &.shortname {
-                        font-family: Open Sans;
+                        &:not(:first-child) {
+                            font-family: Open Sans;
+                        }
                     }
-                    &.number {
+                    &.number, &.session {
                         @include bill-fonts;
                         width: 10%;
                     }
@@ -525,23 +522,56 @@ body {
                     }
                     &.law {
                         @include bill-fonts;
-                        width: 20%;
+                        width: 10%;
                         background-color: rgba(230, 126, 33, 0.8);
                         &.passed {
                             background-color: rgba(40, 127, 185, 0.8);
                         }
                     }
+                    &.spacer {
+                        width: 5%;
+                        padding: 0px;
+                    }
                 }
-                &:hover {
-                    background-color: rgba(236, 90, 98, 0.3) !important;
-                }
-                &:first-child, &:last-child {
-                    padding: 0px;
-                    width: 5%;
+                .row {
+                    &:hover {
+                        background-color: rgba(236, 90, 98, 0.3) !important;
+                    }
+                     &.info {
+                        height: 0px;
+                        overflow: hidden;
+                        display: block;
+                        position: relative;
+                        z-index: 0;
+                        @include transition-duration;
+                        .billInfo {
+                            width: 80%;
+                            span {
+                                font-family: Open Sans;
+                                font-weight: normal;
+                            }
+                        }
+                        &.current {
+                            display: table;
+                            border-top: 1px solid #eee;
+                            border-bottom: 1px solid #eee;
+                            max-height: 10em;
+                            overflow: hidden;
+                            background-color: rgba(255, 255, 255, 0.3);
+                        }
+                    }
                 }
                 &.empty {
                     visibility: hidden;
                 }
+                &.header {
+                    .col {
+                        @include bill-fonts;
+                        color: #fff;
+                        background-color: #333;
+                    }
+                }
+               
             }
         }
         .no-results {
@@ -591,7 +621,7 @@ body {
             }
         }
     }
-    &.show {
+    &.profile {
         left: 0%;
         margin-left: 380px;
         padding-right: 380px;
@@ -604,12 +634,15 @@ body {
             opacity: 1;
         }
     }
-    &.hide {
+    &.search {
         overflow: hidden;
         .close {
             opacity: 0;
         }
     }
 }
-
+.row { width: 100%;
+ display: table; 
+ table-layout: fixed; }
+.col { display: table-cell; }
 

@@ -36,7 +36,7 @@ body {
   -o-transition: all 0.4s;
   -webkit-transition: all 0.4s;
   transition: all 0.4s; }
-  .searchBox-noscroll.sidebar {
+  .searchBox-noscroll.profile {
     width: 380px; }
 
 .searchBox {
@@ -263,31 +263,31 @@ body {
           color: rgba(8, 59, 113, 0.5); }
         .searchBox .searchContent .searchStack a.green.hover span, .searchBox .searchContent .searchStack a.green.active span {
           color: rgba(60, 155, 52, 0.5); }
-  .searchBox.sidebar {
+  .searchBox.profile {
     width: 400px; }
-    .searchBox.sidebar form {
+    .searchBox.profile form {
       width: 90%;
       height: 40px;
       margin: 0 auto; }
-      .searchBox.sidebar form button {
+      .searchBox.profile form button {
         width: 30px;
         height: 30px;
         text-indent: 100px; }
-    .searchBox.sidebar input {
+    .searchBox.profile input {
       font-size: 2em; }
     @media screen and (max-width: 736px), (max-device-width: 736px) {
-      .searchBox.sidebar {
+      .searchBox.profile {
         left: -380px; } }
-    .searchBox.sidebar .searchContent .searchStack {
+    .searchBox.profile .searchContent .searchStack {
       width: 100%; }
-      .searchBox.sidebar .searchContent .searchStack h2 {
+      .searchBox.profile .searchContent .searchStack h2 {
         font-size: 1.4em;
         padding: 0;
         -moz-transition: all 0.4s;
         -o-transition: all 0.4s;
         -webkit-transition: all 0.4s;
         transition: all 0.4s; }
-    .searchBox.sidebar::-webkit-scrollbar {
+    .searchBox.profile::-webkit-scrollbar {
       display: none; }
 
 .profileBox {
@@ -363,8 +363,8 @@ body {
           color: #999; }
       .profileBox .profile .billSearch form .sessionSelect {
         width: 11em;
-        -webkit-transform: translate3d(-30px, -50%, 0) scale3d(1, 1, 1);
-        transform: translate3d(-30px, -50%, 0) scale3d(1, 1, 1);
+        -webkit-transform: translate3d(0px, -50%, 0) scale3d(1, 1, 1);
+        transform: translate3d(0px, -50%, 0) scale3d(1, 1, 1);
         position: absolute;
         right: 0;
         top: 50%;
@@ -449,49 +449,73 @@ body {
           visibility: hidden; }
   .profileBox .votes .billStack {
     width: 100%; }
-    .profileBox .votes .billStack tr {
+    .profileBox .votes .billStack .row {
       background-color: #ccc; }
-      .profileBox .votes .billStack tr:nth-child(odd) {
+      .profileBox .votes .billStack .row:nth-child(odd) {
         background-color: rgba(255, 255, 255, 0.3); }
-      .profileBox .votes .billStack tr th {
-        color: #fff;
-        background-color: #333;
-        padding: 20px; }
-      .profileBox .votes .billStack tr td {
+      .profileBox .votes .billStack .row .col {
         cursor: pointer;
         padding: 20px; }
-        .profileBox .votes .billStack tr td.shortname {
+        .profileBox .votes .billStack .row .col.shortname:not(:first-child) {
           font-family: Open Sans; }
-        .profileBox .votes .billStack tr td.number {
+        .profileBox .votes .billStack .row .col.number, .profileBox .votes .billStack .row .col.session {
           text-transform: uppercase;
           font-weight: 800;
           text-align: center;
           width: 10%; }
-        .profileBox .votes .billStack tr td.vote {
+        .profileBox .votes .billStack .row .col.vote {
           text-transform: uppercase;
           font-weight: 800;
           text-align: center;
           width: 10%;
           background-color: rgba(117, 117, 117, 0.8); }
-          .profileBox .votes .billStack tr td.vote.yes {
+          .profileBox .votes .billStack .row .col.vote.yes {
             background-color: rgba(39, 174, 96, 0.8); }
-          .profileBox .votes .billStack tr td.vote.no {
+          .profileBox .votes .billStack .row .col.vote.no {
             background-color: rgba(192, 57, 43, 0.8); }
-        .profileBox .votes .billStack tr td.law {
+        .profileBox .votes .billStack .row .col.law {
           text-transform: uppercase;
           font-weight: 800;
           text-align: center;
-          width: 20%;
+          width: 10%;
           background-color: rgba(230, 126, 33, 0.8); }
-          .profileBox .votes .billStack tr td.law.passed {
+          .profileBox .votes .billStack .row .col.law.passed {
             background-color: rgba(40, 127, 185, 0.8); }
-      .profileBox .votes .billStack tr:hover {
+        .profileBox .votes .billStack .row .col.spacer {
+          width: 5%;
+          padding: 0px; }
+      .profileBox .votes .billStack .row .row:hover {
         background-color: rgba(236, 90, 98, 0.3) !important; }
-      .profileBox .votes .billStack tr:first-child, .profileBox .votes .billStack tr:last-child {
-        padding: 0px;
-        width: 5%; }
-      .profileBox .votes .billStack tr.empty {
+      .profileBox .votes .billStack .row .row.info {
+        height: 0px;
+        overflow: hidden;
+        display: block;
+        position: relative;
+        z-index: 0;
+        -moz-transition: all 0.4s;
+        -o-transition: all 0.4s;
+        -webkit-transition: all 0.4s;
+        transition: all 0.4s; }
+        .profileBox .votes .billStack .row .row.info .billInfo {
+          width: 80%; }
+          .profileBox .votes .billStack .row .row.info .billInfo span {
+            font-family: Open Sans;
+            font-weight: normal; }
+        .profileBox .votes .billStack .row .row.info.current {
+          display: table;
+          border-top: 1px solid #eee;
+          border-bottom: 1px solid #eee;
+          max-height: 10em;
+          overflow: hidden;
+          background-color: rgba(255, 255, 255, 0.3); }
+      .profileBox .votes .billStack .row.empty {
         visibility: hidden; }
+      .profileBox .votes .billStack .row.header .col {
+        text-transform: uppercase;
+        font-weight: 800;
+        text-align: center;
+        color: #fff;
+        background-color: #333; }
   .profileBox .votes .no-results {
     display: block;
     position: relative;
@@ -536,7 +560,7 @@ body {
       background: #000; }
     .profileBox .close:hover::before, .profileBox .close:hover::after {
       opacity: 1; }
-  .profileBox.show {
+  .profileBox.profile {
     left: 0%;
     margin-left: 380px;
     padding-right: 380px;
@@ -545,14 +569,22 @@ body {
     -webkit-transition: all 0.4s;
     transition: all 0.4s; }
     @media screen and (max-width: 736px), (max-device-width: 736px) {
-      .profileBox.show {
+      .profileBox.profile {
         margin-left: 0px;
         padding-right: 0px; } }
-    .profileBox.show .close {
+    .profileBox.profile .close {
       opacity: 1; }
-  .profileBox.hide {
+  .profileBox.search {
     overflow: hidden; }
-    .profileBox.hide .close {
+    .profileBox.search .close {
       opacity: 0; }
+
+.row {
+  width: 100%;
+  display: table;
+  table-layout: fixed; }
+
+.col {
+  display: table-cell; }
 
 /*# sourceMappingURL=style.css.map */

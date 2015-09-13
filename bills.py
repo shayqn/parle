@@ -22,16 +22,11 @@ def get_bill_json(votequestion_id, cursor=cursor):
 
     :param votequestion_id: votequestion_id that corresponds to the single bill requested
 
-    :param bill_id: id of the single bill requested
-
     :param cursor: current database cursor - no need to supply this or change this from the default
     :return: a jsonify'd dictionary with all the desired bill information
     """
-    # <SHAY> BUILD THIS QUERY
-    # Build our query with all the desired relevant info we want to display about bills.
-    # Add any parameters using (%s) or (%(name)s). More information below.
     query = (
-        "SELECT number,name_en,law,short_title_en,institution "
+        "SELECT id,number,name_en,law,short_title_en,status_code "
         "FROM bills_bill "
         "WHERE id = "
         "("

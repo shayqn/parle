@@ -16,7 +16,6 @@ Modules:
 import sys
 from flask import Flask, render_template
 from politicians import get_initial_json, get_pol_json
-from bills import get_bill_json
 from sessions import get_sessions_json
 
 
