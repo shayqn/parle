@@ -41,6 +41,7 @@ def get_bill_json(votequestion_id, cursor=cursor):
         ")"
     )
 
+
     # If any parameters are used in the above query, insert them in the parameters tuple
     # Insert parameters in the order used in the query unless using %(name)s placeholders
     # see http://initd.org/psycopg/docs/usage.html#passing-parameters-to-sql-queries for more information
