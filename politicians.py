@@ -6,17 +6,13 @@ Functions:
     get_initial_json: for generating the initial politician list data
 
 Modules:
-    database: for the cursor object
+    database: for the get_cursor function that returns an opened database cursor
     flask: for jsonify so our results return to React in a nice JSON package
-    json: for dump, which allows us to export the JSON into a file instead
 """
-from database import cursor
+from database import get_cursor
 from flask import jsonify
-from json import dump
 
-# <SHAY> THIS IS THE MAIN FUNCTION TO WORRY ABOUT
-# feel free to make additional helper functions in this file
-def get_pol_json(politician_id, cursor=cursor):
+def get_pol_json(politician_id):
     """
     Returns all the data related to a single specific politician when a user requests their profile.
     Anything we want in the profile has to be sent from here in JSON, so this is where all the magic happens.
@@ -24,35 +20,14 @@ def get_pol_json(politician_id, cursor=cursor):
     Related React.js component: <ProfileBox />
 
     :param politician_id: id of the single politician requested
-    :param cursor: current database cursor - no need to supply this or change this from the default
     :return: a jsonify'd dictionary with all the desired profile information
     """
-    # <SHAY> BUILD THIS QUERY
-    # Build our query with all the desired relevant info we want to display about the politician.
+    # Get the cursor
+    cursor = get_cursor()
+
+    # Build our select query using data from bills_membervote, bills_votequestion, and bills_bill
+    # We are currently only interested in the final vote, so the bill description is used to identify those
     # Add any parameters using (%s) or (%(name)s). More information below.
-
-    #right now this is returning the votequestion_id and the vote. Obviously we only want to display the vote
-    #I couldn't quickly figure out how to get the bill ID - it would involve a join query that I couldn't quite
-    #solve yet. I think it might be easier to just give bills.py the votequestion_id and get the bill_id from there.
-
-    #note: votequestion_id is the same as 'id' in bills_votequestion (makes sense given the names).
-
-    query = (
-        "SELECT votequestion_id, vote "
-        "FROM bills_membervote "
-        "WHERE politician_id = (%s)"
-        "AND votequestion_id IN "
-        "( "
-        "  SELECT id "
-        "  FROM bills_votequestion "
-        "  WHERE description_en "
-        "  LIKE (\'%%Bill be now read a third time and do pass%%\')"
-        ") "
-        "ORDER BY votequestion_id"
-    )
-
-    # added new join query to get all the bill/vote info for the table in one go. replaces the above query.
-    # bill JSON will be changed to use the bill ID instead
     query = (
         "SELECT m.votequestion_id,m.vote,b.number,b.name_en,b.law,b.short_title_en, v.session_id "
         "FROM bills_membervote m, bills_votequestion v, bills_bill b "
@@ -76,21 +51,21 @@ def get_pol_json(politician_id, cursor=cursor):
     # return a JSON response to React (includes header, no extra work needed)
     return jsonify(results=pol_results)
 
-def get_initial_json(cursor=cursor):
+def get_initial_json():
     """
-    Returns the basic information (id, name, last name, headshot, party slug, party name, currently active/elected)
-    as well as writes it to a local JSON file. The purpose of this function is to somewhat decrease loading time by
-    giving React a static file to read instead of making repeated database requests, as this information rarely changes.
-    The function only needs to be run when it is expected that the underlying data has been updated.
+    Returns the basic politician information (id, name, last name, headshot, party slug, party name, currently active)
+    in JSON format.
 
     Related React.js component: <SearchBox />
 
-    :param cursor: current database cursor - no need to supply this or change this from the default
     :return: a jsonify'd dictionary of all the basic elements needed for the initial search/render
     """
 
-    # This is a somewhat different looking SQL statement as it's doing inner joins across three tables.
-    # The three tables are all given notations (p, c, e) so their fields can be distinguished.
+    # Get the cursor
+    cursor = get_cursor()
+
+    # Create and execute the query for the initial data needed to load the React app
+    # We're not picking anything specific for this, so no parameters needed, just execute it directly
     cursor.execute(
         "SELECT p.id, p.name, p.name_family, p.headshot, c.slug, c.short_name, e.end_date, r.name AS riding_name "
         "FROM core_politician p, core_party c, core_electedmember e, core_riding r "   # table_name abbreviation, ...
@@ -109,7 +84,6 @@ def get_initial_json(cursor=cursor):
         ") "
         "ORDER BY p.name_family"        # order by last name
     )
-    # we're not picking anything specific for this, so no parameters needed, just execute it directly
 
     # Fetch results to a dictionary labelled "raw" as there are some evaluations that need to happen
     raw_pol_results = cursor.fetchall()
@@ -119,7 +93,7 @@ def get_initial_json(cursor=cursor):
 
     # Iterate through each result
     for row in raw_pol_results:
-        # add desired data to results in dictionary form
+        # Add desired data to results in dictionary form
         pol_results.append({
             # 'JSON-KEY' : row['DATABASE-KEY'], JSON-KEY is used in React only
             'id': row['id'],
@@ -130,12 +104,6 @@ def get_initial_json(cursor=cursor):
             'party_name': row['short_name'],
             'active': False if row['end_date'] else True,
             'riding' : row['riding_name']})  # boolean: if an end_date exists, they are no longer active
-
-    # Write data to file initial.json for React to access
-    with open('initial.json', 'w') as outfile:
-        # dump is better for converting JSON for a file
-        # but we still need to wrap our output in {'results': pol_results} to match jsonify's style
-        dump({'results': pol_results}, outfile)
 
     # Return JSON as well just in case we want to use it with AJAX calls
     return jsonify(results=pol_results)
