@@ -567,6 +567,7 @@ body {
             .searchBox .searchContent .searchStack a h3 {
               font-size: 1.3em; } }
         .searchBox .searchContent .searchStack a div {
+          background-color: #ddd;
           display: inline-block;
           width: 60px;
           height: 60px;
@@ -617,6 +618,12 @@ body {
           color: rgba(8, 59, 113, 0.5); }
         .searchBox .searchContent .searchStack a.green.hover span, .searchBox .searchContent .searchStack a.green.active span {
           color: rgba(60, 155, 52, 0.5); }
+        .searchBox .searchContent .searchStack a.placeholder h3 {
+          background-color: rgba(145, 145, 145, 0.1);
+          color: rgba(118, 117, 128, 0); }
+        .searchBox .searchContent .searchStack a.placeholder span.party {
+          background-color: rgba(145, 145, 145, 0.1);
+          color: rgba(118, 117, 128, 0); }
   .searchBox.profile {
     width: 400px; }
     .searchBox.profile form {
@@ -656,39 +663,39 @@ body {
   -o-transition: all 0.4s;
   -webkit-transition: all 0.4s;
   transition: all 0.4s; }
-  .profileBox .profile {
+  .profileBox .profileHeader {
     padding-left: 40px;
     padding-right: 40px;
     padding-top: 20px;
     padding-bottom: 20px; }
-    .profileBox .profile h2 {
+    .profileBox .profileHeader h2 {
       margin-top: 10px;
       margin-bottom: -15px;
       display: inline-block;
       font-size: 5em;
       color: #ec5a62; }
       @media screen and (max-width: 736px), (max-device-width: 736px) {
-        .profileBox .profile h2 {
+        .profileBox .profileHeader h2 {
           margin-top: 0px;
           font-size: 4em; } }
-    .profileBox .profile .info {
+    .profileBox .profileHeader .info {
       display: inline-block;
       margin-left: 2em;
       color: #919191; }
-      .profileBox .profile .info h3 {
+      .profileBox .profileHeader .info h3 {
         font-family: Open Sans;
         font-size: 1.5em;
         font-weight: 100;
         line-height: 1em; }
-      .profileBox .profile .info .riding {
+      .profileBox .profileHeader .info .riding {
         margin-bottom: -20px; }
-      .profileBox .profile .info .party {
+      .profileBox .profileHeader .info .party {
         text-transform: uppercase; }
-    .profileBox .profile .billSearch form {
+    .profileBox .profileHeader .billSearch form {
       width: 98%;
       position: relative;
       border-bottom: 1px dashed rgba(0, 0, 0, 0.16); }
-      .profileBox .profile .billSearch form input {
+      .profileBox .profileHeader .billSearch form input {
         width: 100%;
         height: 100%;
         width: calc(100% - 8em);
@@ -702,20 +709,20 @@ body {
         -webkit-box-sizing: border-box;
         -moz-box-sizing: border-box;
         box-sizing: border-box; }
-        .profileBox .profile .billSearch form input :focus {
+        .profileBox .profileHeader .billSearch form input :focus {
           outline: none; }
-        .profileBox .profile .billSearch form input::-ms-clear {
+        .profileBox .profileHeader .billSearch form input::-ms-clear {
           /* remove cross in IE */
           display: none; }
-        .profileBox .profile .billSearch form input:-ms-input-placeholder {
+        .profileBox .profileHeader .billSearch form input:-ms-input-placeholder {
           color: #999; }
-        .profileBox .profile .billSearch form input:-moz-placeholder {
+        .profileBox .profileHeader .billSearch form input:-moz-placeholder {
           color: #999; }
-        .profileBox .profile .billSearch form input::-moz-placeholder {
+        .profileBox .profileHeader .billSearch form input::-moz-placeholder {
           color: #999; }
-        .profileBox .profile .billSearch form input::-webkit-input-placeholder {
+        .profileBox .profileHeader .billSearch form input::-webkit-input-placeholder {
           color: #999; }
-      .profileBox .profile .billSearch form .sessionSelect {
+      .profileBox .profileHeader .billSearch form .sessionSelect {
         width: 11em;
         -webkit-transform: translate3d(0px, -50%, 0) scale3d(1, 1, 1);
         transform: translate3d(0px, -50%, 0) scale3d(1, 1, 1);
@@ -724,7 +731,7 @@ body {
         top: 50%;
         transform-origin: 50% 50%;
         text-transform: uppercase; }
-        .profileBox .profile .billSearch form .sessionSelect .select {
+        .profileBox .profileHeader .billSearch form .sessionSelect .select {
           display: block;
           position: relative;
           top: -5px;
@@ -743,7 +750,7 @@ body {
           -o-transition: all 0.4s;
           -webkit-transition: all 0.4s;
           transition: all 0.4s; }
-          .profileBox .profile .billSearch form .sessionSelect .select::after {
+          .profileBox .profileHeader .billSearch form .sessionSelect .select::after {
             content: '\25BE';
             right: 1em;
             speak: none;
@@ -753,10 +760,10 @@ body {
             -moz-osx-font-smoothing: grayscale;
             -webkit-transform: translateY(-50%) rotate(180deg);
             transform: translateY(-50%) rotate(180deg); }
-          .profileBox .profile .billSearch form .sessionSelect .select:hover {
+          .profileBox .profileHeader .billSearch form .sessionSelect .select:hover {
             color: rgba(236, 90, 98, 0.8);
             background: rgba(255, 255, 255, 0.5); }
-        .profileBox .profile .billSearch form .sessionSelect ul {
+        .profileBox .profileHeader .billSearch form .sessionSelect ul {
           position: absolute;
           overflow: hidden;
           list-style: none;
@@ -770,7 +777,7 @@ body {
           -o-transition: all 0.4s;
           -webkit-transition: all 0.4s;
           transition: all 0.4s; }
-          .profileBox .profile .billSearch form .sessionSelect ul li {
+          .profileBox .profileHeader .billSearch form .sessionSelect ul li {
             background: rgba(200, 200, 200, 0.98);
             display: block;
             position: relative;
@@ -788,17 +795,17 @@ body {
             -o-transition: all 0.4s;
             -webkit-transition: all 0.4s;
             transition: all 0.4s; }
-            .profileBox .profile .billSearch form .sessionSelect ul li .sum {
+            .profileBox .profileHeader .billSearch form .sessionSelect ul li .sum {
               color: #919191;
               float: right; }
-            .profileBox .profile .billSearch form .sessionSelect ul li:hover {
+            .profileBox .profileHeader .billSearch form .sessionSelect ul li:hover {
               background: rgba(255, 255, 255, 0.98); }
-        .profileBox .profile .billSearch form .sessionSelect.collapsed .select {
+        .profileBox .profileHeader .billSearch form .sessionSelect.collapsed .select {
           color: #919191; }
-          .profileBox .profile .billSearch form .sessionSelect.collapsed .select::after {
+          .profileBox .profileHeader .billSearch form .sessionSelect.collapsed .select::after {
             -webkit-transform: translateY(-50%);
             transform: translateY(-50%); }
-        .profileBox .profile .billSearch form .sessionSelect.collapsed ul {
+        .profileBox .profileHeader .billSearch form .sessionSelect.collapsed ul {
           opacity: 0;
           visibility: hidden; }
   .profileBox .votes .billStack {
@@ -821,8 +828,7 @@ body {
           text-transform: uppercase;
           font-weight: 800;
           text-align: center;
-          width: 10%;
-          background-color: rgba(117, 117, 117, 0.8); }
+          width: 10%; }
           .profileBox .votes .billStack .row .col.vote.yes {
             background-color: rgba(39, 174, 96, 0.8); }
           .profileBox .votes .billStack .row .col.vote.no {
@@ -831,8 +837,9 @@ body {
           text-transform: uppercase;
           font-weight: 800;
           text-align: center;
-          width: 10%;
-          background-color: rgba(230, 126, 33, 0.8); }
+          width: 10%; }
+          .profileBox .votes .billStack .row .col.law.failed {
+            background-color: rgba(230, 126, 33, 0.8); }
           .profileBox .votes .billStack .row .col.law.passed {
             background-color: rgba(40, 127, 185, 0.8); }
         .profileBox .votes .billStack .row .col.spacer {
@@ -862,8 +869,11 @@ body {
           max-height: 10em;
           overflow: hidden;
           background-color: rgba(255, 255, 255, 0.3); }
-      .profileBox .votes .billStack .row.empty {
+      .profileBox .votes .billStack .row.empty span {
         visibility: hidden; }
+      .profileBox .votes .billStack .row.noresults .row {
+        font-family: Open Sans;
+        text-align: center; }
       .profileBox .votes .billStack .row.header .col {
         text-transform: uppercase;
         font-weight: 800;
