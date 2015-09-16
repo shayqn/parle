@@ -309,8 +309,8 @@ var BillStack = React.createClass({
               <div className="col spacer"></div>
               <div className="col session"></div>
               <div className="col number"></div>
-              <div className="col vote"></div>
               <div className="col shortname"><span>no result</span></div>
+              <div className="col vote"></div>
               <div className="col law"></div>
               <div className="col spacer"></div> 
             </div>
@@ -340,8 +340,8 @@ var BillStack = React.createClass({
               <div className="col spacer"></div>
               <div className="col session">Session</div>
               <div className="col number">Number</div>
-              <div className="col vote">Vote</div>
               <div className="col shortname">Name</div>
+              <div className="col vote">Vote</div>
               <div className="col law">Law</div>
               <div className="col spacer"></div>
             </div>
@@ -382,10 +382,10 @@ var VoteRow = React.createClass({
       <div className="voteRow row" key={this.props.key}>
         <div onClick={this.props.onClick.bind(null,this.props.vote)} className="main row">
           <div className="col spacer"></div>
-          <div className="col session">{this.props.vote.session_id}</div>
-          <div className="col number">{this.props.vote.number}</div>
-          <div className={voteClass}>{voteText}</div>
+          <div className="col session"><span className="mobile-only">Session</span>{this.props.vote.session_id}</div>
+          <div className="col number"><span className="mobile-only">Number</span>{this.props.vote.number}</div>
           <div className="col shortname">{name}</div>
+          <div className={voteClass}>{voteText}</div>
           <div className={lawClass}>{lawText}</div>
           <div className="col spacer"></div> 
         </div>

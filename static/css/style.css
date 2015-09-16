@@ -376,6 +376,15 @@ body {
   background-color: #ccc;
   z-index: -1; }
 
+.mobile-only {
+  display: none;
+  font-weight: 400;
+  font-size: 0.9em;
+  color: #666; }
+  @media screen and (max-width: 480px), (max-device-width: 480px) {
+    .mobile-only {
+      display: block; } }
+
 .searchBox-noscroll {
   position: fixed;
   top: 0;
@@ -392,6 +401,9 @@ body {
   transition: all 0.4s; }
   .searchBox-noscroll.profile {
     width: 380px; }
+  @media screen and (max-width: 480px), (max-device-width: 480px) {
+    .searchBox-noscroll.profile {
+      left: -400px; } }
 
 .searchBox {
   width: 100%;
@@ -533,9 +545,6 @@ body {
           .searchBox .searchContent .searchStack h2 {
             font-size: 2em;
             padding: 0; } }
-        @media screen and (max-width: 480px), (max-device-width: 480px) {
-          .searchBox .searchContent .searchStack h2 {
-            font-size: 1.5em; } }
       .searchBox .searchContent .searchStack a {
         position: relative;
         width: 100%;
@@ -650,6 +659,19 @@ body {
         transition: all 0.4s; }
     .searchBox.profile::-webkit-scrollbar {
       display: none; }
+  @media screen and (max-width: 480px), (max-device-width: 480px) {
+    .searchBox.profile {
+      left: -400px; }
+    .searchBox .searchContent {
+      padding: 0px; }
+      .searchBox .searchContent .searchStack {
+        width: 90vw; }
+        .searchBox .searchContent .searchStack h2 {
+          font-size: 1em;
+          text-align: center;
+          padding: 0; }
+        .searchBox .searchContent .searchStack a h3 {
+          font-size: 1.3em; } }
 
 .profileBox {
   position: absolute;
@@ -667,7 +689,9 @@ body {
     padding-left: 40px;
     padding-right: 40px;
     padding-top: 20px;
-    padding-bottom: 20px; }
+    padding-bottom: 20px;
+    position: relative;
+    z-index: 1; }
     .profileBox .profileHeader h2 {
       margin-top: 10px;
       margin-bottom: -15px;
@@ -709,7 +733,7 @@ body {
         -webkit-box-sizing: border-box;
         -moz-box-sizing: border-box;
         box-sizing: border-box; }
-        .profileBox .profileHeader .billSearch form input :focus {
+        .profileBox .profileHeader .billSearch form input:focus {
           outline: none; }
         .profileBox .profileHeader .billSearch form input::-ms-clear {
           /* remove cross in IE */
@@ -942,6 +966,82 @@ body {
     overflow: hidden; }
     .profileBox.search .close {
       opacity: 0; }
+  @media screen and (max-width: 480px), (max-device-width: 480px) {
+    .profileBox.profile {
+      margin-left: 0px;
+      padding-right: 0px; }
+    .profileBox .profileHeader h2 {
+      margin-top: 0px;
+      font-size: 2em; }
+    .profileBox .profileHeader .info {
+      margin-left: 0em;
+      width: 100%; }
+      .profileBox .profileHeader .info h3 {
+        font-family: Open Sans;
+        font-size: 1em;
+        font-weight: 100; }
+      .profileBox .profileHeader .info .riding {
+        margin-bottom: -10px;
+        float: left; }
+      .profileBox .profileHeader .info .party {
+        float: right; }
+    .profileBox .profileHeader .billSearch form {
+      width: 98%;
+      position: relative;
+      border-bottom: none; }
+      .profileBox .profileHeader .billSearch form input {
+        width: 100%;
+        font-size: 1em;
+        font-weight: 600;
+        border-bottom: 1px dashed rgba(0, 0, 0, 0.16);
+        margin-bottom: 1em; }
+      .profileBox .profileHeader .billSearch form .sessionSelect {
+        width: 100%;
+        -webkit-transform: translate3d(0px, 0%, 0) scale3d(1, 1, 1);
+        transform: translate3d(0px, 0%, 0) scale3d(1, 1, 1);
+        position: relative;
+        right: 0;
+        top: 0;
+        transform-origin: 0% 0%; }
+        .profileBox .profileHeader .billSearch form .sessionSelect .select {
+          top: 0px;
+          padding: 1em;
+          background: transparent;
+          font-size: 0.8em; }
+    .profileBox .votes .billStack {
+      width: 100%; }
+      .profileBox .votes .billStack .row {
+        display: block;
+        border-top: 1px solid #eee;
+        position: relative; }
+        .profileBox .votes .billStack .row .col {
+          padding: 15px; }
+          .profileBox .votes .billStack .row .col.number {
+            width: 50%;
+            display: inline-block;
+            border-left: 1px dashed rgba(255, 255, 255, 0.3); }
+          .profileBox .votes .billStack .row .col.session {
+            width: 50%;
+            display: inline-block; }
+          .profileBox .votes .billStack .row .col.vote {
+            width: 50%;
+            display: inline-block; }
+          .profileBox .votes .billStack .row .col.law {
+            width: 50%;
+            display: inline-block;
+            border-left: 1px dashed rgba(255, 255, 255, 0.3); }
+          .profileBox .votes .billStack .row .col.shortname {
+            text-align: center;
+            display: block;
+            border-top: 1px dashed rgba(255, 255, 255, 0.3);
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
+            font-size: 0.9em; }
+          .profileBox .votes .billStack .row .col.spacer {
+            display: none; }
+        .profileBox .votes .billStack .row .info {
+          display: none; }
+        .profileBox .votes .billStack .row.header {
+          display: none; } }
 
 .row {
   width: 100%;

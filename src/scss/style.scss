@@ -58,6 +58,15 @@ body {
     background-color: #ccc;
     z-index: -1;
 }
+.mobile-only {
+    display:none;
+    font-weight: 400;
+    font-size: 0.9em;
+    color: #666;
+    @include mobile-breakpoint {
+        display: block;
+    }
+}
 .searchBox-noscroll {
     position: fixed;
     top: 0;
@@ -68,6 +77,11 @@ body {
     @include transition-duration;
     &.profile {
         width: 380px;
+    }
+    @include mobile-breakpoint {
+        &.profile {
+            left: -400px;
+        }
     }
 }
 .searchBox {
@@ -175,9 +189,6 @@ body {
                 @include tablet-breakpoint {
                     font-size: 2em;
                     padding: 0;
-                }
-                @include mobile-breakpoint {
-                    font-size: 1.5em;
                 }
             }
             a {
@@ -332,6 +343,28 @@ body {
             display:none;
         }
     }
+    @include mobile-breakpoint {
+        &.profile {
+            left: -400px;
+        }
+        .searchContent {
+            padding: 0px;
+            .searchStack {
+                width: 90vw;
+                h2 {
+                    font-size: 1em;
+                    text-align: center;
+                    padding: 0;
+                }
+                a {
+                    h3 {
+                        font-size: 1.3em;
+                    }
+                }
+            }
+        }
+    }
+
 }
 
 .profileBox {
@@ -348,6 +381,8 @@ body {
         padding-right: 40px;
         padding-top: 20px;
         padding-bottom: 20px;
+        position: relative;
+        z-index: 1;
         h2 {
             margin-top: 10px;
             margin-bottom: -15px;
@@ -392,7 +427,7 @@ body {
                     background: transparent;
                     color: $primary-color;
                     -webkit-appearance: textfield;
-                    :focus {
+                    &:focus {
                         outline: none;
                     }
                     &::-ms-clear { /* remove cross in IE */
@@ -510,6 +545,7 @@ body {
                 &:nth-child(odd) {
                     background-color: rgba(255, 255, 255, 0.3);
                 }
+
                 .col {
                     cursor: pointer;
                     padding: 20px;
@@ -660,6 +696,110 @@ body {
         overflow: hidden;
         .close {
             opacity: 0;
+        }
+    }
+    @include mobile-breakpoint {
+        &.profile {
+            margin-left: 0px;
+            padding-right: 0px;
+        }
+        .profileHeader {
+            h2 {
+                margin-top: 0px;
+                font-size: 2em;
+            }
+            .info {
+                margin-left: 0em;
+                width: 100%;
+                h3 {
+                    font-family: Open Sans;
+                    font-size: 1em;
+                    font-weight: 100;
+                }
+                .riding {
+                    margin-bottom: -10px;
+                    float: left;
+                }
+                .party {
+                    float: right;
+                }
+            }
+            .billSearch {
+                form {
+                    width: 98%;
+                    position: relative;
+                    border-bottom: none;
+                    input {
+                        width: 100%;
+                        font-size: 1em;
+                        font-weight: 600;
+                        border-bottom: 1px dashed rgba(0, 0, 0, 0.16); 
+                        margin-bottom: 1em;
+                    }
+                    .sessionSelect {
+                        width: 100%;
+                        -webkit-transform: translate3d(0px, 0%, 0) scale3d(1, 1, 1);
+                        transform: translate3d(0px, 0%, 0) scale3d(1, 1, 1);
+                        position: relative;
+                        right: 0;
+                        top: 0;
+                        transform-origin: 0% 0%;
+                        .select {
+                            top: 0px;
+                            padding: 1em;
+                            background: transparent;
+                            font-size: 0.8em;
+                        }
+                    }
+                }
+            }
+        }
+        .votes {
+            .billStack {
+                width: 100%;
+                .row {
+                    display: block;
+                    border-top: 1px solid #eee;
+                    position: relative;
+                    .col {
+                        padding: 15px;
+                        &.number {
+                            width: 50%;
+                            display: inline-block;
+                            border-left: 1px dashed rgba(255, 255, 255, 0.3);
+                        }
+                        &.session {
+                            width: 50%;
+                            display: inline-block;
+                        }
+                        &.vote {
+                            width: 50%;
+                            display: inline-block;
+                        }
+                        &.law {
+                            width: 50%;
+                            display: inline-block;
+                            border-left: 1px dashed rgba(255, 255, 255, 0.3);
+                        }
+                        &.shortname {
+                            text-align: center;
+                            display: block;
+                            border-top: 1px dashed rgba(255, 255, 255, 0.3); 
+                            border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
+                            font-size: 0.9em;
+                        }
+                        &.spacer {
+                            display:none;
+                        }
+                    }
+                    .info {
+                        display:none;
+                    }
+                    &.header {
+                        display:none;
+                    }
+                }
+            }
         }
     }
 }
