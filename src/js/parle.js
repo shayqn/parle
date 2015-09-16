@@ -72,6 +72,17 @@ var AppBox = React.createClass({
     }
   },
   onSessionSelectToggle: function(event) {
+    var listener = function(e){
+      if ((e.target.className != 'sessionOption') && (e.target.parentNode.className != 'sessionOption') && (e.target.className != 'select') && (e.target.className != 'sessionSelect')) {   
+        this.setState({
+          sessionToggle: !this.state.sessionToggle,
+        });
+      }
+      document.body.removeEventListener('click', listener);
+    }.bind(this);
+    if (!this.state.sessionToggle) {
+      document.body.addEventListener('click', listener);
+    }
     this.setState({
       sessionToggle: !this.state.sessionToggle,
     });
@@ -445,7 +456,7 @@ var BillSearch = React.createClass({
           <div className={toggleClass}>    
           <span className="select" onClick={this.props.onSessionSelectToggle}>{selectText}</span>  
           <ul>
-            <li onClick={this.props.onSessionSelect.bind(null,'')}><span className="session">any session</span> <span className="sum">{sessionsVotes['sum']}</span></li>
+            <li className="sessionOption" onClick={this.props.onSessionSelect.bind(null,'')}><span className="session">any session</span> <span className="sum">{sessionsVotes['sum']}</span></li>
             {objectNodes}
           </ul>
           </div>
