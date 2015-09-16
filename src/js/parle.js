@@ -262,6 +262,7 @@ var ProfileBox = React.createClass({
     return (
       <div className={classes}>
         <div className="profileHeader">
+          <a className="return" href="/#/"><div className ="icon"></div><span>return to MP search</span></a>
           <a className={closeClass} href="/#/"></a>
           <h2 className="name">{this.props.profile.name}</h2>
           <span className="info"><h3 className="riding">{this.props.profile.riding}</h3><h3 className="party">{partyName}</h3></span>
@@ -306,13 +307,14 @@ var BillStack = React.createClass({
       var emptyRow = (
           <div className="voteRow row empty">
             <div className="main row">
-              <div className="col spacer"></div>
+              <div className="col spacer left"></div>
               <div className="col session"></div>
               <div className="col number"></div>
+              <div className="col vote full-layout"></div>
               <div className="col shortname"><span>no result</span></div>
-              <div className="col vote"></div>
+              <div className="col vote mobile-only"></div>
               <div className="col law"></div>
-              <div className="col spacer"></div> 
+              <div className="col spacer right"></div> 
             </div>
           </div>
         );
@@ -337,13 +339,14 @@ var BillStack = React.createClass({
       <div className='votes'>
         <div className='billStack'>
             <div className="row header">
-              <div className="col spacer"></div>
+              <div className="col spacer left"></div>
               <div className="col session">Session</div>
               <div className="col number">Number</div>
+              <div className="col vote full-layout">Vote</div>
               <div className="col shortname">Name</div>
-              <div className="col vote">Vote</div>
+              <div className="col vote mobile-only">Vote</div>
               <div className="col law">Law</div>
-              <div className="col spacer"></div>
+              <div className="col spacer right"></div>
             </div>
             {voteRows}
             {loader}
@@ -366,7 +369,9 @@ var VoteRow = React.createClass({
       var voteClass = '';
       var voteText = 'no vote';
     }
-    voteClass += 'vote col';
+    voteClass += 'vote col ';
+    var mobileVoteClass = voteClass + 'mobile-only';
+    voteClass += 'full-layout'
 
     var lawText = this.props.vote.law ? 'passed' : 'failed';
     var lawClass = 'col law ' + lawText;
@@ -381,13 +386,14 @@ var VoteRow = React.createClass({
     return (
       <div className="voteRow row" key={this.props.key}>
         <div onClick={this.props.onClick.bind(null,this.props.vote)} className="main row">
-          <div className="col spacer"></div>
-          <div className="col session"><span className="mobile-only">Session</span>{this.props.vote.session_id}</div>
-          <div className="col number"><span className="mobile-only">Number</span>{this.props.vote.number}</div>
+          <div className="col spacer left"></div>
+          <div className="col session"><span className="label mobile-only">Session</span>{this.props.vote.session_id}</div>
+          <div className="col number"><span className="label mobile-only">Number</span>{this.props.vote.number}</div>
+          <div className={voteClass}><span>{voteText}</span></div>
           <div className="col shortname">{name}</div>
-          <div className={voteClass}>{voteText}</div>
-          <div className={lawClass}>{lawText}</div>
-          <div className="col spacer"></div> 
+          <div className={mobileVoteClass}><span>{voteText}</span></div>
+          <div className={lawClass}><span>{lawText}</span></div>
+          <div className="col spacer right"></div> 
         </div>
         <VoteInfoRow
           voteQuestionID = {this.props.vote.votequestion_id}
@@ -410,8 +416,9 @@ var VoteInfoRow = React.createClass({
     }
     return (
       <div className={infoClass}>
-          <div className="col spacer"></div>
+          <div className="col spacer left"></div>
           {voteInformation}
+          <div className="col spacer right"></div>
       </div>
     );
   }

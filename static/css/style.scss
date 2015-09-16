@@ -2,8 +2,21 @@
 
 $primary-color: #ec5a62;
 $transition-duration: 0.4s;
-$tablet-breakpoint: 736px;
-$mobile-breakpoint: 480px;
+$medium-breakpoint: 1280px;
+$tablet-breakpoint: 1024px;
+$mobile-breakpoint: 640px;
+
+@mixin full-layout {
+    @media screen and (min-width:  #{$mobile-breakpoint}){
+        @content;
+    }
+}
+
+@mixin medium-breakpoint {
+    @media screen and (max-width:  #{$medium-breakpoint}), (max-device-width :  #{$medium-breakpoint}) {
+        @content;
+    }
+}
 
 @mixin tablet-breakpoint {
     @media screen and (max-width:  #{$tablet-breakpoint}), (max-device-width :  #{$tablet-breakpoint}) {
@@ -14,6 +27,22 @@ $mobile-breakpoint: 480px;
 @mixin mobile-breakpoint {
     @media screen and (max-width:  #{$mobile-breakpoint}), (max-device-width :  #{$mobile-breakpoint}) {
         @content;
+    }
+}
+
+@mixin mobile-only {
+    &.mobile-only {
+        @include full-layout {
+            display: none;
+        }
+    }
+}
+
+@mixin full-only {
+    &.full-layout {
+        @include mobile-breakpoint {
+            display:none;
+        }
     }
 }
 
@@ -58,15 +87,7 @@ body {
     background-color: #ccc;
     z-index: -1;
 }
-.mobile-only {
-    display:none;
-    font-weight: 400;
-    font-size: 0.9em;
-    color: #666;
-    @include mobile-breakpoint {
-        display: block;
-    }
-}
+
 .searchBox-noscroll {
     position: fixed;
     top: 0;
@@ -77,6 +98,11 @@ body {
     @include transition-duration;
     &.profile {
         width: 380px;
+    }
+    @include tablet-breakpoint {
+        &.profile {
+            left: -400px;
+        }
     }
     @include mobile-breakpoint {
         &.profile {
@@ -326,9 +352,6 @@ body {
         input {
             font-size: 2em;
         }
-        @include tablet-breakpoint {
-            left: -380px;
-        }
         .searchContent {
             .searchStack {
                 width: 100%;
@@ -341,6 +364,27 @@ body {
         }
         &::-webkit-scrollbar {
             display:none;
+        }
+    }
+    @include tablet-breakpoint {
+        &.profile {
+            left: -400px;
+        }
+        .searchContent {
+            padding: 0px;
+            .searchStack {
+                width: 90vw;
+                h2 {
+                    font-size: 1em;
+                    text-align: center;
+                    padding: 0;
+                }
+                a {
+                    h3 {
+                        font-size: 1.3em;
+                    }
+                }
+            }
         }
     }
     @include mobile-breakpoint {
@@ -415,7 +459,6 @@ body {
             form {
                 width: 98%;
                 position: relative;
-                border-bottom: 1px dashed rgba(0, 0, 0, 0.16);
                 input {
                     width: 100%;
                     height: 100%;
@@ -427,6 +470,7 @@ body {
                     background: transparent;
                     color: $primary-color;
                     -webkit-appearance: textfield;
+                    border-bottom: 1px dashed rgba(0, 0, 0, 0.16);
                     &:focus {
                         outline: none;
                     }
@@ -435,7 +479,12 @@ body {
                     }
                     @include box-sizing(border-box);
                     @include placeholder {
-                    color: #999;
+                        color: #999;
+                    }
+                    @include tablet-breakpoint {
+                        width: 70%;
+                        font-size: 1.25em;
+                        margin-top: 1em;
                     }
                 }
                 .sessionSelect {
@@ -557,26 +606,43 @@ body {
                     &.number, &.session {
                         @include bill-fonts;
                         width: 10%;
+                        span {
+                            &.label {
+                                display: block;
+                                font-weight: 400;
+                                font-size: 0.9em;
+                                color: #666;
+                            }
+                            @include mobile-only;
+                        }
                     }
                     &.vote {
                         @include bill-fonts;
                         width: 10%;
+                        background-color: rgba(0, 0, 0, 0.05);
                         &.yes {
                             background-color: rgba(39, 174, 96, 0.8);
                         }
                         &.no {
                             background-color: rgba(192, 57, 43, 0.8);
                         }
+                        @include mobile-only;
+                        display: table-cell;
+                        vertical-align: middle;
+
                     }
                     &.law {
                         @include bill-fonts;
-                        width: 10%;
+                        width: 15%;
+                        background-color: rgba(0, 0, 0, 0.05);  
                         &.failed {
                             background-color: rgba(230, 126, 33, 0.8);
                         }
                         &.passed {
                             background-color: rgba(40, 127, 185, 0.8);
                         }
+                        display: table-cell;
+                        vertical-align: middle;
                     }
                     &.spacer {
                         width: 5%;
@@ -678,6 +744,46 @@ body {
                 opacity: 1;
             }
         }
+        @include tablet-breakpoint {
+            display: none;
+        }
+    }
+    a.return {
+        display: none;
+        position: fixed;
+        top: 0em;
+        left: 0em;
+        width: 100%;
+        padding-top: 0.1em;
+        padding-bottom: 0.2em;
+        text-align: center;
+        background-color: rgba(175, 175, 175, 0.75);
+        cursor: pointer;
+        text-decoration: none;
+        @include transition-duration;
+        .icon {
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            background: transparent url(../images/magnifier.svg) no-repeat center center;
+            transform-origin: 50% 50%;
+            -webkit-transform: translate3d(-0.2em, 0.2em, 0) scale3d(1, 1, 1);
+            transform: translate3d(-0.2em, 0.2em, 0) scale3d(1, 1, 1);
+        }
+        span {
+            color: #ddd;
+            font-size: 0.9em;
+            line-height: 1em;
+            font-weight: 600;
+            font-family: Open Sans;
+            text-transform: uppercase
+        }
+        &:hover {
+            background-color: rgba(100, 100, 100, 0.75);
+        }
+        @include tablet-breakpoint {
+            display: initial;
+        }
     }
     &.profile {
         left: 0%;
@@ -698,6 +804,41 @@ body {
             opacity: 0;
         }
     }
+    @include medium-breakpoint {
+        .votes {
+            .billStack {
+                .row {
+                    .col {
+                        padding: 15px;
+                        &.session {
+                            width: 15%;
+                        }
+                        &.number {
+                            width: 15%;
+                        }
+                        &.vote {
+                            width: 15%;
+                        }
+                        &.spacer.left {
+                            display:none;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    @include tablet-breakpoint {
+        .billSearch {
+            form {
+                input {
+                    width: 100%;
+                    font-size: 1em;
+                    font-weight: 600;
+                    margin-bottom: 1em;
+                }
+            }
+        }
+    }
     @include mobile-breakpoint {
         &.profile {
             margin-left: 0px;
@@ -705,7 +846,7 @@ body {
         }
         .profileHeader {
             h2 {
-                margin-top: 0px;
+                padding-top: 0.5em;
                 font-size: 2em;
             }
             .info {
@@ -775,6 +916,9 @@ body {
                         &.vote {
                             width: 50%;
                             display: inline-block;
+                            &.full-layout {
+                                display: none;
+                            }
                         }
                         &.law {
                             width: 50%;
@@ -802,6 +946,7 @@ body {
             }
         }
     }
+
 }
 .row { width: 100%;
  display: table; 
