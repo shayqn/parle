@@ -6,14 +6,19 @@ var uglify = require('gulp-uglify');
 var sass = require('gulp-sass');
 var image = require('gulp-image');
 var useref = require('gulp-useref');
+var del = require('del');
 
-gulp.task('dev_javascript', function () {
+gulp.task('javascript', function () {
     gulp.src('src/js/parle.js')
         .pipe(gulp.dest('static/js'))
         .pipe(size());
 });
 
-gulp.task('dev_styles', function () {
+gulp.task('watch_javascript', function() {
+  gulp.watch('src/js/parle.js', ['javascript']);
+});
+
+gulp.task('sass_me', function () {
     gulp.src('src/scss/style.scss')
         .pipe(gulp.dest('static/css'))
         .pipe(sass({
@@ -23,26 +28,39 @@ gulp.task('dev_styles', function () {
         .pipe(size());
 });
 
-gulp.task('dev_style_map', function () {
+gulp.task('styles', ['sass_me'], function () {
     gulp.src('src/scss/style.css.map')
-        .pipe(gulp.dest('static/css'))
+        .pipe(gulp.dest('static/css'));
 });
 
-gulp.task('dev_svg', function () {
+gulp.task('watch_styles', function() {
+  gulp.watch('src/scss/style.scss', ['styles']);
+});
+
+gulp.task('svg', function () {
     gulp.src('src/images/*.svg')
         .pipe(gulp.dest('static/images'))
         .pipe(size());
 });
 
-gulp.task('dev_index', function () {
+gulp.task('watch_svg', function() {
+  gulp.watch('src/images/*.svg', ['svg']);
+});
+
+gulp.task('index', function () {
     gulp.src('src/index.html')
         .pipe(gulp.dest('templates'))
         .pipe(size());
 });
 
-gulp.task('dev', ['dev_javascript', 'dev_styles', 'dev_svg', 'dev_index', 'dev_style_map']);
+gulp.task('watch_index', function() {
+  gulp.watch('src/index.html', ['index']);
+});
 
-gulp.task('javascript', function () {
+gulp.task('dev', ['javascript', 'styles', 'svg', 'index', 'style_map']);
+gulp.task('watch_dev', ['watch_javascript', 'watch_styles', 'watch_svg', 'watch_index']);
+
+gulp.task('deploy_javascript', function () {
     gulp.src('src/js/parle.js')
         .pipe(browserify({transform: ['reactify']}))
         .pipe(uglify())
@@ -50,7 +68,11 @@ gulp.task('javascript', function () {
         .pipe(size());
 });
 
-gulp.task('styles', function () {
+gulp.task('deploy_clean_styles', function() {
+    return del(['static/css/**/*']);
+});
+
+gulp.task('deploy_styles', ['deploy_clean_styles'], function () {
     gulp.src('src/scss/style.scss')
         .pipe(sass({
             outputStyle: 'compressed',
@@ -60,18 +82,18 @@ gulp.task('styles', function () {
         .pipe(size());
 });
 
-gulp.task('svg', function () {
+gulp.task('deploy_svg', function () {
     gulp.src('src/images/*.svg')
         .pipe(image())
         .pipe(gulp.dest('static/images'))
         .pipe(size());
 });
 
-gulp.task('index', function () {
+gulp.task('deploy_index', function () {
     gulp.src('src/index.html')
         .pipe(useref())
         .pipe(gulp.dest('templates'))
         .pipe(size());
 });
 
-gulp.task('deployment', ['clean', 'javascript', 'styles', 'svg', 'index']);
+gulp.task('deployment', ['deploy_javascript', 'deploy_styles', 'deploy_svg', 'deploy_index']);
