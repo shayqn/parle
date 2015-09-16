@@ -163,7 +163,7 @@ body {
             height: 100%;
             padding: 0 10% 0 10px;
             font-size: 7vw;
-            font-weight: 700;
+            font-weight: 600;
             border: none;
             background: transparent;
             color: $primary-color;
@@ -262,7 +262,7 @@ body {
                     top: 0.5em;
                     text-transform: uppercase;
                     color: rgba(0,0,0,0.2);
-                    font-weight: 700;
+                    font-weight: 600;
                 }
                 &:hover {
                     h3 {
@@ -291,35 +291,35 @@ body {
                     }
                 }
                 &.cpc {
-                    &.hover, &.active {
+                    &:hover, &.active {
                         span {
                             color: rgba(12,106,170,0.5);
                         }
                     }
                 }
                 &.liberal {
-                    &.hover, &.active {
+                    &:hover, &.active {
                         span {
                             color: rgba(215, 24, 32, 0.5);
                         }
                     }
                 }
                 &.NDP {
-                    &.hover, &.active {
+                    &:hover, &.active {
                         span {
                             color: rgba(241, 102, 34, 0.5);
                         }
                     }
                 }
                 &.bloc {
-                    &.hover, &.active {
+                    &:hover, &.active {
                         span {
                             color: rgba(8, 59, 113, 0.5);
                         }
                     }
                 }
                 &.green {
-                    &.hover, &.active {
+                    &:hover, &.active {
                         span {
                             color: rgba(60, 155, 52, 0.5);
                         }
@@ -448,7 +448,7 @@ body {
             h3 {
                 font-family: Open Sans;
                 font-size: 1.5em;
-                font-weight: 100;
+                font-weight: 300;
                 line-height: 1em;
             }
             .riding {
@@ -468,7 +468,7 @@ body {
                     width: calc(100% - 8em);
                     text-overflow: ellipsis;
                     font-size: 2vw;
-                    font-weight: 200;
+                    font-weight: 300;
                     border: none;
                     background: transparent;
                     color: $primary-color;
@@ -590,7 +590,6 @@ body {
             .row {
                 @mixin bill-fonts {
                     text-transform: uppercase;
-                    font-weight: 800;
                     text-align: center;
                 }
                 background-color: #ccc;
@@ -607,6 +606,7 @@ body {
                     }
                     &.number, &.session {
                         @include bill-fonts;
+                        font-weight: 600;
                         width: 10%;
                         span {
                             &.label {
@@ -620,6 +620,7 @@ body {
                     }
                     &.vote {
                         @include bill-fonts;
+                        font-weight: 800;
                         width: 10%;
                         background-color: rgba(0, 0, 0, 0.05);
                         &.yes {
@@ -635,6 +636,7 @@ body {
                     }
                     &.law {
                         @include bill-fonts;
+                        font-weight: 800;
                         width: 15%;
                         background-color: rgba(0, 0, 0, 0.05);  
                         &.failed {
@@ -663,7 +665,7 @@ body {
                             width: 80%;
                             span {
                                 font-family: Open Sans;
-                                font-weight: normal;
+                                font-weight: 400;
                             }
                         }
                         &.current {
@@ -690,21 +692,13 @@ body {
                 &.header {
                     .col {
                         @include bill-fonts;
+                        font-weight: 800;
                         color: #fff;
                         background-color: #333;
                     }
                 }
                
             }
-        }
-        .no-results {
-            display: block;
-            position: relative;
-            width: auto;
-            text-align: center;
-            font-size: 3em;
-            font-weight: 600;
-            vertical-align: bottom;
         }
     }
     .close {
@@ -855,7 +849,7 @@ body {
                 h3 {
                     font-family: Open Sans;
                     font-size: 1em;
-                    font-weight: 100;
+                    font-weight: 300;
                 }
                 .riding {
                     margin-bottom: -10px;

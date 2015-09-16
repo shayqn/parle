@@ -469,7 +469,7 @@ body {
       height: 100%;
       padding: 0 10% 0 10px;
       font-size: 7vw;
-      font-weight: 700;
+      font-weight: 600;
       border: none;
       background: transparent;
       color: #ec5a62;
@@ -590,7 +590,7 @@ body {
           top: 0.5em;
           text-transform: uppercase;
           color: rgba(0, 0, 0, 0.2);
-          font-weight: 700; }
+          font-weight: 600; }
         .searchBox .searchContent .searchStack a:hover h3 {
           color: #ec5a62; }
         .searchBox .searchContent .searchStack a:hover span {
@@ -614,15 +614,15 @@ body {
             color: rgba(236, 90, 98, 0.9); }
           .searchBox .searchContent .searchStack a.active span {
             color: rgba(0, 0, 0, 0.2); }
-        .searchBox .searchContent .searchStack a.cpc.hover span, .searchBox .searchContent .searchStack a.cpc.active span {
+        .searchBox .searchContent .searchStack a.cpc:hover span, .searchBox .searchContent .searchStack a.cpc.active span {
           color: rgba(12, 106, 170, 0.5); }
-        .searchBox .searchContent .searchStack a.liberal.hover span, .searchBox .searchContent .searchStack a.liberal.active span {
+        .searchBox .searchContent .searchStack a.liberal:hover span, .searchBox .searchContent .searchStack a.liberal.active span {
           color: rgba(215, 24, 32, 0.5); }
-        .searchBox .searchContent .searchStack a.NDP.hover span, .searchBox .searchContent .searchStack a.NDP.active span {
+        .searchBox .searchContent .searchStack a.NDP:hover span, .searchBox .searchContent .searchStack a.NDP.active span {
           color: rgba(241, 102, 34, 0.5); }
-        .searchBox .searchContent .searchStack a.bloc.hover span, .searchBox .searchContent .searchStack a.bloc.active span {
+        .searchBox .searchContent .searchStack a.bloc:hover span, .searchBox .searchContent .searchStack a.bloc.active span {
           color: rgba(8, 59, 113, 0.5); }
-        .searchBox .searchContent .searchStack a.green.hover span, .searchBox .searchContent .searchStack a.green.active span {
+        .searchBox .searchContent .searchStack a.green:hover span, .searchBox .searchContent .searchStack a.green.active span {
           color: rgba(60, 155, 52, 0.5); }
         .searchBox .searchContent .searchStack a.placeholder h3 {
           background-color: rgba(145, 145, 145, 0.1);
@@ -718,7 +718,7 @@ body {
       .profileBox .profileHeader .info h3 {
         font-family: Open Sans;
         font-size: 1.5em;
-        font-weight: 100;
+        font-weight: 300;
         line-height: 1em; }
       .profileBox .profileHeader .info .riding {
         margin-bottom: -20px; }
@@ -733,7 +733,7 @@ body {
         width: calc(100% - 8em);
         text-overflow: ellipsis;
         font-size: 2vw;
-        font-weight: 200;
+        font-weight: 300;
         border: none;
         background: transparent;
         color: #ec5a62;
@@ -858,8 +858,8 @@ body {
           font-family: Open Sans; }
         .profileBox .votes .billStack .row .col.number, .profileBox .votes .billStack .row .col.session {
           text-transform: uppercase;
-          font-weight: 800;
           text-align: center;
+          font-weight: 600;
           width: 10%; }
           .profileBox .votes .billStack .row .col.number span.label, .profileBox .votes .billStack .row .col.session span.label {
             display: block;
@@ -871,8 +871,8 @@ body {
               display: none; } }
         .profileBox .votes .billStack .row .col.vote {
           text-transform: uppercase;
-          font-weight: 800;
           text-align: center;
+          font-weight: 800;
           width: 10%;
           background-color: rgba(0, 0, 0, 0.05);
           display: table-cell;
@@ -886,8 +886,8 @@ body {
               display: none; } }
         .profileBox .votes .billStack .row .col.law {
           text-transform: uppercase;
-          font-weight: 800;
           text-align: center;
+          font-weight: 800;
           width: 15%;
           background-color: rgba(0, 0, 0, 0.05);
           display: table-cell;
@@ -913,7 +913,7 @@ body {
           width: 80%; }
           .profileBox .votes .billStack .row .row.info .billInfo span {
             font-family: Open Sans;
-            font-weight: normal; }
+            font-weight: 400; }
         .profileBox .votes .billStack .row .row.info.current {
           display: table;
           border-top: 1px solid #eee;
@@ -928,18 +928,10 @@ body {
         text-align: center; }
       .profileBox .votes .billStack .row.header .col {
         text-transform: uppercase;
-        font-weight: 800;
         text-align: center;
+        font-weight: 800;
         color: #fff;
         background-color: #333; }
-  .profileBox .votes .no-results {
-    display: block;
-    position: relative;
-    width: auto;
-    text-align: center;
-    font-size: 3em;
-    font-weight: 600;
-    vertical-align: bottom; }
   .profileBox .close {
     display: block;
     width: 36px;
@@ -1064,7 +1056,7 @@ body {
       .profileBox .profileHeader .info h3 {
         font-family: Open Sans;
         font-size: 1em;
-        font-weight: 100; }
+        font-weight: 300; }
       .profileBox .profileHeader .info .riding {
         margin-bottom: -10px;
         float: left; }

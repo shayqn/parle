@@ -473,6 +473,7 @@ var SearchBox = React.createClass({
     return (
       <div className={containerclasses}>
         <div className={classes}>
+          <a className="moreInfoContainer"><span className="icon">i</span><span className="text">votes.mp</span></a>
           <form>
             <input type="search" placeholder="Search..." onChange={this.props.onSearchChange} />
             <button type="submit">Search</button>
