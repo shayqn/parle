@@ -5,8 +5,8 @@ var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var sass = require('gulp-sass');
 var image = require('gulp-image');
-var useref = require('gulp-useref');
 var del = require('del');
+var preprocess = require('gulp-preprocess');
 
 gulp.task('javascript', function () {
     gulp.src('src/js/parle.js')
@@ -49,6 +49,7 @@ gulp.task('watch_svg', function() {
 
 gulp.task('index', function () {
     gulp.src('src/index.html')
+        .pipe(preprocess({context: {DEV: true}}))
         .pipe(gulp.dest('templates'))
         .pipe(size());
 });
@@ -57,7 +58,7 @@ gulp.task('watch_index', function() {
   gulp.watch('src/index.html', ['index']);
 });
 
-gulp.task('dev', ['javascript', 'styles', 'svg', 'index', 'style_map']);
+gulp.task('dev', ['javascript', 'styles', 'svg', 'index']);
 gulp.task('watch_dev', ['watch_javascript', 'watch_styles', 'watch_svg', 'watch_index']);
 
 gulp.task('deploy_javascript', function () {
@@ -91,9 +92,9 @@ gulp.task('deploy_svg', function () {
 
 gulp.task('deploy_index', function () {
     gulp.src('src/index.html')
-        .pipe(useref())
+        .pipe(preprocess({context: {DEV: false}}))
         .pipe(gulp.dest('templates'))
         .pipe(size());
 });
 
-gulp.task('deployment', ['deploy_javascript', 'deploy_styles', 'deploy_svg', 'deploy_index']);
+gulp.task('deploy', ['deploy_javascript', 'deploy_styles', 'deploy_svg', 'deploy_index']);
