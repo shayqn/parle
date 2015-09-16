@@ -385,7 +385,7 @@ var VoteRow = React.createClass({
 
     return (
       <div className="voteRow row" key={this.props.key}>
-        <div onClick={this.props.onClick.bind(null,this.props.vote)} className="main row">
+        <div className="main row">
           <div className="col spacer left"></div>
           <div className="col session"><span className="label mobile-only">Session</span>{this.props.vote.session_id}</div>
           <div className="col number"><span className="label mobile-only">Number</span>{this.props.vote.number}</div>
@@ -395,10 +395,6 @@ var VoteRow = React.createClass({
           <div className={lawClass}><span>{lawText}</span></div>
           <div className="col spacer right"></div> 
         </div>
-        <VoteInfoRow
-          voteQuestionID = {this.props.vote.votequestion_id}
-          currentVote = {this.props.currentVote}
-          lawText = {lawText} />
       </div>
     );
   }
