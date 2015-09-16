@@ -393,8 +393,12 @@ body {
   .searchBox-noscroll.profile {
     width: 380px; }
   @media screen and (max-width: 1024px), (max-device-width: 1024px) {
-    .searchBox-noscroll.profile {
-      left: -400px; } }
+    .searchBox-noscroll {
+      position: absolute;
+      top: 0;
+      width: 100%; }
+      .searchBox-noscroll.profile {
+        left: -400px; } }
   @media screen and (max-width: 640px), (max-device-width: 640px) {
     .searchBox-noscroll.profile {
       left: -400px; } }
@@ -402,8 +406,8 @@ body {
 .searchBox {
   width: 100%;
   background: #f1f1f1;
-  position: fixed;
-  height: 100vh;
+  position: relative;
+  height: 100%;
   overflow-y: auto;
   top: 0px;
   left: 0px;
@@ -651,18 +655,20 @@ body {
     .searchBox.profile::-webkit-scrollbar {
       display: none; }
   @media screen and (max-width: 1024px), (max-device-width: 1024px) {
-    .searchBox.profile {
-      left: -400px; }
-    .searchBox .searchContent {
-      padding: 0px; }
-      .searchBox .searchContent .searchStack {
-        width: 90vw; }
-        .searchBox .searchContent .searchStack h2 {
-          font-size: 1em;
-          text-align: center;
-          padding: 0; }
-        .searchBox .searchContent .searchStack a h3 {
-          font-size: 1.3em; } }
+    .searchBox {
+      width: 100%; }
+      .searchBox.profile {
+        left: -400px; }
+      .searchBox .searchContent {
+        padding: 0px; }
+        .searchBox .searchContent .searchStack {
+          width: 90vw; }
+          .searchBox .searchContent .searchStack h2 {
+            font-size: 1em;
+            text-align: center;
+            padding: 0; }
+          .searchBox .searchContent .searchStack a h3 {
+            font-size: 1.3em; } }
   @media screen and (max-width: 640px), (max-device-width: 640px) {
     .searchBox.profile {
       left: -400px; }
@@ -848,7 +854,6 @@ body {
       .profileBox .votes .billStack .row:nth-child(odd) {
         background-color: rgba(255, 255, 255, 0.3); }
       .profileBox .votes .billStack .row .col {
-        cursor: pointer;
         padding: 20px; }
         .profileBox .votes .billStack .row .col.shortname:not(:first-child) {
           font-family: Open Sans; }
@@ -895,8 +900,6 @@ body {
         .profileBox .votes .billStack .row .col.spacer {
           width: 5%;
           padding: 0px; }
-      .profileBox .votes .billStack .row .row:hover {
-        background-color: rgba(236, 90, 98, 0.3) !important; }
       .profileBox .votes .billStack .row .row.info {
         height: 0px;
         overflow: hidden;
@@ -1028,6 +1031,7 @@ body {
     .profileBox.profile .close {
       opacity: 1; }
   .profileBox.search {
+    position: fixed;
     overflow: hidden; }
     .profileBox.search .close {
       opacity: 0; }

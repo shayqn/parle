@@ -1,26 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <meta name=viewport content="width=device-width, initial-scale=1">
     <link rel="dns-prefetch" href="//fonts.googleapis.com">
     <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
 
     <title>parle</title>
 
-    <meta name=viewport content="width=device-width, initial-scale=1">
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
 
     <link href='http://fonts.googleapis.com/css?family=Raleway:100,700,800|Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/react.js"></script>
-    <!-- build:remove -->
+    <!-- @if DEV=true -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/JSXTransformer.js"></script>
-    <!-- endbuild -->
+    <!-- @endif -->
   </head>
   <body>
     <div id="content"></div>
-
+    <!-- @if DEV=true -->
     <script type="text/jsx" src="{{ url_for('static', filename='js/parle.js') }}"></script>
-        
+    <!-- @endif -->    
+    <!-- @if DEV=false -->
+    <script src="{{ url_for('static', filename='js/parle.js') }}"></script>
+    <!-- @endif -->   
   </body>
 </html>
