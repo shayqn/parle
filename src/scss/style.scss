@@ -206,6 +206,18 @@ body {
             @include tablet-breakpoint {
                 width: 90vw;
             }
+            .leaf {
+              display: inline-block;
+              width: 2em;
+              float: right;
+              height: 2em;
+              background: transparent url(../images/leaf.svg) no-repeat center center;
+              transform-origin: 50% 50%;
+              -webkit-transform: translate3d(0em, -0.25em, 0) scale3d(1, 1, 1);
+              transform: translate3d(0em, -0.25em, 0) scale3d(1, 1, 1);
+              opacity:0.3;
+                @include transition-duration;
+            }
             h2 {
                 font-size: 2em;
                 letter-spacing: 1px;
@@ -357,6 +369,9 @@ body {
         .searchContent {
             .searchStack {
                 width: 100%;
+                .leaf {
+                  opacity: 0;
+                }
                 h2 {
                     font-size: 1.4em;
                     padding: 0;

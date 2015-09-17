@@ -44,6 +44,11 @@ var AppBox = React.createClass({
       });
       this.getPoliticianVotes(politician.id);
     }
+    else {
+      this.setState({
+        politician: {},
+      });
+    }
   },
   onSearchChange: function(event) {
     this.setState({
@@ -109,6 +114,26 @@ var AppBox = React.createClass({
         votes: [],
       });
       this.changePolitician();
+  },
+  changePageTitle: function () {
+    console.log('pol is');
+    console.log(this.state.politician);
+    if (this.state.box == 'search') {
+      console.log('search is');
+      document.title = 'votes.MP - search Canadian MP voting records';
+    }
+    else if ((this.state.box == 'profile') && (this.state.politician.name)) {
+      console.log('true is');
+      console.log(this.state.politician.length > 0);
+      var titleText = this.state.politician.name;
+      document.title = 'votes.MP - ' + titleText;
+    }
+  },
+  componentDidUpdate: function(prevProps, prevState) {
+    console.log(prevState.id);
+    if (prevState.politician != this.state.politician) {
+      this.changePageTitle();
+    }
   },
   getSessionVotes: function() {
     var sessionVotes = {};
@@ -473,6 +498,7 @@ var SearchBox = React.createClass({
     return (
       <div className={containerclasses}>
         <div className={classes}>
+          <div className="topLinks"><a className="info">i</a><span className="github"></span></div>
           <form>
             <input type="search" placeholder="Search..." onChange={this.props.onSearchChange} />
             <button type="submit">Search</button>
@@ -532,7 +558,7 @@ var SearchStack = React.createClass({
     }
     return (
       <div className={classString}>
-        <h2>Members of Parliament</h2>
+        <h2>Members of Parliament<span className="leaf"></span></h2>
         {politicianNodes}
       </div>
     );
