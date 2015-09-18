@@ -39,7 +39,6 @@ var AppBox = React.createClass({
       this.getPoliticianVotes(politician.id);
     }
     else if (this.state.id && ((this.state.box == 'profile') || (this.state.box == 'info') )) {
-      console.log('keep');
       politician = this.getPolitician();
       this.setState({
         politician: politician,
@@ -47,7 +46,6 @@ var AppBox = React.createClass({
       this.getPoliticianVotes(politician.id);
     }
     else {
-      console.log('discard');
       this.setState({
         politician: {},
       });
@@ -55,8 +53,6 @@ var AppBox = React.createClass({
   },
   onSearchChange: function(event) {
     var max = this.checkMax();
-    console.log('checked max');
-    console.log(max);
     this.setState({
       searching: true,
       searchValue: event.target.value,
@@ -182,21 +178,15 @@ var AppBox = React.createClass({
   },
   onSearchScroll: function(thingone, thingtwo) {
     var scrollTop = thingone.getDOMNode().scrollTop;
-    console.log(scrollTop);
     var height = thingone.getDOMNode().scrollHeight;
-    console.log(height);
     var h = window.innerHeight;
-    console.log(h);
     if ((h + scrollTop + 100) > height) {
-      console.log('more');
       var num = this.filterPoliticians().length;
       if (this.state.max < num) {
         this.setState({
           max : this.state.max + 10
         });
       }
-      console.log('max');
-      console.log(this.state.max + 10);
     }
   },
   checkMax: function() {
@@ -225,6 +215,7 @@ var AppBox = React.createClass({
         <div className={containerclasses}>
           <SearchBox 
             box={this.state.box}
+            searching={this.state.searching}
             politicians={politicianList} 
             onSearchChange={this.onSearchChange} 
             profile={politician}
@@ -325,13 +316,10 @@ var AppBox = React.createClass({
 });
 var InfoBox = React.createClass({
   componentWillUpdate: function(nextProps, nextState) {
-    console.log('will update');
     if ((nextProps.box == 'info') && (this.props.box != 'search')) {
-      console.log('next box is info and previous box was not search');
       this.back = true;
     }
     else {
-      console.log('no back');
       this.back = false;
     }
   },
@@ -580,7 +568,11 @@ var SearchBox = React.createClass({
             <button type="submit">Search</button>
           </form>
           <div className="searchContent">
-            <SearchStack box={this.props.box} politicians={this.props.politicians} profile={this.props.profile} />
+            <SearchStack 
+              box={this.props.box} 
+              politicians={this.props.politicians} 
+              profile={this.props.profile}
+              searching={this.props.searching} />
           </div>
         </div>
     );
@@ -623,6 +615,10 @@ var SearchStack = React.createClass({
           </a>
         );
       }.bind(this));  
+    }
+    else if (this.props.searching) {
+      var noResultsNode = <a><h3>NO RESULTS</h3></a>;
+      politicianNodes.push(noResultsNode);
     }
     else {
       var placeHolderNames = ['Sir John A. McPlaceholder', 'Trevor Linden', 'Placeholder Junior, Esquire'];
