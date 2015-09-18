@@ -6,7 +6,7 @@ var AppBox = React.createClass({
       box: 'search',
       politicians: [],
       id: '',
-      politician: [],
+      politician: {},
       profile: '',
       currentVote: 0,
       searching: false,
@@ -16,6 +16,7 @@ var AppBox = React.createClass({
       sessionsList: [],
       session: '',
       sessionToggle: false,
+      max: 10,
     };
   },
   componentDidMount: function() {
@@ -37,7 +38,8 @@ var AppBox = React.createClass({
       });
       this.getPoliticianVotes(politician.id);
     }
-    else if (this.state.id && (this.state.box == 'profile')) {
+    else if (this.state.id && ((this.state.box == 'profile') || (this.state.box == 'info') )) {
+      console.log('keep');
       politician = this.getPolitician();
       this.setState({
         politician: politician,
@@ -45,15 +47,20 @@ var AppBox = React.createClass({
       this.getPoliticianVotes(politician.id);
     }
     else {
+      console.log('discard');
       this.setState({
         politician: {},
       });
     }
   },
   onSearchChange: function(event) {
+    var max = this.checkMax();
+    console.log('checked max');
+    console.log(max);
     this.setState({
       searching: true,
-      searchValue: event.target.value
+      searchValue: event.target.value,
+      max: max
     });
   },
   onBillSearchChange: function(event) {
@@ -102,6 +109,7 @@ var AppBox = React.createClass({
         switch (box) {
           case 'profile': break;
           case 'bill': break;
+          case 'info': break;
           default: box = 'search';
         }
         if (urlParameters.length >= 2) {
@@ -116,21 +124,15 @@ var AppBox = React.createClass({
       this.changePolitician();
   },
   changePageTitle: function () {
-    console.log('pol is');
-    console.log(this.state.politician);
     if (this.state.box == 'search') {
-      console.log('search is');
       document.title = 'votes.MP - search Canadian MP voting records';
     }
     else if ((this.state.box == 'profile') && (this.state.politician.name)) {
-      console.log('true is');
-      console.log(this.state.politician.length > 0);
       var titleText = this.state.politician.name;
       document.title = 'votes.MP - ' + titleText;
     }
   },
   componentDidUpdate: function(prevProps, prevState) {
-    console.log(prevState.id);
     if (prevState.politician != this.state.politician) {
       this.changePageTitle();
     }
@@ -178,20 +180,56 @@ var AppBox = React.createClass({
       this.fetchJSON(url, 'bill_info');
     }
   },
+  onSearchScroll: function(thingone, thingtwo) {
+    var scrollTop = thingone.getDOMNode().scrollTop;
+    console.log(scrollTop);
+    var height = thingone.getDOMNode().scrollHeight;
+    console.log(height);
+    var h = window.innerHeight;
+    console.log(h);
+    if ((h + scrollTop + 100) > height) {
+      console.log('more');
+      var num = this.filterPoliticians().length;
+      if (this.state.max < num) {
+        this.setState({
+          max : this.state.max + 10
+        });
+      }
+      console.log('max');
+      console.log(this.state.max + 10);
+    }
+  },
+  checkMax: function() {
+    var newMax = this.state.max;
+    var num = this.filterPoliticians().length;
+    if (num < this.state.max) {
+      newMax = num;
+      if (newMax < 10) {
+        newMax = 10;
+      }
+    }
+    return newMax;
+  },
   render: function() {
-    var politicianList = this.filterPoliticians();
+    var politicianList = this.filterPoliticians().slice(0, this.state.max);
     var sessionVotes = this.getSessionVotes();
     var voteList = this.filterVotes();
     var appClass = 'box ' + this.state.box;
     var politician = this.state.politician;
+    var containerclasses = 'searchBox-noscroll ' + this.state.box;
 
     return (
       <div className={appClass}>
-        <SearchBox 
-          box={this.state.box}
-          politicians={politicianList} 
-          onSearchChange={this.onSearchChange} 
-          profile={politician} />
+        <InfoBox box={this.state.box} />
+
+        <div className={containerclasses}>
+          <SearchBox 
+            box={this.state.box}
+            politicians={politicianList} 
+            onSearchChange={this.onSearchChange} 
+            profile={politician}
+            onSearchScroll = {this.onSearchScroll} />
+        </div>
 
         <ProfileBox 
           box={this.state.box}
@@ -278,12 +316,53 @@ var AppBox = React.createClass({
       var filteredList = this.state.politicians.filter(function (pol) {
         return pol.name.search(regex) > -1 || pol.party_name.search(regex) > -1 || pol.party_slug.search(regex) > -1 || pol.riding.search(regex) > -1;
       });
-      return filteredList.slice(0,25);
+      return filteredList;
     }
     else {
-      return this.state.politicians.slice(0,10);
+      return this.state.politicians;
     }
   },
+});
+var InfoBox = React.createClass({
+  componentWillUpdate: function(nextProps, nextState) {
+    console.log('will update');
+    if ((nextProps.box == 'info') && (this.props.box != 'search')) {
+      console.log('next box is info and previous box was not search');
+      this.back = true;
+    }
+    else {
+      console.log('no back');
+      this.back = false;
+    }
+  },
+  goBack: function(e) {
+    if (this.back) {
+      e.preventDefault();
+      window.history.back();
+    }
+  },
+  render: function() {
+    var classes = 'infoBox ' + this.props.box;
+    return (
+      <div className={classes}><div className="closeContainer"><a href="/#/" onClick={this.goBack}></a></div><InfoText /></div>
+    );
+  }
+});
+var InfoText = React.createClass({
+  render: function () {
+    return (
+    <div className="infoText">
+      <h2>about votes.mp</h2>
+      <p>Democracies are defined by the laws that they pass, and the laws that pass are determined by the representatives we elect. In order to accurately evaluate whether our elected members of parliament are appropriately representing their electorate, the most pertinent information we have is their voting history: which bills have they voted for, which have they voted against, and which have they abstained from voting on. </p>
+      <p>While this information is made publicly available to all Canadians, we noticed that it can be slow and difficult to parse. Every bill is voted on multiple times - sometimes to pass amendments, sometimes even just to vote on whether or not it will be discussed. Unless you are able to dedicate significant time and effort into becoming well-versed on the details of each bill, attempting to analyze the votes a politician makes can be more confusing than informative.</p>
+      <p>As engaged citizens who are not capable of being intimately familiar with the details and progress every bill, what we wanted to know was this: after all the amendments and edits, did the politician vote to make the final bill a law or not? </p>
+      <p>That is what this website provides: for every member of parliament, it returns only the votes that correspond to their final vote on a bill as well as whether or not the bill was successfully passed into law.</p>
+      <p>We hope that this provides an easy additional avenue for evaluating the performance of our elected members of parliament and determining their effectiveness in representing our views.</p>
+      <span className="githubLink"><a href="https://github.com/shayqn/parle">view project on github</a></span>
+      <span className="creditWhereCreditsDue">special thanks to <a href="https://openparliament.ca">openparliament.ca</a> for providing all the data</span>
+    </div>
+    );
+  }
 });
 var ProfileBox = React.createClass({
   render: function() {
@@ -493,12 +572,9 @@ var BillSearch = React.createClass({
 });
 var SearchBox = React.createClass({
   render: function() {
-    var classes = 'searchBox ' + this.props.box;
-    var containerclasses = 'searchBox-noscroll ' + this.props.box;
-    return (
-      <div className={containerclasses}>
-        <div className={classes}>
-          <div className="topLinks"><a className="info">i</a><span className="github"></span></div>
+    var classes = 'searchBox ' + this.props.box;    return (
+        <div className={classes} onScroll={this.props.onSearchScroll.bind(null, this)} >
+          <div className="topLinks"><a href="/#/info" className="info"></a><a href="https://github.com/shayqn/parle" className="github"></a></div>
           <form>
             <input type="search" placeholder="Search..." onChange={this.props.onSearchChange} />
             <button type="submit">Search</button>
@@ -507,7 +583,6 @@ var SearchBox = React.createClass({
             <SearchStack box={this.props.box} politicians={this.props.politicians} profile={this.props.profile} />
           </div>
         </div>
-      </div>
     );
   }
 });

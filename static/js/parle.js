@@ -1,1 +1,646 @@
-!function e(t,s,a){function i(o,l){if(!s[o]){if(!t[o]){var c="function"==typeof require&&require;if(!l&&c)return c(o,!0);if(n)return n(o,!0);throw new Error("Cannot find module '"+o+"'")}var r=s[o]={exports:{}};t[o][0].call(r.exports,function(e){var s=t[o][1][e];return i(s?s:e)},r,r.exports,e,t,s,a)}return s[o].exports}for(var n="function"==typeof require&&require,o=0;o<a.length;o++)i(a[o]);return i}({1:[function(e,t,s){var a=React.createClass({displayName:"AppBox",getInitialState:function(){return{box:"search",politicians:[],id:"",politician:[],profile:"",currentVote:0,searching:!1,retrievingVotes:!0,votes:[],billInfo:[],sessionsList:[],session:"",sessionToggle:!1}},componentDidMount:function(){window.addEventListener("hashchange",function(){this.getAppStateFromURL(window.location.hash.substr(1))}.bind(this));var e="/initialize";this.fetchJSON(e,"politicians");var t="/sessions";this.fetchJSON(t,"sessions"),this.getAppStateFromURL(window.location.hash.substr(1))},changePolitician:function(e){e?(this.setState({politician:e,votes:[],box:"profile"}),this.getPoliticianVotes(e.id)):this.state.id&&"profile"==this.state.box?(e=this.getPolitician(),this.setState({politician:e}),this.getPoliticianVotes(e.id)):this.setState({politician:{}})},onSearchChange:function(e){this.setState({searching:!0,searchValue:e.target.value})},onBillSearchChange:function(e){this.setState({billSearching:!0,billSearchValue:e.target.value})},onSessionSelect:function(e,t){""!=e?this.setState({sessionToggle:!1,session:e.id}):this.setState({sessionToggle:!1,session:""})},onSessionSelectToggle:function(e){var t=function(e){"sessionOption"!=e.target.className&&"sessionOption"!=e.target.parentNode.className&&"select"!=e.target.className&&"sessionSelect"!=e.target.className&&this.setState({sessionToggle:!this.state.sessionToggle}),document.body.removeEventListener("click",t)}.bind(this);this.state.sessionToggle||document.body.addEventListener("click",t),this.setState({sessionToggle:!this.state.sessionToggle})},getAppStateFromURL:function(e){var t="search",s="",a=(this.state.politician,e.split("/").filter(function(e){return""!=e}));if(a.length>0){switch(t=a[0]){case"profile":break;case"bill":break;default:t="search"}a.length>=2&&(s=isNaN(a[1])?"":a[1])}this.setState({box:t,id:s,votes:[]}),this.changePolitician()},changePageTitle:function(){if(console.log("pol is"),console.log(this.state.politician),"search"==this.state.box)console.log("search is"),document.title="votes.MP - search Canadian MP voting records";else if("profile"==this.state.box&&this.state.politician.name){console.log("true is"),console.log(this.state.politician.length>0);var e=this.state.politician.name;document.title="votes.MP - "+e}},componentDidUpdate:function(e,t){console.log(t.id),t.politician!=this.state.politician&&this.changePageTitle()},getSessionVotes:function(){for(var e={},t=0,s=0;s<this.state.sessionsList.length;s++)e[this.state.sessionsList[s].id]=0;for(var s=0;s<this.state.votes.length;s++)t+=1,e[this.state.votes[s].session_id]+=1;return e.sum=t,e},getPolitician:function(e,t){if("undefined"==typeof e&&(e=this.state.politicians),"undefined"==typeof t&&(t=this.state.id),t)for(i=0;i<e.length;i++)if(e[i].id==t)return e[i];return[]},getPoliticianVotes:function(e){this.setState({retrievingVotes:!0});var t="/pol/"+e;this.fetchJSON(t,"votes")},getBillInfo:function(e,t){if(e.votequestion_id==this.state.currentVote)this.setState({currentVote:0,billInfo:[]});else{var s="/bill/"+e.votequestion_id;this.setState({currentVote:e.votequestion_id}),this.fetchJSON(s,"bill_info")}},render:function(){var e=this.filterPoliticians(),t=this.getSessionVotes(),s=this.filterVotes(),a="box "+this.state.box,i=this.state.politician;return React.createElement("div",{className:a},React.createElement(r,{box:this.state.box,politicians:e,onSearchChange:this.onSearchChange,profile:i}),React.createElement(n,{box:this.state.box,profile:i,votes:s,onBillSearchChange:this.onBillSearchChange,onSessionSelectToggle:this.onSessionSelectToggle,onSessionSelect:this.onSessionSelect,sessionsList:this.state.sessionsList,session:this.state.session,sessionToggle:this.state.sessionToggle,sessionsVotes:t,retrievingVotes:this.state.retrievingVotes,getBillInfo:this.getBillInfo,currentVote:this.state.currentVote,billInfo:this.state.billInfo}))},fetchJSON:function(e,t){var s=new XMLHttpRequest;s.open("GET",e,!0),s.onload=function(){if(s.status>=200&&s.status<400){var e=JSON.parse(s.responseText);if("politicians"==t){var a=this.getPolitician(e.results);this.setState({politicians:e.results,politician:a}),a.id&&this.getPoliticianVotes(a.id)}else"votes"==t?this.setState({votes:e.results,retrievingVotes:!1}):"sessions"==t?this.setState({sessionsList:e.results}):"bill_info"==t?this.setState({billInfo:e.results[0]}):console.log("type not politician or votes")}else console.log("server reached, but it did not give data in fetchJSON")}.bind(this),s.onerror=function(){console.log("connection problem with fetchJSON")},s.send()},filterVotes:function(){if(this.state.billSearching&&this.state.billSearchValue)var e=new RegExp(this.state.billSearchValue,"i"),t=this.state.votes.filter(function(t){return t.name_en.search(e)>-1||t.number.search(e)>-1||t.short_title_en.search(e)>-1});else var t=this.state.votes;if(this.state.session)var s=new RegExp(this.state.session,"i"),a=t.filter(function(e){return e.session_id.search(s)>-1});else var a=t;return a},filterPoliticians:function(){if(this.state.searching&&this.state.searchValue){var e=new RegExp(this.state.searchValue,"i"),t=this.state.politicians.filter(function(t){return t.name.search(e)>-1||t.party_name.search(e)>-1||t.party_slug.search(e)>-1||t.riding.search(e)>-1});return t.slice(0,25)}return this.state.politicians.slice(0,10)}}),n=React.createClass({displayName:"ProfileBox",render:function(){var e="profileBox "+this.props.box,t="close "+this.props.box;if(this.props.profile.party_slug)var s=this.props.profile.party_slug;else var s=this.props.profile.party_name;return React.createElement("div",{className:e},React.createElement("div",{className:"profileHeader"},React.createElement("a",{className:"return",href:"/#/"},React.createElement("div",{className:"icon"}),React.createElement("span",null,"return to MP search")),React.createElement("a",{className:t,href:"/#/"}),React.createElement("h2",{className:"name"},this.props.profile.name),React.createElement("span",{className:"info"},React.createElement("h3",{className:"riding"},this.props.profile.riding),React.createElement("h3",{className:"party"},s)),React.createElement(c,{onBillSearchChange:this.props.onBillSearchChange,onSessionSelectToggle:this.props.onSessionSelectToggle,onSessionSelect:this.props.onSessionSelect,sessionsList:this.props.sessionsList,sessionToggle:this.props.sessionToggle,session:this.props.session,sessionsVotes:this.props.sessionsVotes})),React.createElement(o,{votes:this.props.votes,retrievingVotes:this.props.retrievingVotes,getBillInfo:this.props.getBillInfo,currentVote:this.props.currentVote,billInfo:this.props.billInfo}))}}),o=React.createClass({displayName:"BillStack",render:function(){var e=this.props.currentVote,t=this.props.getBillInfo,s=[],a=null;if(this.props.votes.length>0){this.props.getBillText;s=this.props.votes.map(function(s,a){return React.createElement(l,{key:a,vote:s,currentVote:e,onClick:t})}.bind(this))}else if(this.props.retrievingVotes){for(var i=React.createElement("div",{className:"voteRow row empty"},React.createElement("div",{className:"main row"},React.createElement("div",{className:"col spacer left"}),React.createElement("div",{className:"col session"}),React.createElement("div",{className:"col number"}),React.createElement("div",{className:"col vote full-layout"}),React.createElement("div",{className:"col shortname"},React.createElement("span",null,"no result")),React.createElement("div",{className:"col vote mobile-only"}),React.createElement("div",{className:"col law"}),React.createElement("div",{className:"col spacer right"}))),n=0;15>n;n++)s.push(i);a=React.createElement("div",{className:"loader-container"},React.createElement("div",{className:"loader"}))}else{var o=React.createElement("div",{className:"voteRow row noresults"},React.createElement("div",{className:"main row"},React.createElement("div",{className:"col spacer"}),React.createElement("div",{className:"col"},React.createElement("span",null,"no results found")),React.createElement("div",{className:"col spacer"})));s.push(o)}return React.createElement("div",{className:"votes"},React.createElement("div",{className:"billStack"},React.createElement("div",{className:"row header"},React.createElement("div",{className:"col spacer left"}),React.createElement("div",{className:"col session"},"Session"),React.createElement("div",{className:"col number"},"Number"),React.createElement("div",{className:"col vote full-layout"},"Vote"),React.createElement("div",{className:"col shortname"},"Name"),React.createElement("div",{className:"col vote mobile-only"},"Vote"),React.createElement("div",{className:"col law"},"Law"),React.createElement("div",{className:"col spacer right"})),s,a))}}),l=React.createClass({displayName:"VoteRow",render:function(){if("Y"==this.props.vote.vote)var e="yes ",t="yes";else if("N"==this.props.vote.vote)var e="no ",t="no";else var e="",t="no vote";e+="vote col ";var s=e+"mobile-only";e+="full-layout";var a=this.props.vote.law?"passed":"failed",i="col law "+a;if(this.props.vote.short_title_en)var n=this.props.vote.short_title_en;else var n=this.props.vote.name_en;return React.createElement("div",{className:"voteRow row",key:this.props.key},React.createElement("div",{className:"main row"},React.createElement("div",{className:"col spacer left"}),React.createElement("div",{className:"col session"},React.createElement("span",{className:"label mobile-only"},"Session"),this.props.vote.session_id),React.createElement("div",{className:"col number"},React.createElement("span",{className:"label mobile-only"},"Number"),this.props.vote.number),React.createElement("div",{className:e},React.createElement("span",null,t)),React.createElement("div",{className:"col shortname"},n),React.createElement("div",{className:s},React.createElement("span",null,t)),React.createElement("div",{className:i},React.createElement("span",null,a)),React.createElement("div",{className:"col spacer right"})))}}),c=(React.createClass({displayName:"VoteInfoRow",render:function(){var e="row info";if(this.props.voteQuestionID==this.props.currentVote){e+=" current";var t="Law: "+this.props.lawText,s=React.createElement("div",{className:"col billInfo"},t)}else var s="";return React.createElement("div",{className:e},React.createElement("div",{className:"col spacer left"}),s,React.createElement("div",{className:"col spacer right"}))}}),React.createClass({displayName:"BillSearch",render:function(){if(""==this.props.session)var e="any session";else var e=this.props.session;var t=this.props.sessionsVotes,s="sessionSelect"+(this.props.sessionToggle?"":" collapsed"),a=this.props.sessionsList.map(function(e,s){var a=t[e.id];if(a){e.id+" - ("+a+")";return React.createElement("li",{onClick:this.props.onSessionSelect.bind(null,e),key:s},React.createElement("span",{className:"session"},e.id)," ",React.createElement("span",{className:"sum"},a))}}.bind(this));return React.createElement("div",{className:"billSearch"},React.createElement("form",null,React.createElement("input",{type:"search",placeholder:"Search bills by name or number...",onChange:this.props.onBillSearchChange}),React.createElement("div",{className:s},React.createElement("span",{className:"select",onClick:this.props.onSessionSelectToggle},e),React.createElement("ul",null,React.createElement("li",{className:"sessionOption",onClick:this.props.onSessionSelect.bind(null,"")},React.createElement("span",{className:"session"},"any session")," ",React.createElement("span",{className:"sum"},t.sum)),a))))}})),r=React.createClass({displayName:"SearchBox",render:function(){var e="searchBox "+this.props.box,t="searchBox-noscroll "+this.props.box;return React.createElement("div",{className:t},React.createElement("div",{className:e},React.createElement("div",{className:"topLinks"},React.createElement("a",{className:"info"},"i"),React.createElement("span",{className:"github"})),React.createElement("form",null,React.createElement("input",{type:"search",placeholder:"Search...",onChange:this.props.onSearchChange}),React.createElement("button",{type:"submit"},"Search")),React.createElement("div",{className:"searchContent"},React.createElement(h,{box:this.props.box,politicians:this.props.politicians,profile:this.props.profile}))))}}),h=React.createClass({displayName:"SearchStack",render:function(){classString="searchStack";var e=this.props.profile.id,t=[];if(this.props.politicians.length>0)t=this.props.politicians.map(function(t,s){var a="url('http://static.votes.mp/"+t.imgurl+"')",i="";if(t.id==e&&(i+="active "),t.id==e&&"profile"==this.props.box)var n="/#/";else var n="/#/profile/"+t.id;if(t.active&&(i+="current "),t.party_slug){i+=t.party_slug;var o=t.party_slug}else var o=t.party_name;return React.createElement("a",{className:i,href:n,key:s},React.createElement("div",{style:{backgroundImage:a}}),React.createElement("h3",null,t.name),React.createElement("span",{className:"party"},o))}.bind(this));else{var s=["Sir John A. McPlaceholder","Trevor Linden","Placeholder Junior, Esquire"];for(i=0;i<11;i++){var a=React.createElement("a",{className:"placeholder",href:"/#/"},React.createElement("div",null),React.createElement("h3",null,s[i%3]),React.createElement("span",{className:"party"},"VAN"));t.push(a)}}return React.createElement("div",{className:classString},React.createElement("h2",null,"Members of Parliament",React.createElement("span",{className:"leaf"})),t)}});React.render(React.createElement(a,null),document.getElementById("content"))},{}]},{},[1]);
+
+
+var AppBox = React.createClass({
+  getInitialState: function() {
+    return {
+      box: 'search',
+      politicians: [],
+      id: '',
+      politician: {},
+      profile: '',
+      currentVote: 0,
+      searching: false,
+      retrievingVotes: true,
+      votes: [],
+      billInfo: [],
+      sessionsList: [],
+      session: '',
+      sessionToggle: false,
+      max: 10,
+    };
+  },
+  componentDidMount: function() {
+    window.addEventListener('hashchange', function(){
+      this.getAppStateFromURL(window.location.hash.substr(1));
+    }.bind(this));
+    var initializeURL = '/initialize';
+    this.fetchJSON(initializeURL, 'politicians');
+    var sessionsURL = '/sessions';
+    this.fetchJSON(sessionsURL, 'sessions');
+    this.getAppStateFromURL(window.location.hash.substr(1));
+  },
+  changePolitician: function(politician) {
+    if (politician) {
+      this.setState({
+        politician: politician,
+        votes: [],
+        box: 'profile',
+      });
+      this.getPoliticianVotes(politician.id);
+    }
+    else if (this.state.id && ((this.state.box == 'profile') || (this.state.box == 'info') )) {
+      console.log('keep');
+      politician = this.getPolitician();
+      this.setState({
+        politician: politician,
+      });
+      this.getPoliticianVotes(politician.id);
+    }
+    else {
+      console.log('discard');
+      this.setState({
+        politician: {},
+      });
+    }
+  },
+  onSearchChange: function(event) {
+    var max = this.checkMax();
+    console.log('checked max');
+    console.log(max);
+    this.setState({
+      searching: true,
+      searchValue: event.target.value,
+      max: max
+    });
+  },
+  onBillSearchChange: function(event) {
+    this.setState({
+      billSearching: true,
+      billSearchValue: event.target.value
+    });
+  },
+  onSessionSelect: function(object, event) {
+    if (object !='') {
+      this.setState({
+        sessionToggle: false,
+        session: object.id,
+      });
+    }
+    else {
+      this.setState({
+        sessionToggle: false,
+        session: '',
+      });
+    }
+  },
+  onSessionSelectToggle: function(event) {
+    var listener = function(e){
+      if ((e.target.className != 'sessionOption') && (e.target.parentNode.className != 'sessionOption') && (e.target.className != 'select') && (e.target.className != 'sessionSelect')) {   
+        this.setState({
+          sessionToggle: !this.state.sessionToggle,
+        });
+      }
+      document.body.removeEventListener('click', listener);
+    }.bind(this);
+    if (!this.state.sessionToggle) {
+      document.body.addEventListener('click', listener);
+    }
+    this.setState({
+      sessionToggle: !this.state.sessionToggle,
+    });
+  },
+  getAppStateFromURL: function(urlHash) {
+    var box = 'search';
+    var id = '';
+    var politician = this.state.politician;
+    var urlParameters = urlHash.split('/').filter(function(n){ return n != '' });
+      if (urlParameters.length > 0) {
+        box = urlParameters[0];
+        switch (box) {
+          case 'profile': break;
+          case 'bill': break;
+          case 'info': break;
+          default: box = 'search';
+        }
+        if (urlParameters.length >= 2) {
+          id = !isNaN(urlParameters[1]) ? urlParameters[1] : '';
+        }
+      }
+      this.setState({
+        box: box,
+        id: id,
+        votes: [],
+      });
+      this.changePolitician();
+  },
+  changePageTitle: function () {
+    if (this.state.box == 'search') {
+      document.title = 'votes.MP - search Canadian MP voting records';
+    }
+    else if ((this.state.box == 'profile') && (this.state.politician.name)) {
+      var titleText = this.state.politician.name;
+      document.title = 'votes.MP - ' + titleText;
+    }
+  },
+  componentDidUpdate: function(prevProps, prevState) {
+    if (prevState.politician != this.state.politician) {
+      this.changePageTitle();
+    }
+  },
+  getSessionVotes: function() {
+    var sessionVotes = {};
+    var sessionSum = 0;
+    for(var i=0; i<this.state.sessionsList.length; i++){
+        sessionVotes[this.state.sessionsList[i].id]=0;
+    }
+    for(var i=0; i<this.state.votes.length; i++){
+      sessionSum += 1;
+      sessionVotes[this.state.votes[i].session_id] += 1;
+    }
+    sessionVotes['sum'] = sessionSum;
+    return sessionVotes;
+  },
+  getPolitician: function(politicians, id) {
+    if (typeof(politicians)==='undefined') politicians = this.state.politicians;
+    if (typeof(id)==='undefined') id = this.state.id;
+    if (id) {
+      for (i = 0; i < politicians.length; i++) {
+        if (politicians[i].id == id) {
+          return politicians[i];
+        }
+      }
+    }
+    return [];
+  },
+  getPoliticianVotes: function(id) {
+    this.setState({ 'retrievingVotes' : true
+    });
+    var url = '/pol/' + id;
+    this.fetchJSON(url, 'votes');
+  },
+  getBillInfo: function(object, event) {
+    if (object.votequestion_id == this.state.currentVote) {
+      this.setState({currentVote: 0,
+                    billInfo: [],
+      });
+    }
+    else {
+      var url = '/bill/' + object.votequestion_id;
+      this.setState({currentVote: object.votequestion_id});
+      this.fetchJSON(url, 'bill_info');
+    }
+  },
+  onSearchScroll: function(thingone, thingtwo) {
+    var scrollTop = thingone.getDOMNode().scrollTop;
+    console.log(scrollTop);
+    var height = thingone.getDOMNode().scrollHeight;
+    console.log(height);
+    var h = window.innerHeight;
+    console.log(h);
+    if ((h + scrollTop + 100) > height) {
+      console.log('more');
+      var num = this.filterPoliticians().length;
+      if (this.state.max < num) {
+        this.setState({
+          max : this.state.max + 10
+        });
+      }
+      console.log('max');
+      console.log(this.state.max + 10);
+    }
+  },
+  checkMax: function() {
+    var newMax = this.state.max;
+    var num = this.filterPoliticians().length;
+    if (num < this.state.max) {
+      newMax = num;
+      if (newMax < 10) {
+        newMax = 10;
+      }
+    }
+    return newMax;
+  },
+  render: function() {
+    var politicianList = this.filterPoliticians().slice(0, this.state.max);
+    var sessionVotes = this.getSessionVotes();
+    var voteList = this.filterVotes();
+    var appClass = 'box ' + this.state.box;
+    var politician = this.state.politician;
+    var containerclasses = 'searchBox-noscroll ' + this.state.box;
+
+    return (
+      <div className={appClass}>
+        <InfoBox box={this.state.box} />
+
+        <div className={containerclasses}>
+          <SearchBox 
+            box={this.state.box}
+            politicians={politicianList} 
+            onSearchChange={this.onSearchChange} 
+            profile={politician}
+            onSearchScroll = {this.onSearchScroll} />
+        </div>
+
+        <ProfileBox 
+          box={this.state.box}
+          profile={politician}
+          votes={voteList} 
+          onBillSearchChange={this.onBillSearchChange} 
+          onSessionSelectToggle={this.onSessionSelectToggle}
+          onSessionSelect={this.onSessionSelect}
+          sessionsList = {this.state.sessionsList}
+          session = {this.state.session}
+          sessionToggle = {this.state.sessionToggle}
+          sessionsVotes = {sessionVotes}
+          retrievingVotes={this.state.retrievingVotes}
+          getBillInfo = {this.getBillInfo}
+          currentVote = {this.state.currentVote}
+          billInfo = {this.state.billInfo} />
+      </div>
+    );
+  },
+  fetchJSON: function(path, type) {
+    var request = new XMLHttpRequest();
+    request.open('GET', path, true);
+    request.onload = function() {
+      if (request.status >= 200 && request.status < 400) {
+        // Success!
+        var data = JSON.parse(request.responseText);
+        if (type == 'politicians') {
+          var politician = this.getPolitician(data['results']);
+          this.setState({politicians: data['results'],
+                        politician: politician, });
+          if (politician.id) {
+            this.getPoliticianVotes(politician.id);
+          }
+        }
+        else if (type == 'votes') {
+          this.setState({votes: data['results'],
+                          retrievingVotes: false
+                        });
+        }
+        else if (type == 'sessions') {
+          this.setState({sessionsList: data['results']});
+        }
+        else if (type == 'bill_info') {
+          this.setState({billInfo: data['results'][0]});
+        }
+        else {
+          console.log('type not politician or votes');
+        }
+      } else {
+        // We reached our target server, but it returned an error
+        console.log('server reached, but it did not give data in fetchJSON');
+      }
+    }.bind(this);
+    request.onerror = function() {
+        console.log('connection problem with fetchJSON');
+      // There was a connection error of some sort
+    };
+    request.send();
+  },
+  filterVotes: function() {
+    if (this.state.billSearching && this.state.billSearchValue) {
+      var regex = new RegExp(this.state.billSearchValue, "i");
+      var votes = this.state.votes.filter(function (vote) {
+        return vote.name_en.search(regex) > -1 || vote.number.search(regex) > -1 || vote.short_title_en.search(regex) > -1;
+      });
+    }
+    else {
+      var votes = this.state.votes;
+    }
+    if (this.state.session) {
+      var sessionRegex = new RegExp(this.state.session, "i");
+      var filteredVotes = votes.filter(function (vote) {
+        return vote.session_id.search(sessionRegex) > -1;
+      });
+    }
+    else {
+      var filteredVotes = votes;
+    }
+    return filteredVotes;
+  },
+  filterPoliticians: function() {
+    if (this.state.searching && this.state.searchValue) {
+      var regex = new RegExp(this.state.searchValue, "i");
+      var filteredList = this.state.politicians.filter(function (pol) {
+        return pol.name.search(regex) > -1 || pol.party_name.search(regex) > -1 || pol.party_slug.search(regex) > -1 || pol.riding.search(regex) > -1;
+      });
+      return filteredList;
+    }
+    else {
+      return this.state.politicians;
+    }
+  },
+});
+var InfoBox = React.createClass({
+  componentWillUpdate: function(nextProps, nextState) {
+    console.log('will update');
+    if ((nextProps.box == 'info') && (this.props.box != 'search')) {
+      console.log('next box is info and previous box was not search');
+      this.back = true;
+    }
+    else {
+      console.log('no back');
+      this.back = false;
+    }
+  },
+  goBack: function(e) {
+    if (this.back) {
+      e.preventDefault();
+      window.history.back();
+    }
+  },
+  render: function() {
+    var classes = 'infoBox ' + this.props.box;
+    return (
+      <div className={classes}><div className="closeContainer"><a href="/#/" onClick={this.goBack}></a></div><InfoText /></div>
+    );
+  }
+});
+var InfoText = React.createClass({
+  render: function () {
+    return (
+    <div className="infoText">
+      <h2>about votes.mp</h2>
+      <p>Democracies are defined by the laws that they pass, and the laws that pass are determined by the representatives we elect. In order to accurately evaluate whether our elected members of parliament are appropriately representing their electorate, the most pertinent information we have is their voting history: which bills have they voted for, which have they voted against, and which have they abstained from voting on. </p>
+      <p>While this information is made publicly available to all Canadians, we noticed that it can be slow and difficult to parse. Every bill is voted on multiple times - sometimes to pass amendments, sometimes even just to vote on whether or not it will be discussed. Unless you are able to dedicate significant time and effort into becoming well-versed on the details of each bill, attempting to analyze the votes a politician makes can be more confusing than informative.</p>
+      <p>As engaged citizens who are not capable of being intimately familiar with the details and progress every bill, what we wanted to know was this: after all the amendments and edits, did the politician vote to make the final bill a law or not? </p>
+      <p>That is what this website provides: for every member of parliament, it returns only the votes that correspond to their final vote on a bill as well as whether or not the bill was successfully passed into law.</p>
+      <p>We hope that this provides an easy additional avenue for evaluating the performance of our elected members of parliament and determining their effectiveness in representing our views.</p>
+      <span className="githubLink"><a href="https://github.com/shayqn/parle">view project on github</a></span>
+      <span className="creditWhereCreditsDue">special thanks to <a href="https://openparliament.ca">openparliament.ca</a> for providing all the data</span>
+    </div>
+    );
+  }
+});
+var ProfileBox = React.createClass({
+  render: function() {
+    var classes = 'profileBox ' + this.props.box;
+    var closeClass = 'close ' + this.props.box;
+    if (!this.props.profile.party_slug) {
+      var partyName = this.props.profile.party_name;
+    }
+    else {
+      var partyName = this.props.profile.party_slug;
+    }
+    return (
+      <div className={classes}>
+        <div className="profileHeader">
+          <a className="return" href="/#/"><div className ="icon"></div><span>return to MP search</span></a>
+          <a className={closeClass} href="/#/"></a>
+          <h2 className="name">{this.props.profile.name}</h2>
+          <span className="info"><h3 className="riding">{this.props.profile.riding}</h3><h3 className="party">{partyName}</h3></span>
+          <BillSearch 
+            onBillSearchChange={this.props.onBillSearchChange}
+            onSessionSelectToggle={this.props.onSessionSelectToggle}
+            onSessionSelect={this.props.onSessionSelect}
+            sessionsList={this.props.sessionsList}
+            sessionToggle = {this.props.sessionToggle}
+            session={this.props.session}
+            sessionsVotes = {this.props.sessionsVotes} />
+      </div>
+      <BillStack 
+        votes={this.props.votes} 
+        retrievingVotes={this.props.retrievingVotes}
+        getBillInfo = {this.props.getBillInfo}
+        currentVote = {this.props.currentVote}
+        billInfo = {this.props.billInfo} />
+      </div>
+    );
+  },
+});
+var BillStack = React.createClass({
+  render: function() {
+    var currentVote = this.props.currentVote;
+    var getBillInfo = this.props.getBillInfo;
+    var voteRows = [];
+    var loader = null;
+    if (this.props.votes.length  > 0) {
+      var getBillText = this.props.getBillText;
+      voteRows = this.props.votes.map(function (object, i) {
+        return (
+          <VoteRow
+            key = {i}
+            vote = {object}
+            currentVote = {currentVote}
+            onClick = {getBillInfo} />
+        );
+      }.bind(this));
+    }
+    else if (this.props.retrievingVotes) {
+      var emptyRow = (
+          <div className="voteRow row empty">
+            <div className="main row">
+              <div className="col spacer left"></div>
+              <div className="col session"></div>
+              <div className="col number"></div>
+              <div className="col vote full-layout"></div>
+              <div className="col shortname"><span>no result</span></div>
+              <div className="col vote mobile-only"></div>
+              <div className="col law"></div>
+              <div className="col spacer right"></div> 
+            </div>
+          </div>
+        );
+      for (var i = 0; i < 15; i++) {
+        voteRows.push(emptyRow);
+      }
+      loader = <div className="loader-container"><div className="loader"></div></div>;
+    }
+    else {
+      var noResultsRow = (
+          <div className="voteRow row noresults">
+            <div className="main row">
+              <div className="col spacer"></div>
+              <div className="col"><span>no results found</span></div>
+              <div className="col spacer"></div> 
+            </div>
+          </div>
+        );
+      voteRows.push(noResultsRow);
+    }
+    return (
+      <div className='votes'>
+        <div className='billStack'>
+            <div className="row header">
+              <div className="col spacer left"></div>
+              <div className="col session">Session</div>
+              <div className="col number">Number</div>
+              <div className="col vote full-layout">Vote</div>
+              <div className="col shortname">Name</div>
+              <div className="col vote mobile-only">Vote</div>
+              <div className="col law">Law</div>
+              <div className="col spacer right"></div>
+            </div>
+            {voteRows}
+            {loader}
+        </div>
+      </div>
+    );        
+  }
+});
+var VoteRow = React.createClass({
+  render: function () {
+    if (this.props.vote.vote == 'Y') {
+      var voteClass = 'yes ';
+      var voteText = 'yes';
+    }
+    else if (this.props.vote.vote == 'N') {
+      var voteClass = 'no ';
+      var voteText = 'no';
+    }
+    else {
+      var voteClass = '';
+      var voteText = 'no vote';
+    }
+    voteClass += 'vote col ';
+    var mobileVoteClass = voteClass + 'mobile-only';
+    voteClass += 'full-layout'
+
+    var lawText = this.props.vote.law ? 'passed' : 'failed';
+    var lawClass = 'col law ' + lawText;
+
+    if (this.props.vote.short_title_en) {
+      var name = this.props.vote.short_title_en;
+    }
+    else {
+      var name = this.props.vote.name_en;
+    }
+
+    return (
+      <div className="voteRow row" key={this.props.key}>
+        <div className="main row">
+          <div className="col spacer left"></div>
+          <div className="col session"><span className="label mobile-only">Session</span>{this.props.vote.session_id}</div>
+          <div className="col number"><span className="label mobile-only">Number</span>{this.props.vote.number}</div>
+          <div className={voteClass}><span>{voteText}</span></div>
+          <div className="col shortname">{name}</div>
+          <div className={mobileVoteClass}><span>{voteText}</span></div>
+          <div className={lawClass}><span>{lawText}</span></div>
+          <div className="col spacer right"></div> 
+        </div>
+      </div>
+    );
+  }
+});
+var VoteInfoRow = React.createClass({
+  render: function() {
+    var infoClass = "row info";
+    if (this.props.voteQuestionID == this.props.currentVote) {
+      infoClass += ' current';
+      var lawString =  'Law: ' + this.props.lawText;
+      var voteInformation = <div className="col billInfo">{lawString}</div>
+    }
+    else {
+      var voteInformation = '';
+    }
+    return (
+      <div className={infoClass}>
+          <div className="col spacer left"></div>
+          {voteInformation}
+          <div className="col spacer right"></div>
+      </div>
+    );
+  }
+});
+var BillSearch = React.createClass({
+  render: function() {
+    if (this.props.session == '') {
+      var selectText = 'any session';
+    }
+    else {
+      var selectText = this.props.session;
+    }
+    var sessionsVotes = this.props.sessionsVotes;
+    var toggleClass = 'sessionSelect' + (this.props.sessionToggle ? '' : ' collapsed');
+    var objectNodes = this.props.sessionsList.map(function (object, i) {
+        var sum = sessionsVotes[object.id];
+        if (sum) {
+          var string = object.id + ' - (' + sum + ')';
+          return (
+            <li onClick={this.props.onSessionSelect.bind(null,object)} key={i}><span className="session">{object.id}</span> <span className="sum">{sum}</span></li>
+          );
+        }
+    }.bind(this));
+    return (
+      <div className="billSearch">
+        <form>
+          <input type="search" placeholder="Search bills by name or number..." onChange={this.props.onBillSearchChange} />  
+          <div className={toggleClass}>    
+          <span className="select" onClick={this.props.onSessionSelectToggle}>{selectText}</span>  
+          <ul>
+            <li className="sessionOption" onClick={this.props.onSessionSelect.bind(null,'')}><span className="session">any session</span> <span className="sum">{sessionsVotes['sum']}</span></li>
+            {objectNodes}
+          </ul>
+          </div>
+        </form>
+      </div>
+      
+    );
+  }
+});
+var SearchBox = React.createClass({
+  render: function() {
+    var classes = 'searchBox ' + this.props.box;    return (
+        <div className={classes} onScroll={this.props.onSearchScroll.bind(null, this)} >
+          <div className="topLinks"><a href="/#/info" className="info"></a><a href="https://github.com/shayqn/parle" className="github"></a></div>
+          <form>
+            <input type="search" placeholder="Search..." onChange={this.props.onSearchChange} />
+            <button type="submit">Search</button>
+          </form>
+          <div className="searchContent">
+            <SearchStack box={this.props.box} politicians={this.props.politicians} profile={this.props.profile} />
+          </div>
+        </div>
+    );
+  }
+});
+var SearchStack = React.createClass({
+  render: function() {
+    classString = "searchStack";
+    var currentProfileID = this.props.profile.id;
+    var politicianNodes = [];
+    if (this.props.politicians.length > 0) {
+      politicianNodes = this.props.politicians.map(function (object, i) {
+        var imgURL = "url('http://static.votes.mp/" + object.imgurl + "')";
+        var classString = '';
+        if (object.id == currentProfileID) {
+          classString += 'active ';
+        }
+        if ((object.id == currentProfileID)&&(this.props.box == 'profile')) {
+          var href = '/#/';
+        }
+        else {
+          var href = '/#/profile/' + object.id;
+        }
+        if (object.active) {
+          classString += 'current ';
+        }
+        if (!object.party_slug) {
+          var partyName = object.party_name;
+        }
+        else {
+          classString += object.party_slug;
+          var partyName = object.party_slug;
+        }
+        
+        return (
+          <a className={classString} href={href} key={i} >
+            <div style={{backgroundImage: imgURL}}></div>
+            <h3>{object.name}</h3>
+            <span className="party">{partyName}</span>
+          </a>
+        );
+      }.bind(this));  
+    }
+    else {
+      var placeHolderNames = ['Sir John A. McPlaceholder', 'Trevor Linden', 'Placeholder Junior, Esquire'];
+      for (i = 0; i < 11; i++) {
+        var emptyNode = <a className="placeholder" href="/#/"><div></div><h3>{placeHolderNames[i%3]}</h3><span className="party">VAN</span></a>;
+        politicianNodes.push(emptyNode);
+      }
+    }
+    return (
+      <div className={classString}>
+        <h2>Members of Parliament<span className="leaf"></span></h2>
+        {politicianNodes}
+      </div>
+    );
+  }
+});
+
+React.render(
+  <AppBox />,
+  document.getElementById('content')
+);
