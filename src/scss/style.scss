@@ -120,6 +120,7 @@ body {
     overflow-y:auto;
     top: 0px;
     left: 0px;
+    -webkit-overflow-scrolling: touch;
     @include transition-property(width);
     @include transition-duration;
     form {
@@ -447,6 +448,9 @@ body {
         width: 100%;
         &.profile {
             left: -400px;
+        }
+        &.info {
+            overflow:hidden;
         }
         .searchContent {
             padding: 0px;
@@ -779,7 +783,7 @@ body {
         width: 2em;
         height: 2em;
         position: absolute;
-        right: 1em;
+        right: 2em;
         top: 1em;
         background: transparent url(../images/close.svg) no-repeat center center;
         opacity: 0.7;
@@ -990,21 +994,25 @@ body {
 }
 
 .infoBox {
-    position: fixed;
+    position: absolute;
     z-index: 11;
-    left: -100vw;
-    top: 0em;
-    width: 100%;
+    left: -100%;
+    top: 0;
+    width: 100vw;
     height: 100%;
     background-color: #ec5a62;
     opacity: 1;
     overflow: hidden;
+    visibility: hidden;
+    -webkit-overflow-scrolling: touch;
     @include transition-duration;
     &.info {
         left: 0;
         top: 0;
         opacity: 1;
-        z-index: 11;
+        z-index: 20;
+        overflow-y: scroll;
+        visibility: visible;
     }
     .closeContainer {
         position: absolute;
@@ -1028,10 +1036,12 @@ body {
     .infoText {
         display: block;
         margin: 0 auto;
-        width: 90%;
+        min-height: 100%;
+        width: 100%;
         max-width: 60em;
         color: #fff;
         font-family: Open Sans;
+        padding: 20px;
         h2 {
             margin-top: 1em;
             color: #fff;
@@ -1063,6 +1073,7 @@ body {
             min-width: 10%;
             margin: 0 auto;
             text-align: center;
+            padding-bottom: 2em;
         }
     }
 }
