@@ -1242,7 +1242,6 @@ body {
       font-weight: 700;
       color: #fff; }
     .infoBox .infoText .creditWhereCreditsDue {
-      padding-top: 2em;
       display: block;
       min-width: 10%;
       margin: 0 auto;
@@ -1255,7 +1254,7 @@ body {
       min-width: 10%;
       margin: 0 auto;
       text-align: center;
-      padding-bottom: 2em; }
+      padding-bottom: 1em; }
 
 .row {
   width: 100%;
