@@ -82,6 +82,7 @@ def get_initial_json():
         "  ORDER BY start_date "        # sort them by start_date
         "  DESC LIMIT 1 "               # limiting to one only selects the most recent date
         ") "
+        "AND (e.end_date > '2006-01-01' OR e.end_date IS NULL) "
         "ORDER BY p.name_family"        # order by last name
     )
 
