@@ -395,6 +395,16 @@ body {
                       color: rgba(118, 117, 128, 0.0); 
                   }
                 }
+                &.reduce-medium {
+                    h3 {
+                        font-size: 1.2em;
+                    }
+                }
+                &.reduce-large {
+                    h3 {
+                        font-size: 1em;
+                    }
+                }
                 @include transition-duration;
             }
         }

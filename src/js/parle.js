@@ -17,6 +17,7 @@ var AppBox = React.createClass({
       session: '',
       sessionToggle: false,
       max: 10,
+      riding: "",
     };
   },
   componentDidMount: function() {
@@ -53,11 +54,45 @@ var AppBox = React.createClass({
   },
   onSearchChange: function(event) {
     var max = this.checkMax();
-    this.setState({
-      searching: true,
-      searchValue: event.target.value,
-      max: max
-    });
+    var postalRegEx = new RegExp("^[ABCEGHJKLMNPRSTVXYabceghjklmnprstvxy]{1}\\d{1}[A-Za-z]{1} *\\d{1}[A-Za-z]{1}\\d{1}$", "i");
+    if (postalRegEx.test(event.target.value)) {
+      var str = event.target.value;
+      str = str.replace(/\s+/g, '');
+      str = str.toUpperCase();
+      var postalURL = 'https://represent.opennorth.ca/postcodes/' + str + '/?sets=federal-electoral-districts';
+      var request = new XMLHttpRequest();
+      request.open('GET', postalURL, true);
+      request.onload = function() {
+        if (request.status >= 200 && request.status < 400) {
+          // Success!
+          var data = JSON.parse(request.responseText);
+          var riding = data["boundaries_concordance"][0]["name"];
+          this.setState({riding: riding});
+        }
+        else {
+          // We reached our target server, but it returned an error
+          console.log('server reached, but it did not give data in onSearchChange opennorth request');
+        }
+      }.bind(this);
+      request.onerror = function() {
+          console.log('connection problem with onSearchChange opennorth request');
+        // There was a connection error of some sort
+      };
+      request.send();
+      this.setState({
+        searching: true,
+        searchValue: event.target.value,
+        max: max
+      });
+    } 
+    else {
+      this.setState({
+        searching: true,
+        searchValue: event.target.value,
+        max: max,
+        riding: ""
+      });
+    }
   },
   onBillSearchChange: function(event) {
     this.setState({
@@ -303,9 +338,16 @@ var AppBox = React.createClass({
   },
   filterPoliticians: function() {
     if (this.state.searching && this.state.searchValue) {
+      if (this.state.riding != "") {
+        var regex = new RegExp(this.state.riding, "i");
+        var filteredList = this.state.politicians.filter(function (pol) {
+          return pol.riding.search(regex) > -1;
+        });
+        return filteredList;
+      }
       var regex = new RegExp(this.state.searchValue, "i");
       var filteredList = this.state.politicians.filter(function (pol) {
-        return pol.name.search(regex) > -1 || pol.party_name.search(regex) > -1 || pol.party_slug.search(regex) > -1 || pol.riding.search(regex) > -1;
+        return pol.name.search(regex) > -1 || pol.party_name.search(regex) > -1 || pol.party_slug.search(regex) > -1 || pol.riding.search(regex) > -1  || pol.riding.search(regex) > -1;
       });
       return filteredList;
     }
@@ -606,7 +648,14 @@ var SearchStack = React.createClass({
           classString += object.party_slug;
           var partyName = object.party_slug;
         }
-        
+        if (object.name.length>19) {
+          if (object.name.length > 22) {
+            classString += ' reduce-large'
+          }
+          else {
+            classString += ' reduce-medium';
+          }
+        }
         return (
           <a className={classString} href={href} key={i} >
             <div style={{backgroundImage: imgURL}}></div>
