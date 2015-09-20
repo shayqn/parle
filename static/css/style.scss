@@ -182,6 +182,20 @@ body {
                 color: #c2c2c2;
             }
         }
+        span {
+            display: block;
+            width: 100%;
+            color: #c2c2c2;
+            text-align: center;
+            font-style: italic;
+            opacity: 0;
+            @include transition-duration;
+        }
+        &:hover {
+            span {
+                opacity: 1;
+            }
+        }
     }
     .topLinks {
         position: absolute;

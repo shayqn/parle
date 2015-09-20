@@ -499,6 +499,19 @@ body {
         color: #c2c2c2; }
       .searchBox form input::-webkit-input-placeholder {
         color: #c2c2c2; }
+    .searchBox form span {
+      display: block;
+      width: 100%;
+      color: #c2c2c2;
+      text-align: center;
+      font-style: italic;
+      opacity: 0;
+      -moz-transition: all 0.4s;
+      -o-transition: all 0.4s;
+      -webkit-transition: all 0.4s;
+      transition: all 0.4s; }
+    .searchBox form:hover span {
+      opacity: 1; }
   .searchBox .topLinks {
     position: absolute;
     width: 100%; }

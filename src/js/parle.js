@@ -608,6 +608,7 @@ var SearchBox = React.createClass({
           <form>
             <input type="search" placeholder="Search..." onChange={this.props.onSearchChange} />
             <button type="submit">Search</button>
+            <span>by name, riding, or postal code</span>
           </form>
           <div className="searchContent">
             <SearchStack 
