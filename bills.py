@@ -36,6 +36,12 @@ def get_bill_json(votequestion_id, cursor=cursor):
         ")"
     )
 
+    query = (
+        "SELECT c.name,b.vote "
+        "FROM core_party c, bills_partyvote b "
+        "WHERE b.votequestion_id = (%s)"
+        "AND b.party_id = c.id"
+    )
 
     # If any parameters are used in the above query, insert them in the parameters tuple
     # Insert parameters in the order used in the query unless using %(name)s placeholders

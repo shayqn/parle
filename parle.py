@@ -17,6 +17,8 @@ import sys
 from flask import Flask, render_template
 from politicians import get_initial_json, get_pol_json
 from sessions import get_sessions_json
+from bills import get_bill_json
+
 
 
 # fixes encoding issues with database data (would be nice to know more about why)
