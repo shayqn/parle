@@ -1,27 +1,28 @@
 """
-
+Contains the function for returning the list of existing sessions of parliament within the database.
 
 Functions:
-    get_session_json: for <Bill /> objects
+    get_session_json: returns parliament sessions JSON
 
 Modules:
-    database: for the cursor object
+    database: for the get_cursor function that returns an opened database cursor
     flask: for jsonify so our results return to React in a nice JSON package
 """
-from database import cursor
+from database import get_cursor
 from flask import jsonify
 
-def get_sessions_json(cursor=cursor):
+def get_sessions_json():
     """
+    Returns all sessions of parliament with their name and id in JSON.
 
-    Related React.js component: <ProfileBox />
+    Related React.js component: <BillSearch />
 
-    :param cursor: current database cursor - no need to supply this or change this from the default
     :return: a jsonify'd dictionary with all the desired profile information
     """
+    # Get the cursor
+    cursor = get_cursor()
 
-    # added new join query to get all the bill/vote info for the table in one go. replaces the above query.
-    # bill JSON will be changed to use the bill ID instead
+    # Select the name and id of all existing sessions
     query = (
         "SELECT id, name "
         "FROM core_session "

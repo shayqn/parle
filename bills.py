@@ -5,13 +5,13 @@ Functions:
     get_bill_json: for <Bill /> objects
 
 Modules:
-    database: for the cursor object
+    database: for the get_cursor function that returns an opened database cursor
     flask for jsonify: so our results return to React in a nice JSON package
 """
-from database import cursor
+from database import get_cursor
 from flask import jsonify
 
-def get_bill_json(votequestion_id, cursor=cursor):
+def get_bill_json(votequestion_id):
 
     """
     Returns the JSON data for information on a single specific bill within a politician's profile.
@@ -22,9 +22,11 @@ def get_bill_json(votequestion_id, cursor=cursor):
 
     :param votequestion_id: votequestion_id that corresponds to the single bill requested
 
-    :param cursor: current database cursor - no need to supply this or change this from the default
     :return: a jsonify'd dictionary with all the desired bill information
     """
+    # get the cursor
+    cursor = get_cursor()
+
     query = (
         "SELECT id,number,name_en,law,short_title_en,status_code "
         "FROM bills_bill "

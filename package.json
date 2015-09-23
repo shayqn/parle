@@ -1,0 +1,40 @@
+{
+  "name": "parle",
+  "version": "0.1.0",
+  "description": "React/Flask app for viewing Canadian MP voting records.",
+  "main": "gulpfile.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "gulp": "^3.9.0",
+    "gulp-browserify": "^0.5.1",
+    "gulp-react": "^3.0.1",
+    "gulp-size": "^2.0.0",
+    "gulp-uglify": "^1.4.1",
+    "gulp-html-replace": "^1.5.1",
+    "reactify": "^1.1.1",
+    "gulp-concat": "^2.6.0"
+  },
+  "devDependencies": {
+    "del": "^2.0.2",
+    "gulp": "^3.9.0",
+    "gulp-image": "^1.0.5",
+    "gulp-preprocess": "^1.2.0",
+    "gulp-sass": "^2.0.4",
+    "node-normalize-scss": "^1.0.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://bradenneufeld@github.com/shayqn/parle.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shayqn/parle/issues"
+  },
+  "homepage": "https://github.com/shayqn/parle#readme"
+}
