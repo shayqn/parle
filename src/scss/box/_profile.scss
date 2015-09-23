@@ -1,0 +1,501 @@
+.profileBox {
+    position: absolute;
+    left: 100%;
+    display: block;
+    width: 100vw;
+    height: 100vh;
+    background-color: #ccc;
+    z-index: -1;
+    @include transition-duration;
+    .profileHeader {
+        padding-left: 40px;
+        padding-right: 40px;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        position: relative;
+        z-index: 1;
+        h2 {
+            margin-top: 10px;
+            margin-bottom: -15px;
+            display: inline-block;
+            font-size: 5em;
+            color: $primary-color;
+            @include tablet-breakpoint {
+                margin-top: 0px;
+                font-size: 4em;
+            }
+        }
+        .info {
+            display: inline-block;
+            margin-left: 2em;
+            color: rgba(145, 145, 145, 1);
+            h3 {
+                font-family: Open Sans;
+                font-size: 1.5em;
+                font-weight: 300;
+                line-height: 1em;
+            }
+            .riding {
+                margin-bottom: -20px;
+            }
+            .party {
+                text-transform: uppercase;
+            }
+        }
+        .billSearch {
+            form {
+                width: 98%;
+                position: relative;
+                input {
+                    width: 100%;
+                    height: 100%;
+                    width: calc(100% - 8em);
+                    text-overflow: ellipsis;
+                    font-size: 2vw;
+                    font-weight: 300;
+                    border: none;
+                    background: transparent;
+                    color: $primary-color;
+                    -webkit-appearance: textfield;
+                    border-bottom: 1px dashed rgba(0, 0, 0, 0.16);
+                    &:focus {
+                        outline: none;
+                    }
+                    &::-ms-clear { /* remove cross in IE */
+                        display: none;
+                    }
+                    @include box-sizing(border-box);
+                    @include placeholder {
+                        color: #999;
+                    }
+                    @include tablet-breakpoint {
+                        width: 70%;
+                        font-size: 1.25em;
+                        margin-top: 1em;
+                    }
+                }
+                .sessionSelect {
+                    width: 11em;
+                    -webkit-transform: translate3d(0px, -50%, 0) scale3d(1, 1, 1);
+                    transform: translate3d(0px, -50%, 0) scale3d(1, 1, 1);
+                    position: absolute;
+                    right: 0;
+                    top: 50%;
+                    transform-origin: 50% 50%;
+                    text-transform: uppercase;
+                    .select {
+                        display: block;
+                        position: relative;
+                        top:-5px;
+                        cursor: pointer;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;    
+                        padding: 0.75em;
+                        padding-right: 3em;
+                        border-radius: 5px;
+                        background: rgba(118, 117, 128, 0.05);
+                        font-size: 1em;
+                        font-weight: 700;
+                        color: rgba(236, 90, 98, 0.8);
+                        @include transition-duration;
+                        &::after {
+                            content: '\25BE';
+                            right: 1em;
+                            speak: none;
+                            position: absolute;
+                            top: 50%;
+                            -webkit-font-smoothing: antialiased;
+                            -moz-osx-font-smoothing: grayscale;
+                            -webkit-transform: translateY(-50%) rotate(180deg);
+                            transform: translateY(-50%) rotate(180deg);
+                        }
+                        &:hover {
+                            color: rgba(236, 90, 98, 0.8);
+                            background: rgba(255, 255, 255, 0.5);
+                        }
+                    }
+                    ul {
+                        position: absolute;
+                        overflow: hidden;
+                        list-style: none;
+                        margin: 0;
+                        padding: 0;
+                        width: inherit;
+                        border-radius: 5px;
+                        font-size: 0.75em;
+                        opacity: 1;
+                        @include transition-duration;
+                        li {
+                            background: rgba(200, 200, 200, 0.98);
+                            display: block;
+                            position: relative;
+                            cursor: pointer;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;    
+                            padding: 0.75em;
+                            text-transform: uppercase;
+                            font-size: 1.2em;
+                            font-weight: 700;
+                            color: rgba(0, 0, 0, 0.8);
+                            z-index: 10;
+                            @include transition-duration;
+
+                            .sum {
+                                color: #919191;
+                                float: right;
+                            }
+                            &:hover {
+                                background: rgba(255, 255, 255, 0.98);
+                            }
+                        }
+                    }
+                    &.collapsed {
+                        .select {
+                            color: rgba(145, 145, 145, 1);
+                            &::after {
+                                -webkit-transform: translateY(-50%);
+                                transform: translateY(-50%);
+                            }
+                        }
+                        ul {
+                            opacity: 0;
+                            visibility: hidden;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .votes {
+        .billStack {
+            width: 100%;
+            .row {
+                @mixin bill-fonts {
+                    text-transform: uppercase;
+                    text-align: center;
+                }
+                background-color: #ccc;
+                &:nth-child(odd) {
+                    background-color: rgba(255, 255, 255, 0.3);
+                }
+
+                .col {
+                    padding: 20px;
+                    &.shortname {
+                        &:not(:first-child) {
+                            font-family: Open Sans;
+                        }
+                    }
+                    &.number, &.session {
+                        @include bill-fonts;
+                        font-weight: 600;
+                        width: 10%;
+                        span {
+                            &.label {
+                                display: block;
+                                font-weight: 400;
+                                font-size: 0.9em;
+                                color: #666;
+                            }
+                            @include mobile-only;
+                        }
+                    }
+                    &.vote {
+                        @include bill-fonts;
+                        font-weight: 800;
+                        width: 10%;
+                        background-color: rgba(0, 0, 0, 0.05);
+                        &.yes {
+                            background-color: rgba(39, 174, 96, 0.8);
+                        }
+                        &.no {
+                            background-color: rgba(192, 57, 43, 0.8);
+                        }
+                        @include mobile-only;
+                        display: table-cell;
+                        vertical-align: middle;
+
+                    }
+                    &.law {
+                        @include bill-fonts;
+                        font-weight: 800;
+                        width: 15%;
+                        background-color: rgba(0, 0, 0, 0.05);  
+                        &.failed {
+                            background-color: rgba(230, 126, 33, 0.8);
+                        }
+                        &.passed {
+                            background-color: rgba(40, 127, 185, 0.8);
+                        }
+                        display: table-cell;
+                        vertical-align: middle;
+                    }
+                    &.spacer {
+                        width: 5%;
+                        padding: 0px;
+                    }
+                }
+                .row {                    
+                     &.info {
+                        height: 0px;
+                        overflow: hidden;
+                        display: block;
+                        position: relative;
+                        z-index: 0;
+                        @include transition-duration;
+                        .billInfo {
+                            width: 80%;
+                            span {
+                                font-family: Open Sans;
+                                font-weight: 400;
+                            }
+                        }
+                        &.current {
+                            display: table;
+                            border-top: 1px solid #eee;
+                            border-bottom: 1px solid #eee;
+                            max-height: 10em;
+                            overflow: hidden;
+                            background-color: rgba(255, 255, 255, 0.3);
+                        }
+                    }
+                }
+                &.empty {
+                    span {
+                        visibility: hidden;
+                    }
+                }
+                &.noresults {
+                    .row {
+                        font-family:Open Sans;
+                        text-align: center;
+                    }
+                }
+                &.header {
+                    .col {
+                        @include bill-fonts;
+                        font-weight: 800;
+                        color: #fff;
+                        background-color: #333;
+                    }
+                }
+               
+            }
+        }
+    }
+    .close {
+        display: block;
+        width: 2em;
+        height: 2em;
+        position: absolute;
+        right: 2em;
+        top: 1em;
+        background: transparent url(../images/close.svg) no-repeat center center;
+        opacity: 0.7;
+        @include transition-duration;
+        &:hover {
+            opacity: 1;
+        }
+        @include tablet-breakpoint {
+            display: none;
+        }
+    }
+    a.return {
+        display: none;
+        position: fixed;
+        top: 0em;
+        left: 0em;
+        width: 100%;
+        padding-top: 0.1em;
+        padding-bottom: 0.2em;
+        text-align: center;
+        background-color: rgba(175, 175, 175, 0.75);
+        cursor: pointer;
+        text-decoration: none;
+        @include transition-duration;
+        .icon {
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            background: transparent url(../images/magnifier.svg) no-repeat center center;
+            transform-origin: 50% 50%;
+            -webkit-transform: translate3d(-0.2em, 0.2em, 0) scale3d(1, 1, 1);
+            transform: translate3d(-0.2em, 0.2em, 0) scale3d(1, 1, 1);
+        }
+        span {
+            color: #ddd;
+            font-size: 0.9em;
+            line-height: 1em;
+            font-weight: 600;
+            font-family: Open Sans;
+            text-transform: uppercase
+        }
+        &:hover {
+            background-color: rgba(100, 100, 100, 0.75);
+        }
+        @include tablet-breakpoint {
+            display: initial;
+        }
+    }
+    &.profile {
+        left: 0%;
+        margin-left: 380px;
+        padding-right: 380px;
+        @include transition-duration;
+        @include tablet-breakpoint {
+            margin-left: 0px;
+            padding-right: 0px;
+        }
+    }
+    &.search {
+        overflow: hidden;
+    }
+    &.info {
+        overflow: hidden;
+    }
+    @include medium-breakpoint {
+        .votes {
+            .billStack {
+                .row {
+                    .col {
+                        padding: 15px;
+                        &.session {
+                            width: 15%;
+                        }
+                        &.number {
+                            width: 15%;
+                        }
+                        &.vote {
+                            width: 15%;
+                        }
+                        &.spacer.left {
+                            display:none;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    @include tablet-breakpoint {
+        .billSearch {
+            form {
+                input {
+                    width: 100%;
+                    font-size: 1em;
+                    font-weight: 600;
+                    margin-bottom: 1em;
+                }
+            }
+        }
+    }
+    @include mobile-breakpoint {
+        &.profile {
+            margin-left: 0px;
+            padding-right: 0px;
+        }
+        .profileHeader {
+            h2 {
+                padding-top: 0.5em;
+                font-size: 2em;
+            }
+            .info {
+                margin-left: 0em;
+                width: 100%;
+                h3 {
+                    font-family: Open Sans;
+                    font-size: 1em;
+                    font-weight: 300;
+                }
+                .riding {
+                    margin-bottom: -10px;
+                    float: left;
+                }
+                .party {
+                    float: right;
+                }
+            }
+            .billSearch {
+                form {
+                    width: 98%;
+                    position: relative;
+                    border-bottom: none;
+                    input {
+                        width: 100%;
+                        font-size: 1em;
+                        font-weight: 600;
+                        border-bottom: 1px dashed rgba(0, 0, 0, 0.16); 
+                        margin-bottom: 1em;
+                    }
+                    .sessionSelect {
+                        width: 100%;
+                        -webkit-transform: translate3d(0px, 0%, 0) scale3d(1, 1, 1);
+                        transform: translate3d(0px, 0%, 0) scale3d(1, 1, 1);
+                        position: relative;
+                        right: 0;
+                        top: 0;
+                        transform-origin: 0% 0%;
+                        .select {
+                            top: 0px;
+                            padding: 1em;
+                            background: transparent;
+                            font-size: 0.8em;
+                        }
+                    }
+                }
+            }
+        }
+        .votes {
+            .billStack {
+                width: 100%;
+                .row {
+                    display: block;
+                    border-top: 1px solid #eee;
+                    position: relative;
+                    .col {
+                        padding: 15px;
+                        &.number {
+                            width: 50%;
+                            display: inline-block;
+                            border-left: 1px dashed rgba(255, 255, 255, 0.3);
+                        }
+                        &.session {
+                            width: 50%;
+                            display: inline-block;
+                        }
+                        &.vote {
+                            width: 50%;
+                            display: inline-block;
+                            &.full-layout {
+                                display: none;
+                            }
+                        }
+                        &.law {
+                            width: 50%;
+                            display: inline-block;
+                            border-left: 1px dashed rgba(255, 255, 255, 0.3);
+                        }
+                        &.shortname {
+                            text-align: center;
+                            display: block;
+                            border-top: 1px dashed rgba(255, 255, 255, 0.3); 
+                            border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
+                            font-size: 0.9em;
+                        }
+                        &.spacer {
+                            display:none;
+                        }
+                    }
+                    .info {
+                        display:none;
+                    }
+                    &.header {
+                        display:none;
+                    }
+                }
+            }
+        }
+    }
+
+}
