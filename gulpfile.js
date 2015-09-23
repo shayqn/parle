@@ -22,7 +22,7 @@ gulp.task('sass_me', function () {
     gulp.src('src/scss/style.scss')
         .pipe(gulp.dest('static/css'))
         .pipe(sass({
-            includePaths: require('node-normalize-scss').includePaths
+            includePaths: ['src/scss']
         }).on('error', sass.logError))
         .pipe(gulp.dest('static/css'))
         .pipe(size());
