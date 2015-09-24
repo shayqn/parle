@@ -963,7 +963,7 @@ body {
     .profileBox .votes .billStack .row {
       background-color: #ccc; }
       .profileBox .votes .billStack .row .main {
-        cursor: pointer; }
+        /*cursor: pointer;*/ }
       .profileBox .votes .billStack .row:nth-child(odd) {
         background-color: rgba(255, 255, 255, 0.3); }
       .profileBox .votes .billStack .row .col {
@@ -974,7 +974,8 @@ body {
           text-transform: uppercase;
           text-align: center;
           font-weight: 600;
-          width: 10%; }
+          width: 10%;
+          vertical-align: middle; }
           .profileBox .votes .billStack .row .col.number span.label, .profileBox .votes .billStack .row .col.session span.label {
             display: block;
             font-weight: 400;
@@ -986,6 +987,7 @@ body {
         .profileBox .votes .billStack .row .col.vote {
           text-transform: uppercase;
           text-align: center;
+          padding: 15px 0px;
           font-weight: 800;
           width: 10%;
           display: table-cell;
@@ -1011,9 +1013,9 @@ body {
             padding: 10px;
             border-radius: 5px; }
           .profileBox .votes .billStack .row .col.law.failed span {
-            background-color: rgba(230, 126, 33, 0.8); }
+            background-color: rgba(192, 57, 43, 0.8); }
           .profileBox .votes .billStack .row .col.law.passed span {
-            background-color: rgba(40, 127, 185, 0.8); }
+            background-color: rgba(39, 174, 96, 0.8); }
         .profileBox .votes .billStack .row .col.dropdown {
           width: 5%; }
           .profileBox .votes .billStack .row .col.dropdown span svg {

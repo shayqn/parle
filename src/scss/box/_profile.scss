@@ -178,7 +178,7 @@
                 }
                 background-color: #ccc;
                 .main {
-                    cursor: pointer; 
+                    /*cursor: pointer;*/ 
                 }
                 &:nth-child(odd) {
                     background-color: rgba(255, 255, 255, 0.3);
@@ -194,6 +194,7 @@
                         @include bill-fonts;
                         font-weight: 600;
                         width: 10%;
+                        vertical-align: middle;
                         span {
                             &.label {
                                 display: block;
@@ -206,6 +207,7 @@
                     }
                     &.vote {
                         @include bill-fonts;
+                        padding: 15px 0px;
                         font-weight: 800;
                         width: 10%;
                         span {
@@ -237,12 +239,12 @@
                         }
                         &.failed {
                             span {
-                                background-color: rgba(230, 126, 33, 0.8);
+                                background-color: rgba(192, 57, 43, 0.8);
                             }
                         }
                         &.passed {
                             span {
-                                background-color: rgba(40, 127, 185, 0.8);
+                                background-color: rgba(39, 174, 96, 0.8);
                             }
                         }
                         display: table-cell;

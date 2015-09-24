@@ -1,4 +1,16 @@
 
+tracker = ga.create('UA-67804451-1', 'votes.mp');
+
+function gaTrack(path, title) {
+  if (path=="") {
+    path = "/";
+  }
+  //console.log("track");
+  //console.log(path);
+  //console.log(title);
+  ga('set', { page: path, title: title });
+  ga('send', 'pageview');
+}
 
 var AppBox = React.createClass({
   getInitialState: function() {
@@ -132,6 +144,7 @@ var AppBox = React.createClass({
     });
   },
   getAppStateFromURL: function(urlHash) {
+    console.log("get state");
     var box = 'search';
     var id = '';
     var politician = this.state.politician;
@@ -147,6 +160,31 @@ var AppBox = React.createClass({
         if (urlParameters.length >= 2) {
           id = !isNaN(urlParameters[1]) ? urlParameters[1] : '';
         }
+      }
+      if (box == 'search') {
+        gaTrack(urlHash, "Search");
+      }
+      else if (box == 'profile') {
+        if (id) {
+          var name = id;
+          for (var i=0; i < this.state.politicians.length; i++) {
+            if (this.state.politicians[i].id == id) {
+              name = this.state.politicians[i].name;
+            }
+          }
+          var title = "Profile/" + name;
+          gaTrack(urlHash, title);
+        }
+        else {
+          var title = "Profile/";
+          gaTrack(urlHash, title);
+        }
+      }
+      else if (box == 'info') {
+        gaTrack(urlHash, "Info");
+      }
+      else {
+        gaTrack(urlHash, "Unknown");
       }
       this.setState({
         box: box,
@@ -494,7 +532,6 @@ var BillStack = React.createClass({
               <div className="col shortname"><span>no result</span></div>
               <div className="col vote mobile-only"></div>
               <div className="col law"></div>
-              <div className="col dropdown"></div>
               <div className="col spacer right"></div> 
             </div>
           </div>
@@ -527,7 +564,6 @@ var BillStack = React.createClass({
               <div className="col shortname">Name</div>
               <div className="col vote mobile-only">Vote</div>
               <div className="col law">Law</div>
-              <div className="col dropdown"></div>
               <div className="col spacer right"></div>
             </div>
             {voteRows}
@@ -579,14 +615,8 @@ var VoteRow = React.createClass({
           <div className="col shortname">{name}</div>
           <div className={mobileVoteClass}><span>{voteText}</span></div>
           <div className={lawClass}><span>{lawText}</span></div>
-          <div className="col dropdown"><span><ArrowIcon /></span></div>
           <div className="col spacer right"></div> 
         </div>
-        <VoteInfoRow 
-          currentVote = {this.props.currentVote}
-          voteQuestionID = {this.props.vote.votequestion_id}
-          lawText = {lawText}
-          billInfo = {this.props.billInfo} />
       </div>
     );
   }
@@ -657,7 +687,7 @@ var ArrowIcon = React.createClass({
          viewBox="0 0 400 400">
         <path d="M163.5,334.5l-47.1-47.1l87.5-87.5l-87.5-87.5l47.1-47.1L298,200L163.5,334.5z"/>
       </svg>
-    )
+    );
   }
 });
 var BillSearch = React.createClass({
@@ -767,7 +797,7 @@ var SearchStack = React.createClass({
       politicianNodes.push(noResultsNode);
     }
     else {
-      var placeHolderNames = ['Sir John A. McPlaceholder', 'Trevor Linden', 'Placeholder Junior, Esquire'];
+      var placeHolderNames = ['John A. Placeholder', 'John Fakenbaker', 'Pierre Tempdeau'];
       for (i = 0; i < 11; i++) {
         var emptyNode = <a className="placeholder" href="/#/"><div></div><h3>{placeHolderNames[i%3]}</h3><span className="party">VAN</span></a>;
         politicianNodes.push(emptyNode);
