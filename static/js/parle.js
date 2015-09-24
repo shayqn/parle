@@ -13,6 +13,7 @@ var AppBox = React.createClass({
       retrievingVotes: true,
       votes: [],
       billInfo: [],
+      billText: "",
       sessionsList: [],
       session: '',
       sessionToggle: false,
@@ -200,14 +201,20 @@ var AppBox = React.createClass({
     this.fetchJSON(url, 'votes');
   },
   getBillInfo: function(object, event) {
-    if (object.votequestion_id == this.state.currentVote) {
+    console.log("invoked"); 
+    console.log(object);
+    console.log(event);
+    if (object.props.vote.votequestion_id == this.state.currentVote) {
       this.setState({currentVote: 0,
                     billInfo: [],
       });
     }
     else {
-      var url = '/bill/' + object.votequestion_id;
-      this.setState({currentVote: object.votequestion_id});
+      var url = '/bill/' + object.props.vote.votequestion_id;
+      this.setState({
+        currentVote: object.props.vote.votequestion_id,
+        billInfo: [],
+      });
       this.fetchJSON(url, 'bill_info');
     }
   },
@@ -272,6 +279,8 @@ var AppBox = React.createClass({
           getBillInfo = {this.getBillInfo}
           currentVote = {this.state.currentVote}
           billInfo = {this.state.billInfo} />
+
+        <BillTextBox box={this.state.box} billText={this.state.billText} />
       </div>
     );
   },
@@ -299,7 +308,10 @@ var AppBox = React.createClass({
           this.setState({sessionsList: data['results']});
         }
         else if (type == 'bill_info') {
-          this.setState({billInfo: data['results'][0]});
+          this.setState({billInfo: data['results']});
+        }
+        else if (type == 'bill_text') {
+          this.setState({billText: data['results'][0]});
         }
         else {
           console.log('type not politician or votes');
@@ -355,6 +367,28 @@ var AppBox = React.createClass({
       return this.state.politicians;
     }
   },
+});
+var BillTextBox = React.createClass({
+  render: function() {
+    var classes = 'billTextBox ' + this.props.box;
+    return (
+      <div className={classes}><div className="closeContainer"><a href="/#/"></a></div><BillText billText={this.props.billText} /></div>
+    );
+  }
+});
+var BillText = React.createClass({
+  prepText: function(text) {
+    text = text.trim();
+    return (text.length>0?'<p>'+text.replace(/[\r\n]+/,'</p><p>')+'</p>':null);
+  },
+  render: function () {
+    var billText = this.prepText(this.props.billText);
+    return (
+    <div className="billText">
+      {billText}
+    </div>
+    );
+  }
 });
 var InfoBox = React.createClass({
   componentWillUpdate: function(nextProps, nextState) {
@@ -444,7 +478,8 @@ var BillStack = React.createClass({
             key = {i}
             vote = {object}
             currentVote = {currentVote}
-            onClick = {getBillInfo} />
+            onClick = {getBillInfo}
+            billInfo = {this.props.billInfo} />
         );
       }.bind(this));
     }
@@ -459,6 +494,7 @@ var BillStack = React.createClass({
               <div className="col shortname"><span>no result</span></div>
               <div className="col vote mobile-only"></div>
               <div className="col law"></div>
+              <div className="col dropdown"></div>
               <div className="col spacer right"></div> 
             </div>
           </div>
@@ -491,6 +527,7 @@ var BillStack = React.createClass({
               <div className="col shortname">Name</div>
               <div className="col vote mobile-only">Vote</div>
               <div className="col law">Law</div>
+              <div className="col dropdown"></div>
               <div className="col spacer right"></div>
             </div>
             {voteRows}
@@ -527,9 +564,13 @@ var VoteRow = React.createClass({
     else {
       var name = this.props.vote.name_en;
     }
+    var voteRowClass = "voteRow row";
+    if (this.props.vote.votequestion_id == this.props.currentVote) {
+      voteRowClass += " current";
+    }
 
     return (
-      <div className="voteRow row" key={this.props.key}>
+      <div onClick={this.props.onClick.bind(null, this)} className={voteRowClass} key={this.props.key}>
         <div className="main row">
           <div className="col spacer left"></div>
           <div className="col session"><span className="label mobile-only">Session</span>{this.props.vote.session_id}</div>
@@ -538,8 +579,14 @@ var VoteRow = React.createClass({
           <div className="col shortname">{name}</div>
           <div className={mobileVoteClass}><span>{voteText}</span></div>
           <div className={lawClass}><span>{lawText}</span></div>
+          <div className="col dropdown"><span><ArrowIcon /></span></div>
           <div className="col spacer right"></div> 
         </div>
+        <VoteInfoRow 
+          currentVote = {this.props.currentVote}
+          voteQuestionID = {this.props.vote.votequestion_id}
+          lawText = {lawText}
+          billInfo = {this.props.billInfo} />
       </div>
     );
   }
@@ -551,17 +598,66 @@ var VoteInfoRow = React.createClass({
       infoClass += ' current';
       var lawString =  'Law: ' + this.props.lawText;
       var voteInformation = <div className="col billInfo">{lawString}</div>
+      if (this.props.billInfo.length > 0) {
+        console.log("yup");
+        var partyVoteNodes = this.props.billInfo.map(function (object, i) {
+          var voteClass = "vote ";
+          var voteString = "";
+          if (object.vote == "Y") {
+            voteClass += "yes";
+            voteString = "yes";
+          }
+          else if (object.vote == "N") {
+            voteClass += "no";
+            voteString = "no";
+          }
+          else if (object.vote == "A") {
+            voteClass += "abstain";
+            voteString = "abstain";
+          }
+
+          else {
+            voteString = object.vote;
+          }
+          return (
+            <div className="partyVote"><span className={voteClass}>{voteString}</span> <span className="partyName">{object.name}</span></div>
+          );
+        });
+      }
+      else {
+        var partyVoteNodes = '';
+      }
     }
     else {
-      var voteInformation = '';
+      var partyVoteNodes = '';
     }
     return (
       <div className={infoClass}>
           <div className="col spacer left"></div>
-          {voteInformation}
+          <div className="col sponsor"><h4>Bill Sponsor</h4></div>
+          <div className="col partyVotes">
+            <h4>Party Votes</h4>
+            {partyVoteNodes}
+          </div>
+          <div className="col moreBillInfo">
+          <h4>More Information</h4>
+            <a href="#">view bill text <ArrowIcon /></a>
+            <a href="#">view on openparliament.ca <ArrowIcon /></a>
+            <a href="#">view on parl.gc.ca <ArrowIcon /></a>
+          </div>
           <div className="col spacer right"></div>
       </div>
     );
+  }
+});
+var ArrowIcon = React.createClass({
+  render: function() {
+    return (
+      <svg version="1.1" x="0px" y="0px"
+         viewBox="0 0 400 400">
+        <path d="M163.5,334.5l-47.1-47.1l87.5-87.5l-87.5-87.5l47.1-47.1L298,200L163.5,334.5z"/>
+      </svg>
+    )
   }
 });
 var BillSearch = React.createClass({

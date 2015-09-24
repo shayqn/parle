@@ -17,7 +17,7 @@ Modules:
 import sys
 from flask import Flask, render_template
 from politicians import get_initial_json, get_pol_json
-from bills import get_bill_json
+from bills import get_bill_json, get_bill_text_json
 from sessions import get_sessions_json
 from bills import get_bill_json
 
@@ -51,6 +51,11 @@ def get_pol(pol_id):
 @application.route('/bill/<int:votequestion_id>')
 def get_bill(votequestion_id):
     return get_bill_json(votequestion_id)
+
+# Route used by React to fetch information for individual bills
+@application.route('/bill/text/<int:bill_id>')
+def get_bill_text(bill_id):
+    return get_bill_text_json(bill_id)
 
 # Route used by React to fetch information for sessions of parliament
 @application.route('/sessions')

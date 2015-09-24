@@ -962,10 +962,12 @@ body {
     width: 100%; }
     .profileBox .votes .billStack .row {
       background-color: #ccc; }
+      .profileBox .votes .billStack .row .main {
+        cursor: pointer; }
       .profileBox .votes .billStack .row:nth-child(odd) {
         background-color: rgba(255, 255, 255, 0.3); }
       .profileBox .votes .billStack .row .col {
-        padding: 20px; }
+        padding: 15px 20px; }
         .profileBox .votes .billStack .row .col.shortname:not(:first-child) {
           font-family: Open Sans; }
         .profileBox .votes .billStack .row .col.number, .profileBox .votes .billStack .row .col.session {
@@ -986,12 +988,14 @@ body {
           text-align: center;
           font-weight: 800;
           width: 10%;
-          background-color: rgba(0, 0, 0, 0.05);
           display: table-cell;
           vertical-align: middle; }
-          .profileBox .votes .billStack .row .col.vote.yes {
+          .profileBox .votes .billStack .row .col.vote span {
+            padding: 10px;
+            border-radius: 5px; }
+          .profileBox .votes .billStack .row .col.vote.yes span {
             background-color: rgba(39, 174, 96, 0.8); }
-          .profileBox .votes .billStack .row .col.vote.no {
+          .profileBox .votes .billStack .row .col.vote.no span {
             background-color: rgba(192, 57, 43, 0.8); }
           @media screen and (min-width: 640px) {
             .profileBox .votes .billStack .row .col.vote.mobile-only {
@@ -1001,20 +1005,37 @@ body {
           text-align: center;
           font-weight: 800;
           width: 15%;
-          background-color: rgba(0, 0, 0, 0.05);
           display: table-cell;
           vertical-align: middle; }
-          .profileBox .votes .billStack .row .col.law.failed {
+          .profileBox .votes .billStack .row .col.law span {
+            padding: 10px;
+            border-radius: 5px; }
+          .profileBox .votes .billStack .row .col.law.failed span {
             background-color: rgba(230, 126, 33, 0.8); }
-          .profileBox .votes .billStack .row .col.law.passed {
+          .profileBox .votes .billStack .row .col.law.passed span {
             background-color: rgba(40, 127, 185, 0.8); }
+        .profileBox .votes .billStack .row .col.dropdown {
+          width: 5%; }
+          .profileBox .votes .billStack .row .col.dropdown span svg {
+            width: 1.5em;
+            -webkit-transform: translate3d(0em, 0em, 0) scale3d(1, 1, 1) rotate(90deg);
+            transform: translate3d(0em, 0em, 0) scale3d(1, 1, 1) rotate(90deg);
+            fill: #666;
+            margin: 0 auto;
+            -moz-transition: all 0.4s;
+            -o-transition: all 0.4s;
+            -webkit-transition: all 0.4s;
+            transition: all 0.4s; }
         .profileBox .votes .billStack .row .col.spacer {
           width: 5%;
           padding: 0px; }
+      .profileBox .votes .billStack .row.current .dropdown span svg {
+        -webkit-transform: translate3d(0em, 0em, 0) scale3d(1, 1, 1) rotate(-90deg);
+        transform: translate3d(0em, 0em, 0) scale3d(1, 1, 1) rotate(-90deg); }
       .profileBox .votes .billStack .row .row.info {
         height: 0px;
-        overflow: hidden;
         display: block;
+        overflow: hidden;
         position: relative;
         z-index: 0;
         -moz-transition: all 0.4s;
@@ -1027,12 +1048,55 @@ body {
             font-family: Open Sans;
             font-weight: 400; }
         .profileBox .votes .billStack .row .row.info.current {
-          display: table;
           border-top: 1px solid #eee;
+          display: table;
           border-bottom: 1px solid #eee;
+          height: auto;
           max-height: 10em;
           overflow: hidden;
           background-color: rgba(255, 255, 255, 0.3); }
+          .profileBox .votes .billStack .row .row.info.current .partyVotes {
+            border-right: 1px dashed rgba(255, 255, 255, 0.75);
+            border-left: 1px dashed rgba(255, 255, 255, 0.75); }
+            .profileBox .votes .billStack .row .row.info.current .partyVotes .partyVote {
+              padding: 8px; }
+              .profileBox .votes .billStack .row .row.info.current .partyVotes .partyVote .vote {
+                margin-top: -3px;
+                padding: 3px;
+                border-radius: 3px;
+                text-transform: uppercase;
+                float: right;
+                font-weight: 700; }
+                .profileBox .votes .billStack .row .row.info.current .partyVotes .partyVote .vote.yes {
+                  background-color: rgba(39, 174, 96, 0.8); }
+                .profileBox .votes .billStack .row .row.info.current .partyVotes .partyVote .vote.no {
+                  background-color: rgba(192, 57, 43, 0.8); }
+                .profileBox .votes .billStack .row .row.info.current .partyVotes .partyVote .vote.abstain {
+                  background-color: rgba(150, 150, 150, 0.8); }
+          .profileBox .votes .billStack .row .row.info.current .moreBillInfo {
+            border-right: 1px dashed rgba(255, 255, 255, 0.75); }
+            .profileBox .votes .billStack .row .row.info.current .moreBillInfo a {
+              display: block;
+              text-decoration: none;
+              padding: 10px;
+              border-radius: 5px;
+              margin: 5px;
+              background-color: #ccc;
+              font-weight: 700;
+              color: #666; }
+              .profileBox .votes .billStack .row .row.info.current .moreBillInfo a svg {
+                width: 1em;
+                float: right;
+                -webkit-transform: translate3d(0em, 0em, 0) scale3d(1, 1, 1);
+                transform: translate3d(0em, 0em, 0) scale3d(1, 1, 1);
+                fill: #fff;
+                margin: 0 auto;
+                -moz-transition: all 0.4s;
+                -o-transition: all 0.4s;
+                -webkit-transition: all 0.4s;
+                transition: all 0.4s; }
+          .profileBox .votes .billStack .row .row.info.current .sponsor {
+            border-left: 1px dashed rgba(255, 255, 255, 0.75); }
       .profileBox .votes .billStack .row.empty span {
         visibility: hidden; }
       .profileBox .votes .billStack .row.noresults .row {

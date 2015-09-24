@@ -177,12 +177,14 @@
                     text-align: center;
                 }
                 background-color: #ccc;
+                .main {
+                    cursor: pointer; 
+                }
                 &:nth-child(odd) {
                     background-color: rgba(255, 255, 255, 0.3);
                 }
-
                 .col {
-                    padding: 20px;
+                    padding: 15px 20px;
                     &.shortname {
                         &:not(:first-child) {
                             font-family: Open Sans;
@@ -206,12 +208,19 @@
                         @include bill-fonts;
                         font-weight: 800;
                         width: 10%;
-                        background-color: rgba(0, 0, 0, 0.05);
+                        span {
+                            padding: 10px;
+                             border-radius: 5px;
+                        }
                         &.yes {
-                            background-color: rgba(39, 174, 96, 0.8);
+                            span {
+                                background-color: rgba(39, 174, 96, 0.8);
+                            }
                         }
                         &.no {
-                            background-color: rgba(192, 57, 43, 0.8);
+                            span {
+                                background-color: rgba(192, 57, 43, 0.8);
+                            }
                         }
                         @include mobile-only;
                         display: table-cell;
@@ -222,26 +231,56 @@
                         @include bill-fonts;
                         font-weight: 800;
                         width: 15%;
-                        background-color: rgba(0, 0, 0, 0.05);  
+                        span {
+                            padding: 10px;
+                            border-radius: 5px;
+                        }
                         &.failed {
-                            background-color: rgba(230, 126, 33, 0.8);
+                            span {
+                                background-color: rgba(230, 126, 33, 0.8);
+                            }
                         }
                         &.passed {
-                            background-color: rgba(40, 127, 185, 0.8);
+                            span {
+                                background-color: rgba(40, 127, 185, 0.8);
+                            }
                         }
                         display: table-cell;
                         vertical-align: middle;
+                    }
+                    &.dropdown {
+                        width: 5%;
+                        span {
+                            svg {
+                                width: 1.5em;
+                                -webkit-transform: translate3d(0em, 0em, 0) scale3d(1, 1, 1) rotate(90deg);
+                                transform: translate3d(0em, 0em, 0) scale3d(1, 1, 1) rotate(90deg);
+                                fill: #666;
+                                margin: 0 auto;
+                                @include transition-duration;
+                            }
+                        }
                     }
                     &.spacer {
                         width: 5%;
                         padding: 0px;
                     }
                 }
+                &.current {
+                    .dropdown {
+                        span {
+                            svg {
+                                -webkit-transform: translate3d(0em, 0em, 0) scale3d(1, 1, 1) rotate(-90deg);
+                                transform: translate3d(0em, 0em, 0) scale3d(1, 1, 1) rotate(-90deg);
+                            }
+                        }
+                    }
+                }
                 .row {                    
                      &.info {
                         height: 0px;
+                        display:block;
                         overflow: hidden;
-                        display: block;
                         position: relative;
                         z-index: 0;
                         @include transition-duration;
@@ -253,12 +292,62 @@
                             }
                         }
                         &.current {
-                            display: table;
                             border-top: 1px solid #eee;
+                            display:table;
                             border-bottom: 1px solid #eee;
+                            height: auto;
                             max-height: 10em;
                             overflow: hidden;
                             background-color: rgba(255, 255, 255, 0.3);
+                            .partyVotes {
+                                border-right: 1px dashed rgba(255, 255, 255, 0.75);
+                                border-left: 1px dashed rgba(255, 255, 255, 0.75);
+                                .partyVote {
+                                    padding: 8px;
+                                    .vote {
+                                        margin-top: -3px;
+                                        padding: 3px;
+                                        border-radius: 3px;
+                                        text-transform:  uppercase;
+                                        float: right;
+                                        font-weight: 700;
+                                        &.yes {
+                                            background-color: rgba(39, 174, 96, 0.8);
+                                        }
+                                        &.no {
+                                            background-color: rgba(192, 57, 43, 0.8);
+                                        }
+                                        &.abstain {
+                                            background-color: rgba(150, 150, 150, 0.8);
+                                        }
+                                    }
+                                }
+                            }
+                            .moreBillInfo {
+                                border-right: 1px dashed rgba(255, 255, 255, 0.75);
+                                a {
+                                    display: block;
+                                    text-decoration: none;
+                                    padding: 10px;
+                                    border-radius: 5px;
+                                    margin: 5px;
+                                    background-color: #ccc;
+                                    font-weight: 700;
+                                    color: #666;
+                                    svg {
+                                        width: 1em;
+                                        float: right;
+                                        -webkit-transform: translate3d(0em, 0em, 0) scale3d(1, 1, 1);
+                                        transform: translate3d(0em, 0em, 0) scale3d(1, 1, 1);
+                                        fill: #fff;
+                                        margin: 0 auto;
+                                        @include transition-duration;
+                                    }
+                                }
+                            }
+                            .sponsor {
+                                border-left: 1px dashed rgba(255, 255, 255, 0.75);
+                            }
                         }
                     }
                 }
