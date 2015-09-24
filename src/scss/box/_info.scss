@@ -1,0 +1,83 @@
+.infoBox {
+    position: absolute;
+    z-index: 11;
+    left: -100%;
+    top: 0;
+    width: 100vw;
+    height: 100%;
+    background-color: #ec5a62;
+    opacity: 1;
+    overflow: hidden;
+    visibility: hidden;
+    -webkit-overflow-scrolling: touch;
+    @include transition-duration;
+    &.info {
+        left: 0;
+        top: 0;
+        opacity: 1;
+        z-index: 20;
+        overflow-y: scroll;
+        visibility: visible;
+    }
+    .closeContainer {
+        position: absolute;
+        width: 100%;
+        a {
+            display: inline-block;
+            width: 2em;
+            float: right;
+            height: 2em;
+            background: transparent url(../images/back.svg) no-repeat center center;
+            transform-origin: 50% 50%;
+            -webkit-transform: translate3d(-1.25em, 1em, 0) scale3d(1, 1, 1);
+            transform: translate3d(-1.25em, 1em, 0) scale3d(1, 1, 1);
+            opacity: 0.7;
+            @include transition-duration;
+            &.hover {
+                opacity: 1;
+            }
+        }
+    }
+    .infoText {
+        display: block;
+        margin: 0 auto;
+        min-height: 100%;
+        width: 100%;
+        max-width: 60em;
+        color: #fff;
+        font-family: Open Sans;
+        padding: 20px;
+        h2 {
+            margin-top: 1em;
+            color: #fff;
+            font-size: 4em;
+            @include mobile-breakpoint {
+                font-size: 3em;
+            }
+        }
+        p {
+            line-height: 1.5em;
+        }
+        a {
+            font-weight: 700;
+            color: #fff;
+        }
+        .creditWhereCreditsDue {
+            display: block;
+            min-width: 10%;
+            margin: 0 auto;
+            text-align: center;
+            span {
+                color: #ffdcdc;
+            }
+        }
+        .githubLink {
+            padding-top: 1em;
+            display: block;
+            min-width: 10%;
+            margin: 0 auto;
+            text-align: center;
+            padding-bottom: 1em;
+        }
+    }
+}

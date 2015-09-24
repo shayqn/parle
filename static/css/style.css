@@ -1,8 +1,19 @@
-/*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
+/* ==========================================================================
+   Normalize.scss settings
+   ========================================================================== */
+/**
+ * Includes legacy browser support IE6/7
+ *
+ * Set to false if you want to drop support for IE6 and IE7
+ */
+/* Base
+   ========================================================================== */
 /**
  * 1. Set default font family to sans-serif.
  * 2. Prevent iOS and IE text size adjust after device orientation change,
  *    without disabling user zoom.
+ * 3. Corrects text resizing oddly in IE 6/7 when body `font-size` is set using
+ *  `em` units.
  */
 html {
   font-family: sans-serif;
@@ -42,7 +53,7 @@ summary {
   display: block; }
 
 /**
- * 1. Correct `inline-block` display not defined in IE 8/9.
+ * 1. Correct `inline-block` display not defined in IE 6/7/8/9 and Firefox 3.
  * 2. Normalize vertical alignment of `progress` in Chrome, Firefox, and Opera.
  */
 audio,
@@ -55,7 +66,7 @@ video {
   /* 2 */ }
 
 /**
- * Prevent modern browsers from displaying `audio` without controls.
+ * Prevents modern browsers from displaying `audio` without controls.
  * Remove excess height in iOS 5 devices.
  */
 audio:not([controls]) {
@@ -82,8 +93,7 @@ a {
  * Improve readability of focused elements when they are also in an
  * active/hover state.
  */
-a:active,
-a:hover {
+a:active, a:hover {
   outline: 0; }
 
 /* Text-level semantics
@@ -116,7 +126,7 @@ h1 {
   margin: 0.67em 0; }
 
 /**
- * Address styling not present in IE 8/9.
+ * Addresses styling not present in IE 8/9.
  */
 mark {
   background: #ff0;
@@ -147,7 +157,8 @@ sub {
 /* Embedded content
    ========================================================================== */
 /**
- * Remove border when inside `a` element in IE 8/9/10.
+ * 1. Remove border when inside `a` element in IE 8/9/10.
+ * 2. Improves image quality when scaled in IE 7.
  */
 img {
   border: 0; }
@@ -181,6 +192,7 @@ pre {
 
 /**
  * Address odd `em`-unit font size rendering in all browsers.
+ * Correct font family set oddly in IE 6, Safari 4/5, and Chrome.
  */
 code,
 kbd,
@@ -197,9 +209,10 @@ samp {
  */
 /**
  * 1. Correct color not being inherited.
- *    Known issue: affects color of disabled elements.
+ *  Known issue: affects color of disabled elements.
  * 2. Correct font properties not being inherited.
  * 3. Address margins set differently in Firefox 4+, Safari, and Chrome.
+ * 4. Improves appearance and consistency in all browsers.
  */
 button,
 input,
@@ -231,10 +244,12 @@ select {
 
 /**
  * 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`
- *    and `video` controls.
+ *  and `video` controls.
  * 2. Correct inability to style clickable `input` types in iOS.
  * 3. Improve usability and consistency of cursor style between image-type
- *    `input` and others.
+ *  `input` and others.
+ * 4. Removes inner spacing in IE 7 without affecting normal text inputs.
+ *  Known issue: inner spacing remains in IE 6.
  */
 button,
 html input[type="button"], input[type="reset"],
@@ -267,11 +282,9 @@ input {
   line-height: normal; }
 
 /**
- * It's recommended that you don't attempt to style these elements.
- * Firefox's implementation doesn't respect box-sizing, padding, or width.
- *
  * 1. Address box sizing set to `content-box` in IE 8/9/10.
  * 2. Remove excess padding in IE 8/9/10.
+ *  Known issue: excess padding remains in IE 6.
  */
 input[type="checkbox"],
 input[type="radio"] {
@@ -319,6 +332,8 @@ fieldset {
 /**
  * 1. Correct `color` not being inherited in IE 8/9/10/11.
  * 2. Remove padding so people aren't caught out if they zero out fieldsets.
+ * 3. Corrects text not wrapping in Firefox 3.
+ * 4. Corrects alignment displayed oddly in IE 6/7.
  */
 legend {
   border: 0;
@@ -947,17 +962,20 @@ body {
     width: 100%; }
     .profileBox .votes .billStack .row {
       background-color: #ccc; }
+      .profileBox .votes .billStack .row .main {
+        /*cursor: pointer;*/ }
       .profileBox .votes .billStack .row:nth-child(odd) {
         background-color: rgba(255, 255, 255, 0.3); }
       .profileBox .votes .billStack .row .col {
-        padding: 20px; }
+        padding: 15px 20px; }
         .profileBox .votes .billStack .row .col.shortname:not(:first-child) {
           font-family: Open Sans; }
         .profileBox .votes .billStack .row .col.number, .profileBox .votes .billStack .row .col.session {
           text-transform: uppercase;
           text-align: center;
           font-weight: 600;
-          width: 10%; }
+          width: 10%;
+          vertical-align: middle; }
           .profileBox .votes .billStack .row .col.number span.label, .profileBox .votes .billStack .row .col.session span.label {
             display: block;
             font-weight: 400;
@@ -969,14 +987,17 @@ body {
         .profileBox .votes .billStack .row .col.vote {
           text-transform: uppercase;
           text-align: center;
+          padding: 15px 0px;
           font-weight: 800;
           width: 10%;
-          background-color: rgba(0, 0, 0, 0.05);
           display: table-cell;
           vertical-align: middle; }
-          .profileBox .votes .billStack .row .col.vote.yes {
+          .profileBox .votes .billStack .row .col.vote span {
+            padding: 10px;
+            border-radius: 5px; }
+          .profileBox .votes .billStack .row .col.vote.yes span {
             background-color: rgba(39, 174, 96, 0.8); }
-          .profileBox .votes .billStack .row .col.vote.no {
+          .profileBox .votes .billStack .row .col.vote.no span {
             background-color: rgba(192, 57, 43, 0.8); }
           @media screen and (min-width: 640px) {
             .profileBox .votes .billStack .row .col.vote.mobile-only {
@@ -986,20 +1007,37 @@ body {
           text-align: center;
           font-weight: 800;
           width: 15%;
-          background-color: rgba(0, 0, 0, 0.05);
           display: table-cell;
           vertical-align: middle; }
-          .profileBox .votes .billStack .row .col.law.failed {
-            background-color: rgba(230, 126, 33, 0.8); }
-          .profileBox .votes .billStack .row .col.law.passed {
-            background-color: rgba(40, 127, 185, 0.8); }
+          .profileBox .votes .billStack .row .col.law span {
+            padding: 10px;
+            border-radius: 5px; }
+          .profileBox .votes .billStack .row .col.law.failed span {
+            background-color: rgba(192, 57, 43, 0.8); }
+          .profileBox .votes .billStack .row .col.law.passed span {
+            background-color: rgba(39, 174, 96, 0.8); }
+        .profileBox .votes .billStack .row .col.dropdown {
+          width: 5%; }
+          .profileBox .votes .billStack .row .col.dropdown span svg {
+            width: 1.5em;
+            -webkit-transform: translate3d(0em, 0em, 0) scale3d(1, 1, 1) rotate(90deg);
+            transform: translate3d(0em, 0em, 0) scale3d(1, 1, 1) rotate(90deg);
+            fill: #666;
+            margin: 0 auto;
+            -moz-transition: all 0.4s;
+            -o-transition: all 0.4s;
+            -webkit-transition: all 0.4s;
+            transition: all 0.4s; }
         .profileBox .votes .billStack .row .col.spacer {
           width: 5%;
           padding: 0px; }
+      .profileBox .votes .billStack .row.current .dropdown span svg {
+        -webkit-transform: translate3d(0em, 0em, 0) scale3d(1, 1, 1) rotate(-90deg);
+        transform: translate3d(0em, 0em, 0) scale3d(1, 1, 1) rotate(-90deg); }
       .profileBox .votes .billStack .row .row.info {
         height: 0px;
-        overflow: hidden;
         display: block;
+        overflow: hidden;
         position: relative;
         z-index: 0;
         -moz-transition: all 0.4s;
@@ -1012,12 +1050,55 @@ body {
             font-family: Open Sans;
             font-weight: 400; }
         .profileBox .votes .billStack .row .row.info.current {
-          display: table;
           border-top: 1px solid #eee;
+          display: table;
           border-bottom: 1px solid #eee;
+          height: auto;
           max-height: 10em;
           overflow: hidden;
           background-color: rgba(255, 255, 255, 0.3); }
+          .profileBox .votes .billStack .row .row.info.current .partyVotes {
+            border-right: 1px dashed rgba(255, 255, 255, 0.75);
+            border-left: 1px dashed rgba(255, 255, 255, 0.75); }
+            .profileBox .votes .billStack .row .row.info.current .partyVotes .partyVote {
+              padding: 8px; }
+              .profileBox .votes .billStack .row .row.info.current .partyVotes .partyVote .vote {
+                margin-top: -3px;
+                padding: 3px;
+                border-radius: 3px;
+                text-transform: uppercase;
+                float: right;
+                font-weight: 700; }
+                .profileBox .votes .billStack .row .row.info.current .partyVotes .partyVote .vote.yes {
+                  background-color: rgba(39, 174, 96, 0.8); }
+                .profileBox .votes .billStack .row .row.info.current .partyVotes .partyVote .vote.no {
+                  background-color: rgba(192, 57, 43, 0.8); }
+                .profileBox .votes .billStack .row .row.info.current .partyVotes .partyVote .vote.abstain {
+                  background-color: rgba(150, 150, 150, 0.8); }
+          .profileBox .votes .billStack .row .row.info.current .moreBillInfo {
+            border-right: 1px dashed rgba(255, 255, 255, 0.75); }
+            .profileBox .votes .billStack .row .row.info.current .moreBillInfo a {
+              display: block;
+              text-decoration: none;
+              padding: 10px;
+              border-radius: 5px;
+              margin: 5px;
+              background-color: #ccc;
+              font-weight: 700;
+              color: #666; }
+              .profileBox .votes .billStack .row .row.info.current .moreBillInfo a svg {
+                width: 1em;
+                float: right;
+                -webkit-transform: translate3d(0em, 0em, 0) scale3d(1, 1, 1);
+                transform: translate3d(0em, 0em, 0) scale3d(1, 1, 1);
+                fill: #fff;
+                margin: 0 auto;
+                -moz-transition: all 0.4s;
+                -o-transition: all 0.4s;
+                -webkit-transition: all 0.4s;
+                transition: all 0.4s; }
+          .profileBox .votes .billStack .row .row.info.current .sponsor {
+            border-left: 1px dashed rgba(255, 255, 255, 0.75); }
       .profileBox .votes .billStack .row.empty span {
         visibility: hidden; }
       .profileBox .votes .billStack .row.noresults .row {
