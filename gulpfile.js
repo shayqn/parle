@@ -77,7 +77,7 @@ gulp.task('deploy_styles', ['deploy_clean_styles'], function () {
     gulp.src('src/scss/style.scss')
         .pipe(sass({
             outputStyle: 'compressed',
-            includePaths: require('node-normalize-scss').includePaths
+            includePaths: ['src/scss']
         }).on('error', sass.logError))
         .pipe(gulp.dest('static/css'))
         .pipe(size());
