@@ -1,0 +1,16 @@
+*, *:after, *:before { @include box-sizing(border-box); }
+.clearfix:before, .clearfix:after { content: ''; display: table; }
+.clearfix:after { clear: both; }
+
+html {
+    height: 100%;
+    width: 100vw;
+    overflow-x: hidden;
+}
+
+body {
+    font-size: 1em;
+    font-family: 'Raleway', Arial, sans-serif;
+    background-color: #ccc;
+    z-index: -1;
+}

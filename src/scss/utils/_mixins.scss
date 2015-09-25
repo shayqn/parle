@@ -1,0 +1,63 @@
+@mixin full-layout {
+    @media screen and (min-width:  #{$mobile-breakpoint}){
+        @content;
+    }
+}
+
+@mixin medium-breakpoint {
+    @media screen and (max-width:  #{$medium-breakpoint}), (max-device-width :  #{$medium-breakpoint}) {
+        @content;
+    }
+}
+
+@mixin tablet-breakpoint {
+    @media screen and (max-width:  #{$tablet-breakpoint}), (max-device-width :  #{$tablet-breakpoint}) {
+        @content;
+    }
+}
+
+@mixin mobile-breakpoint {
+    @media screen and (max-width:  #{$mobile-breakpoint}), (max-device-width :  #{$mobile-breakpoint}) {
+        @content;
+    }
+}
+
+@mixin mobile-only {
+    &.mobile-only {
+        @include full-layout {
+            display: none;
+        }
+    }
+}
+
+@mixin full-only {
+    &.full-layout {
+        @include mobile-breakpoint {
+            display:none;
+        }
+    }
+}
+
+@mixin transition-property($property...) {
+    -moz-transition-property:    $property;
+    -o-transition-property:      $property;
+    -webkit-transition-property: $property;
+    transition-property:         $property;
+}
+@mixin transition-duration {
+    -moz-transition:    all $transition-duration;
+    -o-transition:      all $transition-duration;
+    -webkit-transition: all $transition-duration;
+    transition:         all $transition-duration;
+}
+@mixin box-sizing($box-model) {
+  -webkit-box-sizing: $box-model; // Safari <= 5
+     -moz-box-sizing: $box-model; // Firefox <= 19
+          box-sizing: $box-model;
+}
+@mixin placeholder {
+    &:-ms-input-placeholder{ @content; }
+    &:-moz-placeholder { @content; }
+    &::-moz-placeholder { @content; }
+    &::-webkit-input-placeholder { @content; }
+}
