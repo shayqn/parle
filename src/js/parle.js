@@ -618,8 +618,8 @@ var VoteRow = React.createClass({
           <div className="col number"><span className="label mobile-only">Number</span>{this.props.vote.number}</div>
           <div className={voteClass}><span>{voteText}</span></div>
           <div className="col shortname">{name}</div>
-          <div className={mobileVoteClass}><span>{voteText}</span></div>
-          <div className={lawClass}><span>{lawText}</span></div>
+          <div className={mobileVoteClass}><span className="label mobile-only">Vote</span><span className="voteText">{voteText}</span></div>
+          <div className={lawClass}><span className="label mobile-only">Law</span><span className="lawText">{lawText}</span></div>
           <div className="col dropdown"><span><ArrowIcon /></span></div>
           <div className="col spacer right"></div> 
         </div>
@@ -646,11 +646,11 @@ var VoteInfoRow = React.createClass({
         var partyVoteNodes = [];
         var i = 0;
         var node = (
-          <div key={0} className="partyVote header" key={i}>
+          <div key={0} className="partyVoteHeader" key={i}>
             <div className="name">Party</div>
-            <div className="yes">Y</div>
-            <div className="no">N</div>
-            <div className="abstain">A</div>
+            <div className="yes">YES</div>
+            <div className="no">NO</div>
+            <div className="abstain">ABSTAIN</div>
           </div>
         );
         partyVoteNodes.push(node);
@@ -766,7 +766,7 @@ var VoteInfoRow = React.createClass({
     }
     var openparliamentURL = "//openparliament.ca/bills/" + this.props.vote.session_id + "/" + this.props.vote.number + "/";
     sessionNumbers = this.props.vote.session_id.split("-");
-    var parlURL = "//www.parl.gc.ca/LEGISInfo/LAAG.aspx?language=E&Parl=" + sessionNumbers[0] + "&Ses=" + sessionNumbers[1];
+    var parlURL = "http://www.parl.gc.ca/LEGISInfo/LAAG.aspx?language=E&Parl=" + sessionNumbers[0] + "&Ses=" + sessionNumbers[1];
     return (
       <div className={infoClass}>
           <div className="col spacer left"></div>
@@ -780,8 +780,8 @@ var VoteInfoRow = React.createClass({
           <div className="col moreBillInfo">
           <h4>More Information</h4>
             
-            <a href={openparliamentURL}>view bill on openparliament.ca <ArrowIcon /></a>
-            <a href={parlURL}>view session on parl.gc.ca <ArrowIcon /></a>
+            <a href={openparliamentURL} target="_blank">view bill on openparliament.ca <ArrowIcon /></a>
+            <a href={parlURL} target="_blank">view session on parl.gc.ca <ArrowIcon /></a>
           </div>
           <div className="col spacer right"></div>
       </div>
@@ -905,7 +905,7 @@ var SearchStack = React.createClass({
       politicianNodes.push(noResultsNode);
     }
     else {
-      var placeHolderNames = ['John A. Placeholder', 'John Fakenbaker', 'Pierre Tempdeau'];
+      var placeHolderNames = ['John A. McTemp', 'John Fakenbaker', 'Pierre Tempdeau'];
       for (i = 0; i < 11; i++) {
         var emptyNode = <a key={i} className="placeholder" href="/#/"><div></div><h3>{placeHolderNames[i%3]}</h3><span className="party">VAN</span></a>;
         politicianNodes.push(emptyNode);

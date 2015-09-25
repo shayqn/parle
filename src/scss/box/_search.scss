@@ -313,7 +313,8 @@
                 &.placeholder {
                     h3 {
                         background-color: rgba(145, 145, 145, 0.10);
-                        color: rgba(118, 117, 128, 0.0); 
+                        color: rgba(118, 117, 128, 0.0);
+                        white-space: nowrap;
                     }
                     span.party {
                       background-color: rgba(145, 145, 145, 0.10);

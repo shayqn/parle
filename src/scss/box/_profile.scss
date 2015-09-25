@@ -179,17 +179,19 @@
                 background-color: #ccc;
                 .main {
                     cursor: pointer; 
+                    &:nth-child(odd) {
+                        &:hover {
+                            background-color: rgba(255, 255, 255, 0.75);
+                        }
+                    }
+                    &:nth-child(even) {
+                        &:hover {
+                            background-color: rgba(255, 255, 255, 0.1);
+                        }
+                    }
                 }
                 &:nth-child(odd) {
                     background-color: rgba(255, 255, 255, 0.3);
-                    &:hover {
-                        background-color: rgba(255, 255, 255, 0.75);
-                    }
-                }
-                &:nth-child(even) {
-                    &:hover {
-                        background-color: rgba(255, 255, 255, 0.1);
-                    }
                 }
                 .col {
                     padding: 15px 20px;
@@ -219,16 +221,26 @@
                         font-weight: 800;
                         width: 10%;
                         span {
-                            padding: 10px;
-                             border-radius: 5px;
+                            padding: 5px;
+                            border-radius: 5px;
+                        }
+                        span {
+                            &.label {
+                                padding: 10px;
+                                display: block;
+                                font-weight: 400;
+                                font-size: 0.9em;
+                                color: #666;
+                                @include mobile-only;
+                            }
                         }
                         &.yes {
-                            span {
+                            span.voteText {
                                 background-color: rgba(39, 174, 96, 0.8);
                             }
                         }
                         &.no {
-                            span {
+                            span.voteText {
                                 background-color: rgba(192, 57, 43, 0.8);
                             }
                         }
@@ -245,6 +257,15 @@
                             padding: 10px;
                             border-radius: 5px;
                         }
+                        span {
+                            &.label {
+                                display: block;
+                                font-weight: 400;
+                                font-size: 0.9em;
+                                color: #666;
+                            }
+                            @include mobile-only;
+                        }
                         &.failed {
                             span {
                                 background-color: rgba(192, 57, 43, 0.8);
@@ -260,6 +281,7 @@
                     }
                     &.dropdown {
                         width: 5%;
+                        vertical-align: middle;
                         span {
                             svg {
                                 width: 1.5em;
@@ -385,6 +407,46 @@
                                 border-right: 1px dashed rgba(255, 255, 255, 0.75);
                                 border-left: 1px dashed rgba(255, 255, 255, 0.75);
                                 .partyVotesTable {
+                                    .partyVoteHeader {
+                                        display: table;
+                                        table-layout: fixed;
+                                        width: 100%;
+                                        padding: 1px;
+                                        div {
+                                            display: table-cell;
+                                        }
+                                        .yes {
+                                            font-family: Open Sans;
+                                            width: 20%;
+                                            font-size: 0.6em;
+                                            text-align: center;
+                                            vertical-align: middle;
+                                            font-weight: 600;
+                                            background-color: rgba(39, 174, 96, 0.5);
+
+                                        }
+                                        .no {
+                                            font-family: Open Sans;
+                                            width: 20%;
+                                            font-size: 0.6em;
+                                            text-align: center;
+                                            vertical-align: middle;
+                                            font-weight: 600;
+                                            background-color: rgba(192, 57, 43, 0.5);
+                                        }
+                                        .abstain {
+                                            font-family: Open Sans;
+                                            width: 20%;
+                                            font-size: 0.6em;
+                                            text-align: center;
+                                            vertical-align: middle;
+                                            font-weight: 600;
+                                            background-color: rgba(150, 150, 150, 0.5);
+                                        }
+                                        .name {
+                                            visibility: hidden;
+                                        }
+                                    }
                                     .partyVote {
                                         display: table;
                                         width: 100%;
@@ -399,13 +461,6 @@
                                             color: #fff;
                                             text-align: center;
                                             padding: 5px;
-                                        }
-                                        &.header {
-                                            display: none;
-                                            .name {
-                                                text-transform: uppercase;
-                                                width: 40%;
-                                            }
                                         }
                                         &.total {
                                             .name {
@@ -431,7 +486,7 @@
                                             width: 20%;
                                             text-align: center;
                                             font-weight: 600;
-                                            background-color: rgba(150, 150, 150, 0.8);
+                                            background-color: rgba(150, 150, 150, 0.5);
                                         }
                                         &.yes {
                                             .name {
@@ -500,6 +555,7 @@
                                 border-right: 1px dashed rgba(255, 255, 255, 0.75);
                                 a {
                                     display: block;
+                                    position: relative;
                                     text-decoration: none;
                                     padding: 10px;
                                     border-radius: 5px;
@@ -507,11 +563,17 @@
                                     background-color: #ccc;
                                     font-weight: 700;
                                     color: #666;
+                                    span {
+                                        display: inline-block;
+                                        width: 95%; 
+                                    }
                                     svg {
                                         width: 1em;
-                                        float: right;
-                                        -webkit-transform: translate3d(0em, 0em, 0) scale3d(1, 1, 1);
-                                        transform: translate3d(0em, 0em, 0) scale3d(1, 1, 1);
+                                        position: absolute;
+                                        right: 0.5em;
+                                        top: 50%;
+                                        -webkit-transform: translate3d(0em, -50%, 0) scale3d(1, 1, 1);
+                                        transform: translate3d(0em, -50%, 0) scale3d(1, 1, 1);
                                         fill: #fff;
                                         margin: 0 auto;
                                         @include transition-duration;
@@ -524,7 +586,8 @@
                         }
 
                         @include mobile-breakpoint {
-                            width: 96%;
+                            width: 100%;
+                            padding-right: 2%;
                             .col {
                                 display:block;
                             }
