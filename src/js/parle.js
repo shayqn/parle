@@ -616,7 +616,7 @@ var VoteRow = React.createClass({
           <div className="col spacer left"></div>
           <div className="col session"><span className="label mobile-only">Session</span>{this.props.vote.session_id}</div>
           <div className="col number"><span className="label mobile-only">Number</span>{this.props.vote.number}</div>
-          <div className={voteClass}><span>{voteText}</span></div>
+          <div className={voteClass}><span className="voteText">{voteText}</span></div>
           <div className="col shortname">{name}</div>
           <div className={mobileVoteClass}><span className="label mobile-only">Vote</span><span className="voteText">{voteText}</span></div>
           <div className={lawClass}><span className="label mobile-only">Law</span><span className="lawText">{lawText}</span></div>
