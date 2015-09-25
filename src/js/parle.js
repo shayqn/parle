@@ -144,7 +144,6 @@ var AppBox = React.createClass({
     });
   },
   getAppStateFromURL: function(urlHash) {
-    console.log("get state");
     var box = 'search';
     var id = '';
     var politician = this.state.politician;
@@ -239,9 +238,9 @@ var AppBox = React.createClass({
     this.fetchJSON(url, 'votes');
   },
   getBillInfo: function(object, event) {
-    console.log("invoked"); 
-    console.log(object);
-    console.log(event);
+    //console.log("invoked"); 
+    //console.log(object);
+    //console.log(event);
     if (object.props.vote.votequestion_id == this.state.currentVote) {
       this.setState({currentVote: 0,
                     billInfo: [],
@@ -316,7 +315,8 @@ var AppBox = React.createClass({
           retrievingVotes={this.state.retrievingVotes}
           getBillInfo = {this.getBillInfo}
           currentVote = {this.state.currentVote}
-          billInfo = {this.state.billInfo} />
+          billInfo = {this.state.billInfo}
+          getPolitician = {this.getPolitician} />
 
         <BillTextBox box={this.state.box} billText={this.state.billText} />
       </div>
@@ -346,7 +346,7 @@ var AppBox = React.createClass({
           this.setState({sessionsList: data['results']});
         }
         else if (type == 'bill_info') {
-          this.setState({billInfo: data['results']});
+          this.setState({billInfo: data});
         }
         else if (type == 'bill_text') {
           this.setState({billText: data['results'][0]});
@@ -497,7 +497,8 @@ var ProfileBox = React.createClass({
         retrievingVotes={this.props.retrievingVotes}
         getBillInfo = {this.props.getBillInfo}
         currentVote = {this.props.currentVote}
-        billInfo = {this.props.billInfo} />
+        billInfo = {this.props.billInfo}
+        getPolitician = {this.props.getPolitician} />
       </div>
     );
   },
@@ -517,13 +518,16 @@ var BillStack = React.createClass({
             vote = {object}
             currentVote = {currentVote}
             onClick = {getBillInfo}
-            billInfo = {this.props.billInfo} />
+            billInfo = {this.props.billInfo}
+            getPolitician = {this.props.getPolitician} />
         );
       }.bind(this));
     }
     else if (this.props.retrievingVotes) {
-      var emptyRow = (
-          <div className="voteRow row empty">
+      
+      for (var i = 0; i < 15; i++) {
+        var emptyRow = (
+          <div key={i} className="voteRow row empty">
             <div className="main row">
               <div className="col spacer left"></div>
               <div className="col session"></div>
@@ -532,11 +536,11 @@ var BillStack = React.createClass({
               <div className="col shortname"><span>no result</span></div>
               <div className="col vote mobile-only"></div>
               <div className="col law"></div>
+              <div className="col dropdown"></div>
               <div className="col spacer right"></div> 
             </div>
           </div>
         );
-      for (var i = 0; i < 15; i++) {
         voteRows.push(emptyRow);
       }
       loader = <div className="loader-container"><div className="loader"></div></div>;
@@ -564,6 +568,7 @@ var BillStack = React.createClass({
               <div className="col shortname">Name</div>
               <div className="col vote mobile-only">Vote</div>
               <div className="col law">Law</div>
+              <div className="col dropdown"></div>
               <div className="col spacer right"></div>
             </div>
             {voteRows}
@@ -591,7 +596,7 @@ var VoteRow = React.createClass({
     var mobileVoteClass = voteClass + 'mobile-only';
     voteClass += 'full-layout'
 
-    var lawText = this.props.vote.law ? 'passed' : 'failed';
+    var lawText = this.props.vote.law ? 'yes' : 'no';
     var lawClass = 'col law ' + lawText;
 
     if (this.props.vote.short_title_en) {
@@ -606,8 +611,8 @@ var VoteRow = React.createClass({
     }
 
     return (
-      <div onClick={this.props.onClick.bind(null, this)} className={voteRowClass} key={this.props.key}>
-        <div className="main row">
+      <div className={voteRowClass} key={this.props.key}>
+        <div onClick={this.props.onClick.bind(null, this)} className="main row">
           <div className="col spacer left"></div>
           <div className="col session"><span className="label mobile-only">Session</span>{this.props.vote.session_id}</div>
           <div className="col number"><span className="label mobile-only">Number</span>{this.props.vote.number}</div>
@@ -615,8 +620,15 @@ var VoteRow = React.createClass({
           <div className="col shortname">{name}</div>
           <div className={mobileVoteClass}><span>{voteText}</span></div>
           <div className={lawClass}><span>{lawText}</span></div>
+          <div className="col dropdown"><span><ArrowIcon /></span></div>
           <div className="col spacer right"></div> 
         </div>
+        <VoteInfoRow 
+          vote = {this.props.vote}
+          currentVote = {this.props.currentVote}
+          voteQuestionID = {this.props.vote.votequestion_id}
+          billInfo = {this.props.billInfo}
+          getPolitician = {this.props.getPolitician} />
       </div>
     );
   }
@@ -624,35 +636,126 @@ var VoteRow = React.createClass({
 var VoteInfoRow = React.createClass({
   render: function() {
     var infoClass = "row info";
+    var getPolitician = this.props.getPolitician;
+    var sponsorComponent = null;
     if (this.props.voteQuestionID == this.props.currentVote) {
       infoClass += ' current';
       var lawString =  'Law: ' + this.props.lawText;
       var voteInformation = <div className="col billInfo">{lawString}</div>
-      if (this.props.billInfo.length > 0) {
-        console.log("yup");
-        var partyVoteNodes = this.props.billInfo.map(function (object, i) {
-          var voteClass = "vote ";
-          var voteString = "";
-          if (object.vote == "Y") {
-            voteClass += "yes";
-            voteString = "yes";
+      if (undefined != this.props.billInfo.votes) {
+        var partyVoteNodes = [];
+        var i = 0;
+        var node = (
+          <div key={0} className="partyVote header" key={i}>
+            <div className="name">Party</div>
+            <div className="yes">Y</div>
+            <div className="no">N</div>
+            <div className="abstain">A</div>
+          </div>
+        );
+        partyVoteNodes.push(node);
+        yesCount = 0;
+        noCount = 0;
+        abstainCount = 0;
+        for (var key in this.props.billInfo.votes) {
+          i++;
+          var partyName = key;
+          var yes = this.props.billInfo.votes[key]['Y'];
+          var no = this.props.billInfo.votes[key]['N'];
+          var abstain = this.props.billInfo.votes[key]['A'];
+          var noClass = "no";
+          var yesClass = "yes";
+          var abstainClass = "abstain";
+          var partyClass = "partyVote";
+          if ((yes > abstain)&&(yes > no)) {
+            partyClass += " yes";
           }
-          else if (object.vote == "N") {
-            voteClass += "no";
-            voteString = "no";
+          else if ((no > abstain) && (no > yes)) {
+            partyClass += " no";
           }
-          else if (object.vote == "A") {
-            voteClass += "abstain";
-            voteString = "abstain";
+          else if ((abstain > yes) && (abstain > no)) {
+            partyClass += " abstain";
           }
-
           else {
-            voteString = object.vote;
+            if ((yes == no)) {
+              partyClass += " tie yn";
+            }
+            else if (yes==abstain) {
+              partyClass += " tie ya";
+            }
+            else if (no==abstain) {
+              partyClass += " tie na";
+            }
+            else {
+              partyClass += " tie";
+            }
           }
-          return (
-            <div className="partyVote"><span className={voteClass}>{voteString}</span> <span className="partyName">{object.name}</span></div>
+          yesCount += yes;
+          noCount += no;
+          abstainCount += abstain;
+          var node = (
+            <div className={partyClass} key={i}>
+              <div className="name">{partyName}</div>
+              <div className={yesClass}><span>{yes}</span></div>
+              <div className={noClass}><span>{no}</span></div>
+              <div className={abstainClass}><span>{abstain}</span></div>
+            </div>
           );
-        });
+          partyVoteNodes.push(node);
+        }
+        var totalClass = "partyVote total ";
+        if (yesCount > noCount) {
+          if (yesCount > abstainCount) {
+            totalClass += " yes";
+          }
+          else {
+            totalClass += " abstain";
+          }
+        }
+        else {
+          if (noCount > abstainCount) {
+            totalClass += " no";
+          }
+          else {
+            totalClass += " abstain";
+          }
+        }
+        var totalRow = (
+          <div className="partyVote total" key="t">
+            <div className="name">Total</div>
+            <div className="yes"><span>{yesCount}</span></div>
+            <div className="no"><span>{noCount}</span></div>
+            <div className="abstain"><span>{abstainCount}</span></div>
+          </div>
+        );
+        partyVoteNodes.push(totalRow);
+        if (this.props.billInfo.sponsor) {
+          var sponsorProfile = getPolitician(undefined, this.props.billInfo.sponsor);
+          var imgURL = "url('/static/headshots/" + sponsorProfile.imgurl + "')";
+          var sponsorClassString = 'sponsorProfile ';
+          var href = '/#/profile/' + sponsorProfile.id;
+          if (!sponsorProfile.party_slug) {
+            var partyName = sponsorProfile.party_name;
+          }
+          else {
+            sponsorClassString += sponsorProfile.party_slug;
+            var partyName = sponsorProfile.party_slug;
+          }
+          sponsorComponent = (
+            <div className="col sponsor">
+              <h4>Bill Sponsor</h4>
+              <a className={sponsorClassString} href={href} >
+                <div style={{backgroundImage: imgURL}}></div>
+                <h3>{sponsorProfile.name}</h3>
+                <span className="riding">{sponsorProfile.riding}</span>
+                <span className="party">{partyName}</span>
+              </a>
+            </div>
+          );
+        }
+        else {
+          sponsorComponent = null;
+        }
       }
       else {
         var partyVoteNodes = '';
@@ -661,19 +764,24 @@ var VoteInfoRow = React.createClass({
     else {
       var partyVoteNodes = '';
     }
+    var openparliamentURL = "//openparliament.ca/bills/" + this.props.vote.session_id + "/" + this.props.vote.number + "/";
+    sessionNumbers = this.props.vote.session_id.split("-");
+    var parlURL = "//www.parl.gc.ca/LEGISInfo/LAAG.aspx?language=E&Parl=" + sessionNumbers[0] + "&Ses=" + sessionNumbers[1];
     return (
       <div className={infoClass}>
           <div className="col spacer left"></div>
-          <div className="col sponsor"><h4>Bill Sponsor</h4></div>
+          {sponsorComponent}
           <div className="col partyVotes">
             <h4>Party Votes</h4>
-            {partyVoteNodes}
+            <div className="partyVotesTable">
+              {partyVoteNodes}
+            </div>
           </div>
           <div className="col moreBillInfo">
           <h4>More Information</h4>
-            <a href="#">view bill text <ArrowIcon /></a>
-            <a href="#">view on openparliament.ca <ArrowIcon /></a>
-            <a href="#">view on parl.gc.ca <ArrowIcon /></a>
+            
+            <a href={openparliamentURL}>view bill on openparliament.ca <ArrowIcon /></a>
+            <a href={parlURL}>view session on parl.gc.ca <ArrowIcon /></a>
           </div>
           <div className="col spacer right"></div>
       </div>
@@ -799,7 +907,7 @@ var SearchStack = React.createClass({
     else {
       var placeHolderNames = ['John A. Placeholder', 'John Fakenbaker', 'Pierre Tempdeau'];
       for (i = 0; i < 11; i++) {
-        var emptyNode = <a className="placeholder" href="/#/"><div></div><h3>{placeHolderNames[i%3]}</h3><span className="party">VAN</span></a>;
+        var emptyNode = <a key={i} className="placeholder" href="/#/"><div></div><h3>{placeHolderNames[i%3]}</h3><span className="party">VAN</span></a>;
         politicianNodes.push(emptyNode);
       }
     }

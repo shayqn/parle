@@ -178,10 +178,18 @@
                 }
                 background-color: #ccc;
                 .main {
-                    /*cursor: pointer;*/ 
+                    cursor: pointer; 
                 }
                 &:nth-child(odd) {
                     background-color: rgba(255, 255, 255, 0.3);
+                    &:hover {
+                        background-color: rgba(255, 255, 255, 0.75);
+                    }
+                }
+                &:nth-child(even) {
+                    &:hover {
+                        background-color: rgba(255, 255, 255, 0.1);
+                    }
                 }
                 .col {
                     padding: 15px 20px;
@@ -276,8 +284,7 @@
                                 transform: translate3d(0em, 0em, 0) scale3d(1, 1, 1) rotate(-90deg);
                             }
                         }
-                    }
-                }
+                    }                }
                 .row {                    
                      &.info {
                         height: 0px;
@@ -286,6 +293,9 @@
                         position: relative;
                         z-index: 0;
                         @include transition-duration;
+                        h4 {
+                            text-align: center;
+                        }
                         .billInfo {
                             width: 80%;
                             span {
@@ -301,27 +311,188 @@
                             max-height: 10em;
                             overflow: hidden;
                             background-color: rgba(255, 255, 255, 0.3);
+                            .sponsor {
+                                text-align: center;
+                                a {
+                                    width: 100%;
+                                    display: block;
+                                    margin: 0.3em 0;
+                                    cursor: pointer;
+                                    text-decoration:  none;
+                                    outline: none;
+                                    h3 {
+                                        font-size: 1.4em;
+                                        display: inline-block;
+                                        font-weight: 600;
+                                        margin: 0 0 0 0;
+                                        color: rgba(0, 0, 0, 0.7);
+                                        font-family: 'Open Sans', sans-serif;
+                                    }
+                                    div {
+                                        background-color: #ddd;
+                                        display: block;
+                                        margin:  0 auto;
+                                        width: 80px;
+                                        height: 80px;
+                                        margin: 0 auto;
+                                        vertical-align: middle;
+                                        background-repeat: no-repeat;
+                                        line-height: 50px;
+                                        border-radius: 50%;
+                                        background-size: cover;
+                                        background-position: center 20%; 
+                                    }
+                                    .party {
+                                        display: block;
+                                        text-transform: uppercase;
+                                        color: rgba(0, 0, 0, 0.5);
+                                        font-weight: 600; 
+                                    }
+                                    .riding {
+                                        display: block;
+                                        text-transform: uppercase;
+                                        color: rgba(0, 0, 0, 0.5);
+                                        font-weight: 600; 
+                                    }
+                                    &.cpc {
+                                        .party {
+                                            color: rgba(12, 106, 170, 1);
+                                        }
+                                    }
+                                    &.liberal {
+                                        .party {
+                                            color: rgba(215, 24, 32, 1);
+                                        }
+                                    }
+                                    &.NDP {
+                                        .party {
+                                            color: rgba(241, 102, 34, 1);
+                                        }
+                                    }
+                                    &.bloc {
+                                        .party {
+                                           color: rgba(8, 59, 113, 1);
+                                        }
+                                    }
+                                    &.green {
+                                        .party {
+                                            color: rgba(60, 155, 52, 1); 
+                                        }
+                                    }
+                              }
+                            }
                             .partyVotes {
                                 border-right: 1px dashed rgba(255, 255, 255, 0.75);
                                 border-left: 1px dashed rgba(255, 255, 255, 0.75);
-                                .partyVote {
-                                    padding: 8px;
-                                    .vote {
-                                        margin-top: -3px;
-                                        padding: 3px;
-                                        border-radius: 3px;
-                                        text-transform:  uppercase;
-                                        float: right;
-                                        font-weight: 700;
-                                        &.yes {
-                                            background-color: rgba(39, 174, 96, 0.8);
+                                .partyVotesTable {
+                                    .partyVote {
+                                        display: table;
+                                        width: 100%;
+                                        padding: 1px;
+                                        div {
+                                            display: table-cell;
                                         }
-                                        &.no {
-                                            background-color: rgba(192, 57, 43, 0.8);
+                                        .name {
+                                            text-transform: uppercase;
+                                            width: 40%;
+                                            font-weight: 600;
+                                            color: #fff;
+                                            text-align: center;
+                                            padding: 5px;
                                         }
-                                        &.abstain {
+                                        &.header {
+                                            display: none;
+                                            .name {
+                                                text-transform: uppercase;
+                                                width: 40%;
+                                            }
+                                        }
+                                        &.total {
+                                            .name {
+                                                background-color: #333;
+                                            }
+                                        }
+                                        .yes {
+                                            font-family: Open Sans;
+                                            width: 20%;
+                                            text-align: center;
+                                            font-weight: 600;
+                                            background-color: rgba(39, 174, 96, 0.5);
+                                        }
+                                        .no {
+                                            font-family: Open Sans;
+                                            width: 20%;
+                                            text-align: center;
+                                            font-weight: 600;
+                                            background-color: rgba(192, 57, 43, 0.5);
+                                        }
+                                        .abstain {
+                                            font-family: Open Sans;
+                                            width: 20%;
+                                            text-align: center;
+                                            font-weight: 600;
                                             background-color: rgba(150, 150, 150, 0.8);
                                         }
+                                        &.yes {
+                                            .name {
+                                                background-color: rgba(39, 174, 96, 0.8);
+                                            }
+                                        }
+                                        &.no {
+                                            .name {
+                                                background-color: rgba(192, 57, 43, 0.8); 
+                                            }
+                                        }
+                                        &.abstain {
+                                            .name {
+                                                background-color: rgba(150, 150, 150, 0.8);
+                                            }
+                                        }
+                                        &.tie {
+                                            .name {
+                                                background:  repeating-linear-gradient(
+                                                    45deg,
+                                                    #333,
+                                                    #333 10px,
+                                                    #999 10px,
+                                                    #999 20px
+                                                );
+                                            }
+                                            &.yn {
+                                                .name {
+                                                    background:  repeating-linear-gradient(
+                                                        45deg,
+                                                        rgba(39, 174, 96, 0.8),
+                                                        rgba(39, 174, 96, 0.8) 10px,
+                                                        rgba(192, 57, 43, 0.5) 10px,
+                                                        rgba(192, 57, 43, 0.5) 20px
+                                                    );
+                                                }
+                                            }
+                                            &.ya {
+                                                .name {
+                                                    background:  repeating-linear-gradient(
+                                                        45deg,
+                                                        rgba(39, 174, 96, 0.8),
+                                                        rgba(39, 174, 96, 0.8) 10px,
+                                                        rgba(150, 150, 150, 0.8) 10px,
+                                                        rgba(150, 150, 150, 0.8) 20px
+                                                    );
+                                                }
+                                            }
+                                            &.na {
+                                                .name {
+                                                    background:  repeating-linear-gradient(
+                                                        45deg,
+                                                        rgba(192, 57, 43, 0.5),
+                                                        rgba(192, 57, 43, 0.5) 10px,
+                                                        rgba(150, 150, 150, 0.8) 10px,
+                                                        rgba(150, 150, 150, 0.8) 20px
+                                                    );
+                                                }
+                                            }
+                                        }
+
                                     }
                                 }
                             }
@@ -349,6 +520,13 @@
                             }
                             .sponsor {
                                 border-left: 1px dashed rgba(255, 255, 255, 0.75);
+                            }
+                        }
+
+                        @include mobile-breakpoint {
+                            width: 96%;
+                            .col {
+                                display:block;
                             }
                         }
                     }
@@ -465,6 +643,13 @@
                             display:none;
                         }
                     }
+                    .info {
+                        .col {
+                            &.spacer {
+                                display: none;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -571,6 +756,12 @@
                             text-align: center;
                             display: block;
                             border-top: 1px dashed rgba(255, 255, 255, 0.3); 
+                            border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
+                            font-size: 0.9em;
+                        }
+                        &.dropdown {
+                            text-align: center;
+                            border-top: 1px dashed rgba(255, 255, 255, 0.3);
                             border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
                             font-size: 0.9em;
                         }

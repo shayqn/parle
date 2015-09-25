@@ -28,7 +28,7 @@ def get_bill_json(votequestion_id):
     cursor = get_cursor()
 
     query = (
-        "SELECT b.vote, c.party_id, p.name "
+        "SELECT b.vote, p.name, p.slug "
         "FROM bills_membervote b, core_electedmember c, core_party p "
         "WHERE b.politician_id = c.politician_id "
         "AND c.party_id = p.id "
@@ -47,28 +47,40 @@ def get_bill_json(votequestion_id):
     # Fetch results
     bill_results = cursor.fetchall()
 
-    cy,cn,ca = 0,0,0
-    ny,nn,na = 0,0,0
-    ly,ln,la = 0,0,0
-    by,bn,ba = 0,0,0
-    gy,gn,ga = 0,0,0
+    partyvotes = {}
+    for bill in bill_results:
+        party_name = bill['name']
+        if bill['slug']:
+            party_name = bill['slug']
+        if party_name not in partyvotes:
+            partyvotes[party_name] = {}
+            partyvotes[party_name]['Y'] = 0
+            partyvotes[party_name]['A'] = 0
+            partyvotes[party_name]['N'] = 0
+            partyvotes[party_name]['P'] = 0
+        partyvotes[party_name][bill['vote']] += 1
 
-    partyvotes = [[0 for x in range(30) for x in range(3)]
+    query = (
+        "SELECT b.sponsor_politician_id "
+        "FROM bills_bill b, bills_votequestion v "
+        "WHERE v.id = (%s) "
+        "AND b.id = v.bill_id "
+    )
 
-    for i in range(0,len(bill_results)):
-        party_col = bill_results[i]['party_id']
-        if bill_results[i]['vote'] == 'Y':
-                partyvotes[party_col][0] += 1
-        if bill_results[i]['vote'] == 'N':
-                partyvotes[party_col][1] += 1
-        if bill_results[i]['vote'] == 'A':
-                partyvotes[party_col][2] += 1
+    # If any parameters are used in the above query, insert them in the parameters tuple
+    # Insert parameters in the order used in the query unless using %(name)s placeholders
+    # see http://initd.org/psycopg/docs/usage.html#passing-parameters-to-sql-queries for more information
+    parameters = (votequestion_id,)
 
+    # Execute query
+    cursor.execute(query, parameters)
 
-    print  partyvotes
+    # Fetch results
+    sponsor_result = cursor.fetchone()
+    print sponsor_result['sponsor_politician_id']
 
     # return a JSON response to React (includes header, no extra work needed)
-    return jsonify(results=bill_results)
+    return jsonify(sponsor=sponsor_result['sponsor_politician_id'], votes=partyvotes)
 
 
 def get_bill_text_json(bill_id):
