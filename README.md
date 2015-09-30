@@ -17,4 +17,4 @@ The app uses React for the front-end and Flask to provide the data in JSON.
 
 ## database
 
-This repository does not contain the database of parliamentary voting records. The database used can be found at [openparliament.ca](parliament.ca/data-download/)
+This repository does not contain the database of parliamentary voting records. The database used can be found at [openparliament.ca](wwww.openparliament.ca/data-download/)
