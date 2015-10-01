@@ -1,15 +1,17 @@
-
-tracker = ga.create('UA-67804451-1', 'votes.mp');
-
+if (typeof ga !== 'undefined') { //ublock
+  tracker = ga.create('UA-67804451-1', 'votes.mp');
+}
 function gaTrack(path, title) {
-  if (path=="") {
-    path = "/";
+  if (typeof ga !== 'undefined') { //ublock
+    if (path=="") {
+      path = "/";
+    }
+    //console.log("track");
+    //console.log(path);
+    //console.log(title);
+    ga('set', { page: path, title: title });
+    ga('send', 'pageview');
   }
-  //console.log("track");
-  //console.log(path);
-  //console.log(title);
-  ga('set', { page: path, title: title });
-  ga('send', 'pageview');
 }
 
 var AppBox = React.createClass({
