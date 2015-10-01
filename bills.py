@@ -28,16 +28,18 @@ def get_bill_json(votequestion_id):
     cursor = get_cursor()
 
     query = (
-        "SELECT b.vote, p.name, p.slug "
-        "FROM bills_membervote b, core_electedmember c, core_party p "
+        "SELECT b.vote, p.name, p.slug, c.politician_id "
+        "FROM bills_membervote b, core_electedmember c, core_party p, bills_votequestion v "
         "WHERE b.politician_id = c.politician_id "
         "AND c.party_id = p.id "
         "AND b.votequestion_id = (%s) "
+        "AND v.id = b.votequestion_id "
         "AND c.start_date = "           # we only want their most recent party data, so let's pick that one
         "( "                            # we want (e.start_date = most recent e.start_date)
         "  SELECT start_date "
         "  FROM core_electedmember "    # get all electedmember records associated with each politicians
         "  WHERE politician_id = c.politician_id "
+        "  AND start_date < v.date "
         "  ORDER BY start_date "        # sort them by start_date
         "  DESC LIMIT 1 "               # limiting to one only selects the most recent date
         ") "
@@ -85,7 +87,6 @@ def get_bill_json(votequestion_id):
 
     # Fetch results
     sponsor_result = cursor.fetchone()
-    print sponsor_result['sponsor_politician_id']
 
     # return a JSON response to React (includes header, no extra work needed)
     return jsonify(sponsor=sponsor_result['sponsor_politician_id'], votes=partyvotes)
