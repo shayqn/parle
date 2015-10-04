@@ -92,8 +92,18 @@ def get_initial_json():
     # Create a list to store our final result
     pol_results = []
 
+
+
     # Iterate through each result
     for row in raw_pol_results:
+        #query = (
+        #    "SELECT session_id "
+        #    "FROM core_electedmember_sessions "
+        #    "WHERE electedmember_id = (%s)"
+        #)
+        #parameters = (row['id'],)
+        #cursor.execute(query,parameters)
+        #session_results = cursor.fetchall()
         # Add desired data to results in dictionary form
         pol_results.append({
             # 'JSON-KEY' : row['DATABASE-KEY'], JSON-KEY is used in React only

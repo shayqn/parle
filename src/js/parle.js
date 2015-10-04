@@ -25,7 +25,9 @@ var TextBox = require('./boxes/text/TextBox.js');
 
 var App = React.createClass({
   getInitialState: function() {
+    var appState = this.setAppState();
     return {
+      app: appState,
       box: 'search',
       politicians: [],
       id: '',
@@ -44,16 +46,80 @@ var App = React.createClass({
       riding: "",
     };
   },
+
+  setAppState: function(prevState) {
+    if (typeof(prevState)==='undefined') prevState = { 
+      app: {
+        box: 'search',
+        nextBox: 'search',
+        politicianList: {},
+        sessionsList: {},
+        sessions: ['42-2', '42-1'],
+        search: {
+          isSearching: false,
+          searchValue: '',
+          riding: '',
+          max: 10,
+          isLoading: true,
+        },
+        profile: {
+          id: 0,
+          data: {},
+          votes: {},
+          isLoading: false,
+        },
+        vote: {
+          id: 0,
+          data: {},
+          isLoading: false,
+        },
+        bill: {
+          id: 0,
+          data: {},
+          isLoading: false,
+        }
+      }
+    };
+    var urlHash = window.location.hash.substr(1);
+    var newState = prevState;
+    var urlParameters = urlHash.split('/').filter(function(n){ return n != '' });
+    var box = prevState.app.box;
+    if (urlParameters.length >= 2) {
+      if ((urlParameters[0] == 'profile') && !isNaN(urlParameters[1])) {
+        newState.app.box = 'profile';
+        newState.app.profile.isLoading = true;
+        newState.app.profile.id = urlParameters[1];
+      }
+      else if ((urlParameters[0] == 'bill') && !isNaN(urlParameters[1])) {
+        newState.app.box = 'bill';
+        newState.app.bill.isLoading = true;
+        newState.app.bill.id = urlParameters[1];
+      }
+    }
+    if (urlParameters.length >= 4) {
+      if ((urlParameters[2] == 'vote') && !isNaN(urlParameters[3])) {
+        console.log(urlParameters[3]);
+        newState.app.vote.isLoading = true;
+        newState.app.vote.id = urlParameters[3];
+      }
+    }
+    return newState.app;
+  },
+
   componentDidMount: function() {
     window.addEventListener('hashchange', function(){
       this.getAppStateFromURL(window.location.hash.substr(1));
     }.bind(this));
+
     var initializeURL = '/initialize';
     this.fetchJSON(initializeURL, 'politicians');
+
     var sessionsURL = '/sessions';
     this.fetchJSON(sessionsURL, 'sessions');
+
     this.getAppStateFromURL(window.location.hash.substr(1));
   },
+
   changePolitician: function(politician) {
     if (politician) {
       this.setState({
@@ -76,6 +142,7 @@ var App = React.createClass({
       });
     }
   },
+
   onSearchChange: function(event) {
     var max = this.checkMax();
     var postalRegEx = new RegExp("^[ABCEGHJKLMNPRSTVXYabceghjklmnprstvxy]{1}\\d{1}[A-Za-z]{1} *\\d{1}[A-Za-z]{1}\\d{1}$", "i");
@@ -95,11 +162,11 @@ var App = React.createClass({
         }
         else {
           // We reached our target server, but it returned an error
-          console.log('server reached, but it did not give data in onSearchChange opennorth request');
+          console.log('server reached, but it did not give data - onSearchChange opennorth request');
         }
       }.bind(this);
       request.onerror = function() {
-          console.log('connection problem with onSearchChange opennorth request');
+          console.log('connection problem - onSearchChange opennorth request');
         // There was a connection error of some sort
       };
       request.send();
