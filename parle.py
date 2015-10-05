@@ -43,7 +43,7 @@ def get_initial():
     return get_initial_json()
 
 # Route used by React to fetch information for politician profiles
-@application.route('/pol/<int:pol_id>')
+@application.route('/votes/<int:pol_id>')
 def get_pol(pol_id):
     return get_pol_json(pol_id)
 
