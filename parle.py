@@ -48,7 +48,7 @@ def get_pol(pol_id):
     return get_pol_json(pol_id)
 
 # Route used by React to fetch information for individual bills
-@application.route('/bill/<int:votequestion_id>')
+@application.route('/vote/<int:votequestion_id>')
 def get_bill(votequestion_id):
     return get_bill_json(votequestion_id)
 

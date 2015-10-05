@@ -7,7 +7,8 @@ var SearchStack = React.createClass({displayName: "SearchStack",
     var politicianNodes = [];
     if (this.props.politicians.length > 0) {
       politicianNodes = this.props.politicians.map(function (object, i) {
-        var imgURL = "url('/static/headshots/" + object.imgurl + "')";
+        var headshot = object.headshot.split('/').pop();
+        var imgURL = "url('/static/headshots/" + headshot + "')";
         var classString = '';
         if (object.id == currentProfileID) {
           classString += 'active ';
