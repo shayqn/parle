@@ -108,6 +108,7 @@ def get_initial_json():
     cursor.execute(
         "SELECT c.id, c.start, c.end "
         "FROM core_session c "
+        "WHERE c.start > '2006-01-01'"
     )
 
     raw_session_results = cursor.fetchall()
