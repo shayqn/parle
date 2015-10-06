@@ -582,6 +582,38 @@ body {
         .searchBox .topLinks .info {
           width: 1.5em;
           height: 1.5em; } }
+  .searchBox .sessionSelectorContainer {
+    width: 100%;
+    position: absolute;
+    top: 210px;
+    z-index: 100; }
+    .searchBox .sessionSelectorContainer .sessionsSelector {
+      width: 50vw;
+      margin: 0 auto; }
+      .searchBox .sessionSelectorContainer .sessionsSelector .title {
+        display: inline-block; }
+        .searchBox .sessionSelectorContainer .sessionsSelector .title h2 {
+          display: inline-block;
+          font-size: 2em;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+          font-weight: 700;
+          color: #c2c2c2;
+          margin: 0px; }
+      .searchBox .sessionSelectorContainer .sessionsSelector .buttons {
+        display: inline-block;
+        float: right; }
+        .searchBox .sessionSelectorContainer .sessionsSelector .buttons .sessionButton {
+          display: inline-block;
+          padding: 5px;
+          background-color: #ddd;
+          margin: 5px;
+          border-radius: 5px;
+          font-weight: 500;
+          cursor: pointer; }
+          .searchBox .sessionSelectorContainer .sessionsSelector .buttons .sessionButton.active {
+            color: #fff;
+            background-color: #ec5a62; }
   .searchBox .searchContent {
     opacity: 1;
     height: auto;

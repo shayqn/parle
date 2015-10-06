@@ -136,12 +136,12 @@ var App = React.createClass({
       this.fetchDataFromServer('/initialize', this.setInitialData);
     }
     else {
-      if (typeof(localStorage.initialData) != "undefined") {
-        this.setInitialData(localStorage.initialData);
-      }
-      else {
+      //if (typeof(localStorage.initialData) != "undefined") {
+      //  this.setInitialData(localStorage.initialData);
+      //}
+      //else {
         this.fetchDataFromServer('/initialize', this.setInitialData);
-      }
+      //}
     }
   },
 
@@ -298,6 +298,28 @@ var App = React.createClass({
     return filteredList;
   },
 
+  sessionToggle: function(sessionNumber) {
+    console.log('toggled');
+    console.log(sessionNumber);
+
+    var newSessions = [];
+    var $inArray = false;
+    for (i=0;i<this.state.app.sessions.length;i++) {
+      if (this.state.app.sessions[i]!=sessionNumber) {
+        newSessions.push(this.state.app.sessions[i]);
+      }
+      else {
+        $inArray = true;
+      }
+    }
+    if (!$inArray) {
+      newSessions.push(sessionNumber);
+    }
+    appState = this.cloneAppState(this.state.app);
+      appState.sessions = newSessions;
+    this.setState({app: appState});
+  },
+
   render: function() {
     var loading = (this.state.app.vote.isLoading) ? "loading" : "loaded";
     var filteredPoliticianList = this.filterPoliticians().slice(0, this.state.app.search.max);
@@ -312,7 +334,8 @@ var App = React.createClass({
           sessions={this.state.app.sessions}
           search={this.state.app.search}
           onSearchScroll={this.onSearchScroll}
-          onSearchChange={this.onSearchChange} />
+          onSearchChange={this.onSearchChange}
+          sessionToggle={this.sessionToggle} />
       </div>
     );
   },

@@ -1,6 +1,7 @@
 /** @jsx React.DOM */
 
 var SearchStack = require('./SearchStack.js');
+var SessionSelector = require('./SessionSelector.js');
 SearchBox = React.createClass({
   render: function() {
     var classes = 'searchBox ' + this.props.box; //temp
@@ -13,6 +14,12 @@ SearchBox = React.createClass({
             <button type="submit">Search</button>
             <span>by name, riding, or postal code</span>
           </form>
+          <div className="sessionSelectorContainer">
+            <SessionSelector 
+             sessionsList={this.props.sessionsList}
+             currentSessions={this.props.sessions}
+             sessionToggle = {this.props.sessionToggle} />
+          </div>
           <div className="searchContent">
             <SearchStack 
               box={this.props.box} 
