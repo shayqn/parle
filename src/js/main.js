@@ -483,9 +483,12 @@ module.exports = VoteRow;
 /** @jsx React.DOM */
 
 var SearchStack = require('./SearchStack.js');
+var SessionSelector = require('./SessionSelector.js');
 SearchBox = React.createClass({displayName: "SearchBox",
   render: function() {
-    var classes = 'searchBox ' + this.props.box;    return (
+    var classes = 'searchBox ' + this.props.box; //temp
+    return (
+      React.createElement("div", {className: "searchBox-noscroll search"}, 
         React.createElement("div", {className: classes, onScroll: this.props.onSearchScroll.bind(null, this)}, 
           React.createElement("div", {className: "topLinks"}, React.createElement("a", {href: "/#/info", className: "info"}), React.createElement("a", {href: "https://github.com/shayqn/parle", className: "github"})), 
           React.createElement("form", null, 
@@ -493,84 +496,27 @@ SearchBox = React.createClass({displayName: "SearchBox",
             React.createElement("button", {type: "submit"}, "Search"), 
             React.createElement("span", null, "by name, riding, or postal code")
           ), 
+          React.createElement("div", {className: "sessionSelectorContainer"}, 
+            React.createElement(SessionSelector, {
+             sessionsList: this.props.sessionsList, 
+             currentSessions: this.props.sessions, 
+             sessionToggle: this.props.sessionToggle})
+          ), 
           React.createElement("div", {className: "searchContent"}, 
             React.createElement(SearchStack, {
               box: this.props.box, 
-              politicians: this.props.politicians, 
-              profile: this.props.profile, 
-              searching: this.props.searching})
+              politicians: this.props.politicianList, 
+              profile: [null], 
+              searching: this.props.search.isSearching})
           )
         )
-    );
-  }
-});
-var SearchStack = React.createClass({displayName: "SearchStack",
-  render: function() {
-    classString = "searchStack";
-    var currentProfileID = this.props.profile.id;
-    var politicianNodes = [];
-    if (this.props.politicians.length > 0) {
-      politicianNodes = this.props.politicians.map(function (object, i) {
-        var imgURL = "url('/static/headshots/" + object.imgurl + "')";
-        var classString = '';
-        if (object.id == currentProfileID) {
-          classString += 'active ';
-        }
-        if ((object.id == currentProfileID)&&(this.props.box == 'profile')) {
-          var href = '/#/';
-        }
-        else {
-          var href = '/#/profile/' + object.id;
-        }
-        if (object.active) {
-          classString += 'current ';
-        }
-        if (!object.party_slug) {
-          var partyName = object.party_name;
-        }
-        else {
-          classString += object.party_slug;
-          var partyName = object.party_slug;
-        }
-        if (object.name.length>19) {
-          if (object.name.length > 22) {
-            classString += ' reduce-large'
-          }
-          else {
-            classString += ' reduce-medium';
-          }
-        }
-        return (
-          React.createElement("a", {className: classString, href: href, key: i}, 
-            React.createElement("div", {style: {backgroundImage: imgURL}}), 
-            React.createElement("h3", null, object.name), 
-            React.createElement("span", {className: "party"}, partyName)
-          )
-        );
-      }.bind(this));  
-    }
-    else if (this.props.searching) {
-      var noResultsNode = React.createElement("a", null, React.createElement("h3", null, "NO RESULTS"));
-      politicianNodes.push(noResultsNode);
-    }
-    else {
-      var placeHolderNames = ['John A. McTemp', 'John Fakenbaker', 'Pierre Tempdeau'];
-      for (i = 0; i < 11; i++) {
-        var emptyNode = React.createElement("a", {key: i, className: "placeholder", href: "/#/"}, React.createElement("div", null), React.createElement("h3", null, placeHolderNames[i%3]), React.createElement("span", {className: "party"}, "VAN"));
-        politicianNodes.push(emptyNode);
-      }
-    }
-    return (
-      React.createElement("div", {className: classString}, 
-        React.createElement("h2", null, "Members of Parliament", React.createElement("span", {className: "leaf"})), 
-        politicianNodes
       )
     );
   }
 });
 module.exports = SearchBox;
 
-},{"./SearchStack.js":8}],8:[function(require,module,exports){
+},{"./SearchStack.js":8,"./SessionSelector.js":10}],8:[function(require,module,exports){
 /** @jsx React.DOM */
 
 var SearchStack = React.createClass({displayName: "SearchStack",
@@ -580,7 +526,8 @@ var SearchStack = React.createClass({displayName: "SearchStack",
     var politicianNodes = [];
     if (this.props.politicians.length > 0) {
       politicianNodes = this.props.politicians.map(function (object, i) {
-        var imgURL = "url('/static/headshots/" + object.imgurl + "')";
+        var headshot = object.headshot.split('/').pop();
+        var imgURL = "url('/static/headshots/" + headshot + "')";
         var classString = '';
         if (object.id == currentProfileID) {
           classString += 'active ';
@@ -643,6 +590,55 @@ module.exports = SearchStack;
 },{}],9:[function(require,module,exports){
 /** @jsx React.DOM */
 
+SessionButton = React.createClass({displayName: "SessionButton",
+	render: function() {
+		className = "sessionButton";
+		var sessionNumber = this.props.sessionNumber;
+		for (i=0;i<this.props.currentSessions.length;i++) {
+			if (sessionNumber == this.props.currentSessions[i]) {
+				className += " active";
+			}
+		}
+		return (
+			React.createElement("div", {className: className, key: this.props.key}, 
+				React.createElement("a", {onClick: this.props.sessionToggle.bind(null, sessionNumber)}, sessionNumber)
+			)
+		);
+	}
+});
+module.exports = SessionButton;
+
+},{}],10:[function(require,module,exports){
+/** @jsx React.DOM */
+
+var SessionButton = require('./SessionButton.js');
+SessionSelector = React.createClass({displayName: "SessionSelector",
+	render: function() {
+		var sessionsList = this.props.sessionsList;
+		var currentSessions = this.props.currentSessions;
+		var sessionButtons = [];
+		var sessionToggle = this.props.sessionToggle;
+		var key = 0;
+		for(var sessionNumber in sessionsList) {
+			var session = React.createElement(SessionButton, {sessionNumber: sessionNumber, 
+							currentSessions: currentSessions, 
+							sessionToggle: sessionToggle, 
+							key: key})
+			sessionButtons.push(session);
+			key++;
+		}
+		return (
+			React.createElement("div", {className: "sessionsSelector"}, 
+				sessionButtons.reverse()
+			)
+		);
+	}
+});
+module.exports = SessionSelector;
+
+},{"./SessionButton.js":9}],11:[function(require,module,exports){
+/** @jsx React.DOM */
+
 var BillText = React.createClass({displayName: "BillText",
   prepText: function(text) {
     text = text.trim();
@@ -660,7 +656,7 @@ var BillText = React.createClass({displayName: "BillText",
 
 module.exports = BillText;
 
-},{}],10:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 /** @jsx React.DOM */
 
 var BillText = require('./BillText.js');
@@ -675,7 +671,7 @@ var TextBox = React.createClass({displayName: "TextBox",
 
 module.exports = TextBox;
 
-},{"./BillText.js":9}],11:[function(require,module,exports){
+},{"./BillText.js":11}],13:[function(require,module,exports){
 var ArrowIcon = React.createClass({displayName: "ArrowIcon",
   render: function() {
     return (
@@ -687,7 +683,7 @@ var ArrowIcon = React.createClass({displayName: "ArrowIcon",
   }
 });
 
-},{}],12:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 /** @jsx React.DOM */
 
 if (typeof ga !== 'undefined') { // fail gracefully
@@ -714,463 +710,322 @@ var TextBox = require('./boxes/text/TextBox.js');
 
 
 var App = React.createClass({displayName: "App",
+
+  // ****STATE FUNCTIONS**** //
   getInitialState: function() {
-    var appState = this.setAppState();
+    var appState = this.getAppState();
     return {
       app: appState,
-      box: 'search',
-      politicians: [],
-      id: '',
-      politician: {},
-      profile: '',
-      currentVote: 0,
-      searching: false,
-      retrievingVotes: true,
-      votes: [],
-      billInfo: [],
-      billText: "",
-      sessionsList: [],
-      session: '',
-      sessionToggle: false,
-      max: 10,
-      riding: "",
     };
   },
 
-  setAppState: function(prevState) {
-    if (typeof(prevState)==='undefined') prevState = { 
-      app: {
-        box: 'search',
-        nextBox: 'search',
-        politicianList: {},
-        sessionsList: {},
-        sessions: ['42-2', '42-1'],
-        search: {
-          isSearching: false,
-          searchValue: '',
-          riding: '',
-          max: 10,
-          isLoading: true,
-        },
-        profile: {
-          id: 0,
-          data: {},
-          votes: {},
-          isLoading: false,
-        },
-        vote: {
-          id: 0,
-          data: {},
-          isLoading: false,
-        },
-        bill: {
-          id: 0,
-          data: {},
-          isLoading: false,
-        }
+  getAppState: function(prevAppState) {
+    // default state on initiation
+    var defaultAppState = { 
+      box: 'search',
+      politicianList: [],
+      partiesList: {},
+      ridingsList: {},
+      sessionsList: {},
+      sessions: ['41-2', '41-1'],
+      search: {
+        isSearching: false,
+        searchValue: '',
+        riding: '',
+        max: 10,
+        isLoading: true,
+      },
+      profile: {
+        id: 0,
+        votes: {},
+        isLoading: false,
+      },
+      vote: {
+        id: 0,
+        data: {},
+        sponsor: 0,
+        isLoading: false,
+      },
+      bill: {
+        id: 0,
+        data: {},
+        isLoading: false,
       }
     };
-    var newState = prevState;
+    if (typeof(prevAppState)==='undefined') prevAppState = defaultAppState;
+    // edit state according to URL values
+    var urlHash = window.location.hash.substr(1);
+    var newAppState = this.cloneAppState(prevAppState);
     var urlParameters = urlHash.split('/').filter(function(n){ return n != '' });
-    var box = prevState.app.box;
+    newAppState.box = 'search';
+    // if profile or bill
     if (urlParameters.length >= 2) {
       if ((urlParameters[0] == 'profile') && !isNaN(urlParameters[1])) {
-        newState.app.box = 'profile';
-        newState.app.profile.isLoading = true;
-        newState.app.profile.id = urlParameters[1];
+        newAppState.box = 'profile';
+        newAppState.profile.isLoading = true;
+        newAppState.profile.id = urlParameters[1];
+        newAppState.profile.votes = {};
       }
       else if ((urlParameters[0] == 'bill') && !isNaN(urlParameters[1])) {
-        newState.app.box = 'bill';
-        newState.app.bill.isLoading = true;
-        newState.app.bill.id = urlParameters[1];
+        newAppState.box = 'bill';
+        newAppState.bill.isLoading = true;
+        newAppState.bill.id = urlParameters[1];
+        newAppState.bill.data = {};
       }
     }
+    // if profile and vote specified
     if (urlParameters.length >= 4) {
       if ((urlParameters[2] == 'vote') && !isNaN(urlParameters[3])) {
-        newState.app.vote.isLoading = true;
-        newState.app.vote.id = urlParameters[4];
+        newAppState.vote.isLoading = true;
+        newAppState.vote.id = urlParameters[3];
+        newAppState.vote.data = {};
+        newAppState.vote.sponsor = 0;
       }
     }
-    return newState.app;
+    return newAppState;
   },
 
   componentDidMount: function() {
+    this.getInitialData();
+    if (this.state.app.profile.id) {
+      this.getPoliticianVotes(this.state.app.profile.id);
+    }
+    if (this.state.app.vote.id) {
+      this.getVoteInformation(this.state.app.vote.id);
+    }
+
     window.addEventListener('hashchange', function(){
-      this.getAppStateFromURL(window.location.hash.substr(1));
+      var currentAppState = this.cloneAppState(this.state.app);
+      this.updateAppState(currentAppState);
     }.bind(this));
-
-    var initializeURL = '/initialize';
-    this.fetchJSON(initializeURL, 'politicians');
-
-    var sessionsURL = '/sessions';
-    this.fetchJSON(sessionsURL, 'sessions');
-
-    this.getAppStateFromURL(window.location.hash.substr(1));
   },
 
-  changePolitician: function(politician) {
-    if (politician) {
-      this.setState({
-        politician: politician,
-        votes: [],
-        box: 'profile',
-      });
-      this.getPoliticianVotes(politician.id);
+  cloneAppState: function(appState) {
+    return (JSON.parse(JSON.stringify(appState)));
+  },
+
+  updateAppState: function(currentAppState) {
+    var nextAppState = this.getAppState(currentAppState);
+    if (nextAppState.profile.id && (nextAppState.profile.id != currentAppState.profile.id)) {
+      this.getPoliticianVotes(nextAppState.profile.id);
     }
-    else if (this.state.id && ((this.state.box == 'profile') || (this.state.box == 'info') )) {
-      politician = this.getPolitician();
-      this.setState({
-        politician: politician,
-      });
-      this.getPoliticianVotes(politician.id);
+    if (nextAppState.vote.id && (nextAppState.vote.id != currentAppState.vote.id)) {
+      this.getVoteInformation(nextAppState.vote.id);
+    }
+    this.setState({app: nextAppState});
+  },
+
+  // ****DATA COLLECTION FUNCTIONS**** //
+
+  getInitialData: function() {
+    if (typeof(Storage) == "undefined") {
+      this.fetchDataFromServer('/initialize', this.setInitialData);
     }
     else {
-      this.setState({
-        politician: {},
-      });
+      //if (typeof(localStorage.initialData) != "undefined") {
+      //  this.setInitialData(localStorage.initialData);
+      //}
+      //else {
+        this.fetchDataFromServer('/initialize', this.setInitialData);
+      //}
     }
+  },
+
+  setInitialData: function(data) {
+    if (typeof(Storage) !== "undefined") {
+      if (typeof(localStorage.initialData) == "undefined") {
+        localStorage.initialData = data;
+      }
+    }
+    var parsedData = JSON.parse(data);
+    appState = this.cloneAppState(this.state.app);
+      appState.politicianList = parsedData['politicians'];
+      appState.ridingsList = parsedData['ridings'];
+      appState.partiesList = parsedData['parties'];
+      appState.sessionsList = parsedData['sessions'];
+      appState.search.isLoading = false;
+    this.setState({app: appState});
+  },
+
+  getPoliticianVotes: function(id) {
+    this.fetchDataFromServer('/votes/' + id, this.setPoliticianVotes);
+  },
+
+  setPoliticianVotes: function(data) {
+    var parsedData = JSON.parse(data);
+    appState = this.cloneAppState(this.state.app);
+      appState.profile.votes = parsedData['votes'];
+      appState.profile.isLoading = false;
+    this.setState({app: appState});
+  },
+
+  getVoteInformation: function(id) {
+    this.fetchDataFromServer('/vote/' + id, this.setVoteInformation);
+  },
+
+  setVoteInformation: function(data) {
+    var parsedData = JSON.parse(data);
+    appState = this.cloneAppState(this.state.app);
+      appState.vote.data = parsedData['votes'];
+      appState.vote.sponsor = parsedData['sponsor'];
+      appState.vote.isLoading = false;
+    this.setState({app: appState});
+  },
+
+  fetchDataFromServer: function(path, setter, willReturn) {
+    if (typeof(willReturn)==='undefined') willReturn = false;
+    var request = new XMLHttpRequest();
+    request.open('GET', path, true);
+    request.onload = function() {
+      if (request.status >= 200 && request.status < 400) {
+        setter(request.responseText);
+      }
+      else {
+        console.log("error fetching data from server")
+      }
+    }
+    request.onerror = function() {
+        console.log("error requesting data from server")
+    };
+    request.send();
+  },
+
+  // ****SEARCH/FILTER FUNCTIONS**** //
+
+  getSearchRiding: function(searchValue) {
+    searchValue = searchValue.replace(/\s+/g, '');
+    searchValue = searchValue.toUpperCase();
+    var postalURL = 'https://represent.opennorth.ca/postcodes/' + searchValue + '/?sets=federal-electoral-districts';
+    this.fetchDataFromServer(postalURL, this.setSearchRiding)
+  },
+
+  setSearchRiding: function(data) {
+    var parsedData = JSON.parse(data);
+    appState = this.cloneAppState(this.state.app);
+      appState.search.riding = parsedData["boundaries_concordance"][0]["name"];
+    this.setState({app: appState});
   },
 
   onSearchChange: function(event) {
-    var max = this.checkMax();
+    // check to see if the max is greater than the number of results - if so, reduce it
+    var max = this.state.app.search.max;
+    var num = this.filterPoliticians().length;
+    if (num < max) {
+      max = num;
+      if (max < 10) {
+        max = 10;
+      }
+    }
+
+    var searchValue = event.target.value;
+
+    // postal code test
     var postalRegEx = new RegExp("^[ABCEGHJKLMNPRSTVXYabceghjklmnprstvxy]{1}\\d{1}[A-Za-z]{1} *\\d{1}[A-Za-z]{1}\\d{1}$", "i");
-    if (postalRegEx.test(event.target.value)) {
-      var str = event.target.value;
-      str = str.replace(/\s+/g, '');
-      str = str.toUpperCase();
-      var postalURL = 'https://represent.opennorth.ca/postcodes/' + str + '/?sets=federal-electoral-districts';
-      var request = new XMLHttpRequest();
-      request.open('GET', postalURL, true);
-      request.onload = function() {
-        if (request.status >= 200 && request.status < 400) {
-          // Success!
-          var data = JSON.parse(request.responseText);
-          var riding = data["boundaries_concordance"][0]["name"];
-          this.setState({riding: riding});
-        }
-        else {
-          // We reached our target server, but it returned an error
-          console.log('server reached, but it did not give data - onSearchChange opennorth request');
-        }
-      }.bind(this);
-      request.onerror = function() {
-          console.log('connection problem - onSearchChange opennorth request');
-        // There was a connection error of some sort
-      };
-      request.send();
-      this.setState({
-        searching: true,
-        searchValue: event.target.value,
-        max: max
-      });
-    } 
+    if (postalRegEx.test(searchValue)) {
+      this.getSearchRiding(searchValue);
+    }
+    // otherwise, normal state change
     else {
-      this.setState({
-        searching: true,
-        searchValue: event.target.value,
-        max: max,
-        riding: ""
-      });
-    }
-  },
-  onBillSearchChange: function(event) {
-    this.setState({
-      billSearching: true,
-      billSearchValue: event.target.value
-    });
-  },
-  onSessionSelect: function(object, event) {
-    if (object !='') {
-      this.setState({
-        sessionToggle: false,
-        session: object.id,
-      });
-    }
-    else {
-      this.setState({
-        sessionToggle: false,
-        session: '',
-      });
-    }
-  },
-  onSessionSelectToggle: function(event) {
-    var listener = function(e){
-      if ((e.target.className != 'sessionOption') && (e.target.parentNode.className != 'sessionOption') && (e.target.className != 'select') && (e.target.className != 'sessionSelect')) {   
-        this.setState({
-          sessionToggle: !this.state.sessionToggle,
-        });
-      }
-      document.body.removeEventListener('click', listener);
-    }.bind(this);
-    if (!this.state.sessionToggle) {
-      document.body.addEventListener('click', listener);
-    }
-    this.setState({
-      sessionToggle: !this.state.sessionToggle,
-    });
-  },
-  getAppStateFromURL: function(urlHash) {
-    var box = 'search';
-    var id = '';
-    var politician = this.state.politician;
-    var urlParameters = urlHash.split('/').filter(function(n){ return n != '' });
-      if (urlParameters.length > 0) {
-        box = urlParameters[0];
-        switch (box) {
-          case 'profile': break;
-          case 'bill': break;
-          case 'info': break;
-          default: box = 'search';
-        }
-        if (urlParameters.length >= 2) {
-          id = !isNaN(urlParameters[1]) ? urlParameters[1] : '';
-        }
-      }
-      if (box == 'search') {
-        gaTrack(urlHash, "Search");
-      }
-      else if (box == 'profile') {
-        if (id) {
-          var name = id;
-          for (var i=0; i < this.state.politicians.length; i++) {
-            if (this.state.politicians[i].id == id) {
-              name = this.state.politicians[i].name;
-            }
-          }
-          var title = "Profile/" + name;
-          gaTrack(urlHash, title);
-        }
-        else {
-          var title = "Profile/";
-          gaTrack(urlHash, title);
-        }
-      }
-      else if (box == 'info') {
-        gaTrack(urlHash, "Info");
+      appState = this.cloneAppState(this.state.app);
+      if (searchValue == '') {
+        appState.search.isSearching = false;
       }
       else {
-        gaTrack(urlHash, "Unknown");
+        appState.search.isSearching = true;
       }
-      this.setState({
-        box: box,
-        id: id,
-        votes: [],
-      });
-      this.changePolitician();
-  },
-  changePageTitle: function () {
-    if (this.state.box == 'search') {
-      document.title = 'votes.MP - search Canadian MP voting records';
-    }
-    else if ((this.state.box == 'profile') && (this.state.politician.name)) {
-      var titleText = this.state.politician.name;
-      document.title = 'votes.MP - ' + titleText;
-    }
-  },
-  componentDidUpdate: function(prevProps, prevState) {
-    if (prevState.politician != this.state.politician) {
-      this.changePageTitle();
-    }
-  },
-  getSessionVotes: function() {
-    var sessionVotes = {};
-    var sessionSum = 0;
-    for(var i=0; i<this.state.sessionsList.length; i++){
-        sessionVotes[this.state.sessionsList[i].id]=0;
-    }
-    for(var i=0; i<this.state.votes.length; i++){
-      sessionSum += 1;
-      sessionVotes[this.state.votes[i].session_id] += 1;
-    }
-    sessionVotes['sum'] = sessionSum;
-    return sessionVotes;
-  },
-  getPolitician: function(politicians, id) {
-    if (typeof(politicians)==='undefined') politicians = this.state.politicians;
-    if (typeof(id)==='undefined') id = this.state.id;
-    if (id) {
-      for (i = 0; i < politicians.length; i++) {
-        if (politicians[i].id == id) {
-          return politicians[i];
-        }
-      }
-    }
-    return [];
-  },
-  getPoliticianVotes: function(id) {
-    this.setState({ 'retrievingVotes' : true
-    });
-    var url = '/pol/' + id;
-    this.fetchJSON(url, 'votes');
-  },
-  getBillInfo: function(object, event) {
-    //console.log("invoked"); 
-    //console.log(object);
-    //console.log(event);
-    if (object.props.vote.votequestion_id == this.state.currentVote) {
-      this.setState({currentVote: 0,
-                    billInfo: [],
-      });
-    }
-    else {
-      var url = '/bill/' + object.props.vote.votequestion_id;
-      this.setState({
-        currentVote: object.props.vote.votequestion_id,
-        billInfo: [],
-      });
-      this.fetchJSON(url, 'bill_info');
+      appState.search.searchValue = searchValue;
+      appState.search.max = max;
+      appState.search.riding = '';
+      this.setState({app: appState});
     }
   },
   onSearchScroll: function(thingone, thingtwo) {
     var scrollTop = thingone.getDOMNode().scrollTop;
     var height = thingone.getDOMNode().scrollHeight;
     var h = window.innerHeight;
+    var max = this.state.app.search.max;
     if ((h + scrollTop + 100) > height) {
       var num = this.filterPoliticians().length;
-      if (this.state.max < num) {
-        this.setState({
-          max : this.state.max + 10
-        });
+      if (max < num) {
+        appState = this.cloneAppState(this.state.app);
+          appState.search.max = max + 10;
+        this.setState({app : appState});
       }
     }
   },
-  checkMax: function() {
-    var newMax = this.state.max;
-    var num = this.filterPoliticians().length;
-    if (num < this.state.max) {
-      newMax = num;
-      if (newMax < 10) {
-        newMax = 10;
+
+  filterPoliticians: function() {
+    var filteredList = this.state.app.politicianList.filter(function (pol) {
+      for (var i = 0; i < pol.sessions.length; i++) {
+        for (var j = 0; j < this.state.app.sessions.length; j++) {
+          if (pol.sessions[i] == this.state.app.sessions[j]) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }.bind(this));
+    if (this.state.app.search.isSearching && this.state.app.search.searchValue) {
+      if (this.state.app.search.riding != '') {
+        var regex = new RegExp(this.state.app.search.riding, "i");
+        var filteredList = filteredList.filter(function (pol) {
+          pol.riding = this.state.app.ridingsList[pol.ridings[0]].name;
+          return pol.riding.search(regex) > -1;
+        }.bind(this));
+      }
+      var regex = new RegExp(this.state.app.search.searchValue, "i");
+      var filteredList = filteredList.filter(function (pol) {
+        pol.partyName = this.state.app.partiesList[pol.parties[0]].name;
+        pol.partySlug = this.state.app.partiesList[pol.parties[0]].slug;
+        pol.riding = this.state.app.ridingsList[pol.ridings[0]].name;
+        return pol.name.search(regex) > -1 || pol.partyName.search(regex) > -1 || pol.partySlug.search(regex) > -1 || pol.riding.search(regex) > -1  || pol.riding.search(regex) > -1;
+      }.bind(this));
+    }
+    return filteredList;
+  },
+
+  sessionToggle: function(sessionNumber) {
+    console.log('toggled');
+    console.log(sessionNumber);
+
+    var newSessions = [];
+    var $inArray = false;
+    for (i=0;i<this.state.app.sessions.length;i++) {
+      if (this.state.app.sessions[i]!=sessionNumber) {
+        newSessions.push(this.state.app.sessions[i]);
+      }
+      else {
+        $inArray = true;
       }
     }
-    return newMax;
+    if (!$inArray) {
+      newSessions.push(sessionNumber);
+    }
+    appState = this.cloneAppState(this.state.app);
+      appState.sessions = newSessions;
+    this.setState({app: appState});
   },
+
   render: function() {
-    var politicianList = this.filterPoliticians().slice(0, this.state.max);
-    var sessionVotes = this.getSessionVotes();
-    var voteList = this.filterVotes();
-    var appClass = 'box ' + this.state.box;
-    var politician = this.state.politician;
-    var containerclasses = 'searchBox-noscroll ' + this.state.box;
-
+    var loading = (this.state.app.vote.isLoading) ? "loading" : "loaded";
+    var filteredPoliticianList = this.filterPoliticians().slice(0, this.state.app.search.max);
     return (
-      React.createElement("div", {className: appClass}, 
-        React.createElement(InfoBox, {box: this.state.box}), 
-
-        React.createElement("div", {className: containerclasses}, 
-          React.createElement(SearchBox, {
-            box: this.state.box, 
-            searching: this.state.searching, 
-            politicians: politicianList, 
-            onSearchChange: this.onSearchChange, 
-            profile: politician, 
-            onSearchScroll: this.onSearchScroll})
-        ), 
-
-        React.createElement(ProfileBox, {
-          box: this.state.box, 
-          profile: politician, 
-          votes: voteList, 
-          onBillSearchChange: this.onBillSearchChange, 
-          onSessionSelectToggle: this.onSessionSelectToggle, 
-          onSessionSelect: this.onSessionSelect, 
-          sessionsList: this.state.sessionsList, 
-          session: this.state.session, 
-          sessionToggle: this.state.sessionToggle, 
-          sessionsVotes: sessionVotes, 
-          retrievingVotes: this.state.retrievingVotes, 
-          getBillInfo: this.getBillInfo, 
-          currentVote: this.state.currentVote, 
-          billInfo: this.state.billInfo, 
-          getPolitician: this.getPolitician}), 
-
-        React.createElement(TextBox, {box: this.state.box, billText: this.state.billText})
+      React.createElement("div", {className: "box search"}, 
+        React.createElement(SearchBox, {
+          box: this.state.app.box, //temp
+          politicianList: filteredPoliticianList, 
+          partiesList: this.state.app.partiesList, 
+          ridingsList: this.state.app.ridingsList, 
+          sessionsList: this.state.app.sessionsList, 
+          sessions: this.state.app.sessions, 
+          search: this.state.app.search, 
+          onSearchScroll: this.onSearchScroll, 
+          onSearchChange: this.onSearchChange, 
+          sessionToggle: this.sessionToggle})
       )
     );
   },
-  fetchJSON: function(path, type) {
-    var request = new XMLHttpRequest();
-    request.open('GET', path, true);
-    request.onload = function() {
-      if (request.status >= 200 && request.status < 400) {
-        // Success!
-        var data = JSON.parse(request.responseText);
-        if (type == 'politicians') {
-          var politician = this.getPolitician(data['results']);
-          this.setState({politicians: data['results'],
-                        politician: politician, });
-          if (politician.id) {
-            this.getPoliticianVotes(politician.id);
-          }
-        }
-        else if (type == 'votes') {
-          this.setState({votes: data['results'],
-                          retrievingVotes: false
-                        });
-        }
-        else if (type == 'sessions') {
-          this.setState({sessionsList: data['results']});
-        }
-        else if (type == 'bill_info') {
-          this.setState({billInfo: data});
-        }
-        else if (type == 'bill_text') {
-          this.setState({billText: data['results'][0]});
-        }
-        else {
-          console.log('type not politician or votes');
-        }
-      } else {
-        // We reached our target server, but it returned an error
-        console.log('server reached, but it did not give data in fetchJSON');
-      }
-    }.bind(this);
-    request.onerror = function() {
-        console.log('connection problem with fetchJSON');
-      // There was a connection error of some sort
-    };
-    request.send();
-  },
-  filterVotes: function() {
-    if (this.state.billSearching && this.state.billSearchValue) {
-      var regex = new RegExp(this.state.billSearchValue, "i");
-      var votes = this.state.votes.filter(function (vote) {
-        return vote.name_en.search(regex) > -1 || vote.number.search(regex) > -1 || vote.short_title_en.search(regex) > -1;
-      });
-    }
-    else {
-      var votes = this.state.votes;
-    }
-    if (this.state.session) {
-      var sessionRegex = new RegExp(this.state.session, "i");
-      var filteredVotes = votes.filter(function (vote) {
-        return vote.session_id.search(sessionRegex) > -1;
-      });
-    }
-    else {
-      var filteredVotes = votes;
-    }
-    return filteredVotes;
-  },
-  filterPoliticians: function() {
-    if (this.state.searching && this.state.searchValue) {
-      if (this.state.riding != "") {
-        var regex = new RegExp(this.state.riding, "i");
-        var filteredList = this.state.politicians.filter(function (pol) {
-          return pol.riding.search(regex) > -1;
-        });
-        return filteredList;
-      }
-      var regex = new RegExp(this.state.searchValue, "i");
-      var filteredList = this.state.politicians.filter(function (pol) {
-        return pol.name.search(regex) > -1 || pol.party_name.search(regex) > -1 || pol.party_slug.search(regex) > -1 || pol.riding.search(regex) > -1  || pol.riding.search(regex) > -1;
-      });
-      return filteredList;
-    }
-    else {
-      return this.state.politicians;
-    }
-  },
+  
 });
 
 React.render(
@@ -1178,4 +1033,4 @@ React.render(
   document.getElementById('content')
 );
 
-},{"./boxes/info/InfoBox.js":1,"./boxes/profile/ProfileBox.js":5,"./boxes/search/SearchBox.js":7,"./boxes/text/TextBox.js":10,"./elements/ArrowIcon.js":11}]},{},[12]);
+},{"./boxes/info/InfoBox.js":1,"./boxes/profile/ProfileBox.js":5,"./boxes/search/SearchBox.js":7,"./boxes/text/TextBox.js":12,"./elements/ArrowIcon.js":13}]},{},[14]);

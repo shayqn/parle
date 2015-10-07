@@ -301,19 +301,31 @@ var App = React.createClass({
   sessionToggle: function(sessionNumber) {
     console.log('toggled');
     console.log(sessionNumber);
+    console.log(this.state.app.sessions.length);
 
     var newSessions = [];
     var $inArray = false;
-    for (i=0;i<this.state.app.sessions.length;i++) {
-      if (this.state.app.sessions[i]!=sessionNumber) {
-        newSessions.push(this.state.app.sessions[i]);
+    if (this.state.app.sessions.length == 1) {
+      if (this.state.app.sessions[0] == sessionNumber) {
+        newSessions = [sessionNumber];
       }
       else {
-        $inArray = true;
+        newSessions.push(this.state.app.sessions[0]);
+        newSessions.push(sessionNumber);
       }
     }
-    if (!$inArray) {
-      newSessions.push(sessionNumber);
+    else {
+      for (i=0;i<this.state.app.sessions.length;i++) {
+        if (this.state.app.sessions[i]!=sessionNumber) {
+          newSessions.push(this.state.app.sessions[i]);
+        }
+        else {
+          $inArray = true;
+        }
+      }
+      if (!$inArray) {
+        newSessions.push(sessionNumber);
+      }
     }
     appState = this.cloneAppState(this.state.app);
       appState.sessions = newSessions;
