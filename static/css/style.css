@@ -661,7 +661,7 @@ body {
           .searchBox .searchContent .searchStack h2 {
             font-size: 2em;
             padding: 0; } }
-      .searchBox .searchContent .searchStack > a {
+      .searchBox .searchContent .searchStack .results > a {
         position: relative;
         width: 100%;
         height: 80px;
@@ -672,11 +672,12 @@ body {
         border-radius: 5px;
         background: rgba(118, 117, 128, 0.05);
         outline: none;
+        overflow: hidden;
         -moz-transition: all 0.4s;
         -o-transition: all 0.4s;
         -webkit-transition: all 0.4s;
         transition: all 0.4s; }
-        .searchBox .searchContent .searchStack > a h3 {
+        .searchBox .searchContent .searchStack .results > a h3 {
           vertical-align: middle;
           font-size: 1.4em;
           display: inline-block;
@@ -689,9 +690,9 @@ body {
           -webkit-transition: all 0.4s;
           transition: all 0.4s; }
           @media screen and (max-width: 1024px), (max-device-width: 1024px) {
-            .searchBox .searchContent .searchStack > a h3 {
+            .searchBox .searchContent .searchStack .results > a h3 {
               font-size: 1.3em; } }
-        .searchBox .searchContent .searchStack > a div {
+        .searchBox .searchContent .searchStack .results > a div.headshot {
           background-color: #ddd;
           display: inline-block;
           width: 60px;
@@ -703,20 +704,20 @@ body {
           border-radius: 50%;
           background-size: cover;
           background-position: center 20%; }
-        .searchBox .searchContent .searchStack > a span.party {
+        .searchBox .searchContent .searchStack .results > a span.party {
           position: absolute;
           right: 0.5em;
           top: 0.5em;
           text-transform: uppercase;
           color: rgba(0, 0, 0, 0.2);
           font-weight: 600; }
-        .searchBox .searchContent .searchStack > a:hover h3 {
+        .searchBox .searchContent .searchStack .results > a:hover h3 {
           color: #ec5a62; }
-        .searchBox .searchContent .searchStack > a:hover span {
+        .searchBox .searchContent .searchStack .results > a:hover span {
           color: rgba(0, 0, 0, 0.2); }
-        .searchBox .searchContent .searchStack > a:hover, .searchBox .searchContent .searchStack > a:focus {
+        .searchBox .searchContent .searchStack .results > a:hover, .searchBox .searchContent .searchStack .results > a:focus {
           background: rgba(118, 117, 128, 0.1); }
-        .searchBox .searchContent .searchStack > a.active {
+        .searchBox .searchContent .searchStack .results > a.active {
           margin-top: 0px;
           margin-bottom: 0px;
           -ms-transform: translate(0px, 0px);
@@ -728,31 +729,108 @@ body {
           -o-transition: all 0.4s;
           -webkit-transition: all 0.4s;
           transition: all 0.4s; }
-          .searchBox .searchContent .searchStack > a.active h3 {
+          .searchBox .searchContent .searchStack .results > a.active h3 {
             color: rgba(236, 90, 98, 0.9); }
-          .searchBox .searchContent .searchStack > a.active span {
+          .searchBox .searchContent .searchStack .results > a.active span {
             color: rgba(0, 0, 0, 0.2); }
-        .searchBox .searchContent .searchStack > a.cpc:hover span, .searchBox .searchContent .searchStack > a.cpc.active span {
+        .searchBox .searchContent .searchStack .results > a.cpc:hover span, .searchBox .searchContent .searchStack .results > a.cpc.active span {
           color: rgba(12, 106, 170, 0.5); }
-        .searchBox .searchContent .searchStack > a.liberal:hover span, .searchBox .searchContent .searchStack > a.liberal.active span {
+        .searchBox .searchContent .searchStack .results > a.liberal:hover span, .searchBox .searchContent .searchStack .results > a.liberal.active span {
           color: rgba(215, 24, 32, 0.5); }
-        .searchBox .searchContent .searchStack > a.NDP:hover span, .searchBox .searchContent .searchStack > a.NDP.active span {
+        .searchBox .searchContent .searchStack .results > a.NDP:hover span, .searchBox .searchContent .searchStack .results > a.NDP.active span {
           color: rgba(241, 102, 34, 0.5); }
-        .searchBox .searchContent .searchStack > a.bloc:hover span, .searchBox .searchContent .searchStack > a.bloc.active span {
+        .searchBox .searchContent .searchStack .results > a.bloc:hover span, .searchBox .searchContent .searchStack .results > a.bloc.active span {
           color: rgba(8, 59, 113, 0.5); }
-        .searchBox .searchContent .searchStack > a.green:hover span, .searchBox .searchContent .searchStack > a.green.active span {
+        .searchBox .searchContent .searchStack .results > a.green:hover span, .searchBox .searchContent .searchStack .results > a.green.active span {
           color: rgba(60, 155, 52, 0.5); }
-        .searchBox .searchContent .searchStack > a.placeholder h3 {
+        .searchBox .searchContent .searchStack .results > a.placeholder h3 {
           background-color: rgba(145, 145, 145, 0.1);
           color: rgba(118, 117, 128, 0);
           white-space: nowrap; }
-        .searchBox .searchContent .searchStack > a.placeholder span.party {
+        .searchBox .searchContent .searchStack .results > a.placeholder span.party {
           background-color: rgba(145, 145, 145, 0.1);
           color: rgba(118, 117, 128, 0); }
-        .searchBox .searchContent .searchStack > a.reduce-medium h3 {
+        .searchBox .searchContent .searchStack .results > a.reduce-medium h3 {
           font-size: 1.2em; }
-        .searchBox .searchContent .searchStack > a.reduce-large h3 {
+        .searchBox .searchContent .searchStack .results > a.reduce-large h3 {
           font-size: 1em; }
+
+@-webkit-keyframes loader-loading {
+  0% {
+    width: 0%; }
+  100% {
+    width: 90%; } }
+
+@-moz-keyframes loader-loading {
+  0% {
+    width: 0%; }
+  100% {
+    width: 90%; } }
+
+@-o-keyframes loader-loading {
+  0% {
+    width: 0%; }
+  100% {
+    width: 90%; } }
+
+@keyframes loader-loading {
+  0% {
+    width: 0%; }
+  100% {
+    width: 90%; } }
+
+@-webkit-keyframes loader-complete {
+  0% {
+    width: 90%;
+    opacity: 1; }
+  100% {
+    width: 100%;
+    opacity: 1; } }
+
+@-moz-keyframes loader-complete {
+  0% {
+    width: 90%;
+    opacity: 1; }
+  100% {
+    width: 100%;
+    opacity: 1; } }
+
+@-o-keyframes loader-complete {
+  0% {
+    width: 90%;
+    opacity: 1; }
+  100% {
+    width: 100%;
+    opacity: 1; } }
+
+@keyframes loader-complete {
+  0% {
+    width: 90%;
+    opacity: 1; }
+  100% {
+    width: 100%;
+    opacity: 1; } }
+        .searchBox .searchContent .searchStack .results > a .loader {
+          background-color: rgba(187, 187, 187, 0.27);
+          width: 90%;
+          height: 100%;
+          position: absolute;
+          top: 0;
+          left: 0;
+          z-index: -1; }
+          .searchBox .searchContent .searchStack .results > a .loader.loading {
+            width: 90%;
+            -webkit-animation: loader-loading 2s 1;
+            -moz-animation: loader-loading 2s 1;
+            -o-animation: loader-loading 2s 1;
+            animation: loader-loading 2s 1; }
+          .searchBox .searchContent .searchStack .results > a .loader.complete {
+            width: 100%;
+            opacity: 0;
+            -webkit-animation: loader-complete 0.5s 1;
+            -moz-animation: loader-complete 0.5s 1;
+            -o-animation: loader-complete 0.5s 1;
+            animation: loader-complete 0.5s 1; }
   .searchBox.profile {
     width: 400px; }
     .searchBox.profile .topLinks .github {
@@ -838,7 +916,7 @@ body {
           width: 90vw; }
           .searchBox .searchContent .searchStack h2 {
             padding: 0; }
-          .searchBox .searchContent .searchStack > a h3 {
+          .searchBox .searchContent .searchStack .results > a h3 {
             font-size: 1.3em; } }
   @media screen and (max-width: 668px), (max-device-width: 668px) {
     .searchBox.profile {
@@ -895,7 +973,7 @@ body {
             right: 0;
             top: 0;
             background: -webkit-linear-gradient(left, rgba(241, 241, 241, 0), #f1f1f1); }
-        .searchBox .searchContent .searchStack > a h3 {
+        .searchBox .searchContent .searchStack .results > a h3 {
           font-size: 1.3em; } }
 
 .profileBox {
@@ -1064,6 +1142,88 @@ body {
           visibility: hidden; }
   .profileBox .votes .billStack {
     width: 100%; }
+    .profileBox .votes .billStack .voteRow {
+      position: relative; }
+      .profileBox .votes .billStack .voteRow .loader {
+        background-color: rgba(187, 187, 187, 0.27);
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 0; }
+
+@-webkit-keyframes loader-loading {
+  0% {
+    width: 0%; }
+  100% {
+    width: 90%; } }
+
+@-moz-keyframes loader-loading {
+  0% {
+    width: 0%; }
+  100% {
+    width: 90%; } }
+
+@-o-keyframes loader-loading {
+  0% {
+    width: 0%; }
+  100% {
+    width: 90%; } }
+
+@keyframes loader-loading {
+  0% {
+    width: 0%; }
+  100% {
+    width: 90%; } }
+
+@-webkit-keyframes loader-complete {
+  0% {
+    width: 90%;
+    opacity: 1; }
+  100% {
+    width: 100%;
+    opacity: 1; } }
+
+@-moz-keyframes loader-complete {
+  0% {
+    width: 90%;
+    opacity: 1; }
+  100% {
+    width: 100%;
+    opacity: 1; } }
+
+@-o-keyframes loader-complete {
+  0% {
+    width: 90%;
+    opacity: 1; }
+  100% {
+    width: 100%;
+    opacity: 1; } }
+
+@keyframes loader-complete {
+  0% {
+    width: 90%;
+    opacity: 1; }
+  100% {
+    width: 100%;
+    opacity: 1; } }
+        .profileBox .votes .billStack .voteRow .loader.loading {
+          width: 90%;
+          -webkit-animation: loader-loading 1s 1;
+          -moz-animation: loader-loading 1s 1;
+          -o-animation: loader-loading 1s 1;
+          animation: loader-loading 1s 1; }
+        .profileBox .votes .billStack .voteRow .loader.complete {
+          width: 100%;
+          -webkit-animation: loader-loading 0.5s 1;
+          -moz-animation: loader-loading 0.5s 1;
+          -o-animation: loader-loading 0.5s 1;
+          animation: loader-loading 0.5s 1;
+          opacity: 1;
+          z-index: -1; }
+      .profileBox .votes .billStack .voteRow.emptyrow span {
+        visibility: hidden; }
     .profileBox .votes .billStack .row {
       background-color: #ccc; }
       .profileBox .votes .billStack .row .main {
@@ -1157,7 +1317,7 @@ body {
         .profileBox .votes .billStack .row .col.spacer {
           width: 5%;
           padding: 0px; }
-      .profileBox .votes .billStack .row.current .dropdown span svg {
+      .profileBox .votes .billStack .row.loaded .dropdown span svg {
         -webkit-transform: translate3d(0em, 0em, 0) scale3d(1, 1, 1) rotate(-90deg);
         transform: translate3d(0em, 0em, 0) scale3d(1, 1, 1) rotate(-90deg); }
       .profileBox .votes .billStack .row .row.info {

@@ -21,6 +21,7 @@ SearchBox = React.createClass({
               box={this.props.box} 
               politicians={this.props.politicianList} 
               currentProfileID={this.props.currentProfileID} 
+              currentProfileIsLoading={this.props.currentProfileIsLoading}
               searching={this.props.search.isSearching}
               sessionsList={this.props.sessionsList}
               currentSessions={this.props.sessions}

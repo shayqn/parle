@@ -90,15 +90,18 @@ var App = React.createClass({
         newAppState.bill.id = urlParameters[1];
         newAppState.bill.data = {};
       }
-    }
-    // if profile and vote specified
-    if (urlParameters.length >= 4) {
-      if ((urlParameters[2] == 'vote') && !isNaN(urlParameters[3])) {
-        newAppState.vote.isLoading = true;
-        newAppState.vote.id = urlParameters[3];
-        newAppState.vote.data = {};
-        newAppState.vote.sponsor = 0;
+      // if profile and vote specified
+      if (urlParameters.length >= 4) {
+        if ((urlParameters[2] == 'vote') && !isNaN(urlParameters[3])) {
+          newAppState.vote.isLoading = true;
+          newAppState.vote.id = urlParameters[3];
+          newAppState.vote.data = {};
+          newAppState.vote.sponsor = 0;
+        }
       }
+    }
+    else {
+      newAppState.profile.id = 0;
     }
     return newAppState;
   },
@@ -226,7 +229,6 @@ var App = React.createClass({
   },
 
   onSearchChange: function(event) {
-    console.log('search change');
     // check to see if the max is greater than the number of results - if so, reduce it
     var max = this.state.app.search.max;
     var num = this.filterPoliticians().length;
@@ -405,7 +407,6 @@ var App = React.createClass({
   },
 
   render: function() {
-    console.log('render');
     var loading = (this.state.app.vote.isLoading) ? "loading" : "loaded";
     var filteredPoliticianList = this.filterPoliticians().slice(0, this.state.app.search.max);
     var currentProfile = this.getPoliticianByID(this.state.app.profile.id);
@@ -427,7 +428,8 @@ var App = React.createClass({
           expandSessions={this.expandSessions}
           expandState={this.state.app.expandState}
           getters = {getters}
-          currentProfileID = {this.state.app.profile.id} />
+          currentProfileID = {this.state.app.profile.id}
+          currentProfileIsLoading={this.state.app.profile.isLoading} />
         <ProfileBox 
           box={this.state.app.box} //temp
           getters = {getters}
@@ -437,7 +439,8 @@ var App = React.createClass({
           onBillSearchChange={this.onBillSearchChange} 
           getBillInfo = {this.getBillInfo}
           billInfo = {this.state.app.vote.data}
-          getPolitician = {this.getPolitician} />
+          getPolitician = {this.getPolitician}
+          currentProfileIsLoading={this.state.app.profile.isLoading} />
       </div>
     );
   },
@@ -453,6 +456,7 @@ var App = React.createClass({
       this.getVoteInformation(object.props.vote.votequestion_id);
       appState = this.cloneAppState(this.state.app);
         appState.vote.id = object.props.vote.votequestion_id;
+        appState.vote.isLoading = true;
         appState.vote.data = {};
       this.setState({app: appState});
     }

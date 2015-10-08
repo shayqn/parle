@@ -29,7 +29,8 @@ var ProfileBox = React.createClass({
         getBillInfo = {this.props.getBillInfo}
         currentVote = {this.props.currentVote}
         billInfo = {this.props.billInfo}
-        getPolitician = {this.props.getPolitician} />
+        getPolitician = {this.props.getPolitician}
+        currentProfileIsLoading={this.props.currentProfileIsLoading} />
       </div>
     );
   },

@@ -7,6 +7,7 @@ var SearchStack = React.createClass({displayName: "SearchStack",
   render: function() {
     classString = "searchStack";
     var currentProfileID = this.props.currentProfileID;
+    var currentProfileIsLoading = this.props.currentProfileIsLoading;
     var politicianNodes = [];
     var getPoliticianByID = this.props.getters[0];
     var getPartyByID = this.props.getters[1];
@@ -18,6 +19,7 @@ var SearchStack = React.createClass({displayName: "SearchStack",
             key={key}
             politician={politician}
             currentProfileID={currentProfileID}
+            currentProfileIsLoading={currentProfileIsLoading}
             getters={this.props.getters}
             box={this.props.box} />
         );
@@ -43,7 +45,9 @@ var SearchStack = React.createClass({displayName: "SearchStack",
          expandSessions = {this.props.expandSessions}
           expandState = {this.props.expandState} />
         <h2>Members of Parliament<span className="leaf"></span></h2>
-        {politicianNodes}
+        <div className="results">
+          {politicianNodes}
+        </div>
       </div>
     );
   }
@@ -56,9 +60,16 @@ var PoliticianResult = React.createClass({
     var politician = this.props.politician;
     var headshot = politician.headshot.split('/').pop();
     var imgURL = "url('/static/headshots/" + headshot + "')";
-    var classString = '';
+    var classString = 'result ';
+    var loader = null;
     if (politician.id == this.props.currentProfileID) {
       classString += 'active ';
+      if (this.props.currentProfileIsLoading) {
+        loader= (<div className="loader loading"></div>);
+      }
+      else {
+        loader= (<div className="loader complete"></div>);
+      }
     }
     if ((politician.id == this.props.currentProfileID)&&(this.props.box == 'profile')) {
       var href = '/#/';
@@ -77,9 +88,10 @@ var PoliticianResult = React.createClass({
     }
     return (
       <a className={classString} href={href} key={this.props.key} >
-        <div style={{backgroundImage: imgURL}}></div>
+        <div className="headshot" style={{backgroundImage: imgURL}}></div>
         <h3>{politician.name}</h3>
         <span className="party">{partyName}</span>
+        {loader}
       </a>
     );
   }

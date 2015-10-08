@@ -1,6 +1,8 @@
 /** @jsx React.DOM */
 
+var PureRenderMixin = require('react-addons-pure-render-mixin');
 var VoteRow = React.createClass({
+  mixins: [PureRenderMixin],
   render: function () {
     if (this.props.vote.vote == 'Y') {
       var voteClass = 'yes ';
@@ -28,11 +30,23 @@ var VoteRow = React.createClass({
       var name = this.props.vote.name_en;
     }
     var voteRowClass = "voteRow row";
+    var loader = null;
+    var balancer = null;
     if (this.props.vote.votequestion_id == this.props.currentVote.id) {
       voteRowClass += " current";
+      if (this.props.currentVote.isLoading) {
+        loader= (<div className="loader loading"></div>);
+        balancer= (<div className="balancer"></div>);
+      }
+      else {
+        loader= (<div className="loader complete"></div>);
+        voteRowClass += " loaded";
+      }
     }
     return (
       <div className={voteRowClass} key={this.props.key}>
+        {balancer}
+        {loader}
         <div onClick={this.props.onClick.bind(null, this)} className="main row">
           <div className="col spacer left"></div>
           <div className="col session"><span className="label mobile-only">Session</span>{this.props.vote.session_id}</div>
@@ -59,7 +73,7 @@ var VoteInfoRow = React.createClass({
     var infoClass = "row info";
     var getPolitician = this.props.getPolitician;
     var sponsorComponent = null;
-    if (this.props.voteQuestionID == this.props.currentVote.id) {
+    if ((this.props.voteQuestionID == this.props.currentVote.id)&&!this.props.currentVote.isLoading) {
       infoClass += ' current';
       var lawString =  'Law: ' + this.props.lawText;
       var voteInformation = <div className="col billInfo">{lawString}</div>

@@ -21,12 +21,25 @@ var BillStack = React.createClass({
         );
       }.bind(this));
     }
+    else if (this.props.currentProfileIsLoading) {
+      loader= (<div className="loader loading"></div>);
+      for(i=0;i<20;i++) {
+        var EmptyRow = (
+            <div key={i} className="voteRow row emptyrow">
+              <div className="main row">
+                <div className="col"><span>-</span></div>
+              </div>
+            </div>
+        );
+        voteRows.push(EmptyRow);
+      }
+    }
     else {
       var noResultsRow = (
           <div key={0} className="voteRow row noresults">
             <div className="main row">
               <div className="col spacer"></div>
-              <div className="col"><span>no results found</span></div>
+              <div className="col"><span>No matching records have been found. Try changing your selected sessions or search terms.</span></div>
               <div className="col spacer"></div> 
             </div>
           </div>
@@ -47,8 +60,8 @@ var BillStack = React.createClass({
               <div className="col dropdown"></div>
               <div className="col spacer right"></div>
             </div>
-            {voteRows}
             {loader}
+            {voteRows}
         </div>
       </div>
     );        
