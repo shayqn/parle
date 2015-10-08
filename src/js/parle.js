@@ -13,6 +13,8 @@ function gaTrack(path, title) {
   }
 }
 
+//Mixins
+
 // Elements
 var ArrowIcon = require('./elements/ArrowIcon.js');
 
@@ -224,6 +226,7 @@ var App = React.createClass({
   },
 
   onSearchChange: function(event) {
+    console.log('search change');
     // check to see if the max is greater than the number of results - if so, reduce it
     var max = this.state.app.search.max;
     var num = this.filterPoliticians().length;
@@ -310,24 +313,30 @@ var App = React.createClass({
     return filteredList;
   },
   filterVotes: function() {
-    var sessions = this.state.app.sessions;
-    var filteredVotesBySession = this.state.app.profile.votes.filter(function (vote) {
-      for (var i = 0; i < sessions.length; i++) {
-        if (vote.session_id == sessions[i]) {
-          return true;
+    if (Object.keys(this.state.app.profile.votes).length > 0) {
+      var sessions = this.state.app.sessions;
+      var filteredVotesBySession = this.state.app.profile.votes.filter(function (vote) {
+        for (var i = 0; i < sessions.length; i++) {
+          if (vote.session_id == sessions[i]) {
+            return true;
+          }
         }
+        return false;
+      }.bind(this));
+      if (this.state.app.vote.searchValue) {
+        var regex = new RegExp(this.state.app.vote.searchValue, "i");
+        var votes = filteredVotesBySession.filter(function (vote) {
+          return vote.name_en.search(regex) > -1 || vote.number.search(regex) > -1 || vote.short_title_en.search(regex) > -1;
+        });
       }
-      return false;
-    }.bind(this));
-    if (this.state.app.vote.searchValue) {
-      var regex = new RegExp(this.state.app.vote.searchValue, "i");
-      var votes = filteredVotesBySession.filter(function (vote) {
-        return vote.name_en.search(regex) > -1 || vote.number.search(regex) > -1 || vote.short_title_en.search(regex) > -1;
-      });
+      else {
+        var votes = filteredVotesBySession;
+      }
     }
     else {
-      var votes = filteredVotesBySession;
+      votes = this.state.app.profile.votes;
     }
+    
     return votes;
   },
 
@@ -396,6 +405,7 @@ var App = React.createClass({
   },
 
   render: function() {
+    console.log('render');
     var loading = (this.state.app.vote.isLoading) ? "loading" : "loaded";
     var filteredPoliticianList = this.filterPoliticians().slice(0, this.state.app.search.max);
     var currentProfile = this.getPoliticianByID(this.state.app.profile.id);

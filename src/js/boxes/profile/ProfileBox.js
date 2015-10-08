@@ -1,7 +1,9 @@
 /** @jsx React.DOM */
 var BillStack = require('./BillStack.js');
 var BillSearch = require('./BillSearch.js');
+var PureRenderMixin = require('react-addons-pure-render-mixin');
 var ProfileBox = React.createClass({
+  mixins: [PureRenderMixin],
   render: function() {
     var classes = 'profileBox ' + this.props.box;
     var closeClass = 'close ' + this.props.box;

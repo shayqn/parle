@@ -1,8 +1,9 @@
 /** @jsx React.DOM */
-
+var PureRenderMixin = require('react-addons-pure-render-mixin');
 var SearchStack = require('./SearchStack.js');
 var SessionSelector = require('./SessionSelector.js');
 SearchBox = React.createClass({
+  mixins: [PureRenderMixin],
   render: function() {
     var classes = 'searchBox ' + this.props.box; //temp
     var noscrollClasses = 'searchBox-noscroll ' + this.props.box; //temp

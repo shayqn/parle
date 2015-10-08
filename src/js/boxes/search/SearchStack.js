@@ -1,6 +1,9 @@
 /** @jsx React.DOM */
 
+
+var PureRenderMixin = require('react-addons-pure-render-mixin');
 var SearchStack = React.createClass({displayName: "SearchStack",
+  mixins: [PureRenderMixin],
   render: function() {
     classString = "searchStack";
     var currentProfileID = this.props.currentProfileID;
@@ -9,34 +12,14 @@ var SearchStack = React.createClass({displayName: "SearchStack",
     var getPartyByID = this.props.getters[1];
     var getRidingByID = this.props.getters[2];
     if (this.props.politicians.length > 0) {
-      politicianNodes = this.props.politicians.map(function (politician, i) {
-        var headshot = politician.headshot.split('/').pop();
-        var imgURL = "url('/static/headshots/" + headshot + "')";
-        var classString = '';
-        if (politician.id == currentProfileID) {
-          classString += 'active ';
-        }
-        if ((politician.id == currentProfileID)&&(this.props.box == 'profile')) {
-          var href = '/#/';
-        }
-        else {
-          var href = '/#/profile/' + politician.id;
-        }
-        var partyName = getPartyByID(politician.parties[0]);
-        if (politician.name.length>19) {
-          if (politician.name.length > 22) {
-            classString += ' reduce-large'
-          }
-          else {
-            classString += ' reduce-medium';
-          }
-        }
+      politicianNodes = this.props.politicians.map(function (politician, key) {
         return (
-          <a className={classString} href={href} key={i} >
-            <div style={{backgroundImage: imgURL}}></div>
-            <h3>{politician.name}</h3>
-            <span className="party">{partyName}</span>
-          </a>
+          <PoliticianResult
+            key={key}
+            politician={politician}
+            currentProfileID={currentProfileID}
+            getters={this.props.getters}
+            box={this.props.box} />
         );
       }.bind(this));  
     }
@@ -64,6 +47,43 @@ var SearchStack = React.createClass({displayName: "SearchStack",
       </div>
     );
   }
+});
+
+var PoliticianResult = React.createClass({
+  mixins: [PureRenderMixin],
+  render: function() {
+    var getPartyByID = this.props.getters[1];
+    var politician = this.props.politician;
+    var headshot = politician.headshot.split('/').pop();
+    var imgURL = "url('/static/headshots/" + headshot + "')";
+    var classString = '';
+    if (politician.id == this.props.currentProfileID) {
+      classString += 'active ';
+    }
+    if ((politician.id == this.props.currentProfileID)&&(this.props.box == 'profile')) {
+      var href = '/#/';
+    }
+    else {
+      var href = '/#/profile/' + politician.id;
+    }
+    var partyName = getPartyByID(politician.parties[0]);
+    if (politician.name.length>19) {
+      if (politician.name.length > 22) {
+        classString += ' reduce-large'
+      }
+      else {
+        classString += ' reduce-medium';
+      }
+    }
+    return (
+      <a className={classString} href={href} key={this.props.key} >
+        <div style={{backgroundImage: imgURL}}></div>
+        <h3>{politician.name}</h3>
+        <span className="party">{partyName}</span>
+      </a>
+    );
+  }
+
 });
 
 module.exports = SearchStack;

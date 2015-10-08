@@ -9,10 +9,10 @@ var BillStack = React.createClass({
     var loader = null;
     if (this.props.votes.length  > 0) {
       var getBillText = this.props.getBillText;
-      voteRows = this.props.votes.map(function (object, i) {
+      voteRows = this.props.votes.map(function (object, key) {
         return (
           <VoteRow
-            key = {i}
+            key = {key}
             vote = {object}
             currentVote = {currentVote}
             onClick = {getBillInfo}
@@ -23,7 +23,7 @@ var BillStack = React.createClass({
     }
     else {
       var noResultsRow = (
-          <div className="voteRow row noresults">
+          <div key={0} className="voteRow row noresults">
             <div className="main row">
               <div className="col spacer"></div>
               <div className="col"><span>no results found</span></div>
