@@ -49,7 +49,7 @@ def get_pol_json(politician_id):
     pol_results = cursor.fetchall()
 
     # return a JSON response to React (includes header, no extra work needed)
-    return jsonify(results=pol_results)
+    return jsonify(votes=pol_results)
 
 def get_initial_json():
     """
@@ -67,44 +67,54 @@ def get_initial_json():
     # Create and execute the query for the initial data needed to load the React app
     # We're not picking anything specific for this, so no parameters needed, just execute it directly
     cursor.execute(
-        "SELECT p.id, p.name, p.name_family, p.headshot, c.slug, c.short_name, e.end_date, r.name AS riding_name "
-        "FROM core_politician p, core_party c, core_electedmember e, core_riding r "   # table_name abbreviation, ...
+        "SELECT p.id, p.name, p.headshot, json_agg(s.session_id ORDER BY s.session_id DESC) as sessions, json_agg(c.id ORDER BY s.session_id DESC) as parties, json_agg(r.id ORDER BY s.session_id DESC) as ridings "
+        "FROM core_politician p, core_party c, core_electedmember e, core_riding r, core_electedmember_sessions s "   # table_name abbreviation, ...
         "WHERE p.gender NOT LIKE '' "   # appears to help filter for "real" MPs?
         "AND p.headshot NOT LIKE '' "   # appears to help filter for "real" MPs?
         "AND p.id = e.politician_id "   # joins politician info with elected member rows (multiple if re-elected)
+        "AND s.electedmember_id = e.id "
         "AND e.party_id = c.id "        # joins elected member rows with associated party rows
         "AND r.id = e.riding_id "
-        "AND e.start_date = "           # we only want their most recent party data, so let's pick that one
-        "( "                            # we want (e.start_date = most recent e.start_date)
-        "  SELECT start_date "
-        "  FROM core_electedmember "    # get all electedmember records associated with each politicians
-        "  WHERE politician_id = p.id " # yep, we can still use p.id in here!
-        "  ORDER BY start_date "        # sort them by start_date
-        "  DESC LIMIT 1 "               # limiting to one only selects the most recent date
-        ") "
-        "AND (e.end_date > '2006-01-01' OR e.end_date IS NULL) "
-        "ORDER BY p.name_family"        # order by last name
+        "GROUP BY p.id, p.name "
+        "ORDER BY p.name_family "        # order by last name
     )
 
     # Fetch results to a dictionary labelled "raw" as there are some evaluations that need to happen
-    raw_pol_results = cursor.fetchall()
+    pol_results = cursor.fetchall()
 
-    # Create a list to store our final result
-    pol_results = []
+    cursor.execute(
+        "SELECT id, slug, short_name "
+        "FROM core_party "
+    )
 
-    # Iterate through each result
-    for row in raw_pol_results:
-        # Add desired data to results in dictionary form
-        pol_results.append({
-            # 'JSON-KEY' : row['DATABASE-KEY'], JSON-KEY is used in React only
-            'id': row['id'],
-            'name': row['name'],
-            'name_family': row['name_family'],
-            'imgurl': row['headshot'].split('/')[-1],   # extracts filename only, no directory data
-            'party_slug': row['slug'],
-            'party_name': row['short_name'],
-            'active': False if row['end_date'] else True,
-            'riding' : row['riding_name']})  # boolean: if an end_date exists, they are no longer active
+    raw_party_results = cursor.fetchall()
+
+    party_results = {}
+    for party in raw_party_results:
+        party_results[party['id']] = {"name": party['short_name'], "slug": party['slug']}
+
+    cursor.execute(
+        "SELECT id, name, slug "
+        "FROM core_riding "
+    )
+
+    raw_riding_results = cursor.fetchall()
+
+    riding_results = {}
+    for riding in raw_riding_results:
+        riding_results[riding['id']] = {"name": riding['name'], "slug": riding['slug']}
+
+    # Select the name and id of all existing sessions
+    cursor.execute(
+        "SELECT c.id, c.start, c.end "
+        "FROM core_session c "
+        "WHERE c.start > '2006-01-01'"
+    )
+
+    raw_session_results = cursor.fetchall()
+    session_results = {}
+    for session in raw_session_results:
+        session_results[session['id']] = {"start": str(session['start']), "end": str(session['end'])}
 
     # Return JSON as well just in case we want to use it with AJAX calls
-    return jsonify(results=pol_results)
+    return jsonify(politicians=pol_results, parties=party_results, ridings=riding_results, sessions=session_results)
