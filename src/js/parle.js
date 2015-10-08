@@ -42,12 +42,13 @@ var App = React.createClass({
       ridingsList: {},
       sessionsList: {},
       sessions: ['41-2', '41-1'],
+      expandState: true,
       search: {
+        max: 10,
+        isLoading: true,
         isSearching: false,
         searchValue: '',
         riding: '',
-        max: 10,
-        isLoading: true,
       },
       profile: {
         id: 0,
@@ -59,6 +60,7 @@ var App = React.createClass({
         data: {},
         sponsor: 0,
         isLoading: false,
+        searchValue: '',
       },
       bill: {
         id: 0,
@@ -78,7 +80,7 @@ var App = React.createClass({
         newAppState.box = 'profile';
         newAppState.profile.isLoading = true;
         newAppState.profile.id = urlParameters[1];
-        newAppState.profile.votes = {};
+        newAppState.profile.votes = [];
       }
       else if ((urlParameters[0] == 'bill') && !isNaN(urlParameters[1])) {
         newAppState.box = 'bill';
@@ -181,6 +183,7 @@ var App = React.createClass({
     var parsedData = JSON.parse(data);
     appState = this.cloneAppState(this.state.app);
       appState.vote.data = parsedData['votes'];
+      appState.vote.data = parsedData['votes'];
       appState.vote.sponsor = parsedData['sponsor'];
       appState.vote.isLoading = false;
     this.setState({app: appState});
@@ -268,6 +271,12 @@ var App = React.createClass({
     }
   },
 
+  onBillSearchChange: function(event) {
+    appState = this.cloneAppState(this.state.app);
+      appState.vote.searchValue = event.target.value;
+    this.setState({app: appState});
+  },
+
   filterPoliticians: function() {
     var filteredList = this.state.app.politicianList.filter(function (pol) {
       for (var i = 0; i < pol.sessions.length; i++) {
@@ -281,28 +290,48 @@ var App = React.createClass({
     }.bind(this));
     if (this.state.app.search.isSearching && this.state.app.search.searchValue) {
       if (this.state.app.search.riding != '') {
-        var regex = new RegExp(this.state.app.search.riding, "i");
+        var searchRiding = this.state.app.search.riding.replace(/\W/g, "");
+        var regex = new RegExp(this.state.app.search.riding.replace(/\W/g, ""), "i");
         var filteredList = filteredList.filter(function (pol) {
-          pol.riding = this.state.app.ridingsList[pol.ridings[0]].name;
+          pol.riding = this.state.app.ridingsList[pol.ridings[0]].name.replace(/\W/g, "");
           return pol.riding.search(regex) > -1;
         }.bind(this));
       }
-      var regex = new RegExp(this.state.app.search.searchValue, "i");
-      var filteredList = filteredList.filter(function (pol) {
-        pol.partyName = this.state.app.partiesList[pol.parties[0]].name;
-        pol.partySlug = this.state.app.partiesList[pol.parties[0]].slug;
-        pol.riding = this.state.app.ridingsList[pol.ridings[0]].name;
-        return pol.name.search(regex) > -1 || pol.partyName.search(regex) > -1 || pol.partySlug.search(regex) > -1 || pol.riding.search(regex) > -1  || pol.riding.search(regex) > -1;
-      }.bind(this));
+      else {
+        var regex = new RegExp(this.state.app.search.searchValue, "i");
+        var filteredList = filteredList.filter(function (pol) {
+          pol.partyName = this.state.app.partiesList[pol.parties[0]].name;
+          pol.partySlug = this.state.app.partiesList[pol.parties[0]].slug;
+          pol.riding = this.state.app.ridingsList[pol.ridings[0]].name;
+          return pol.name.search(regex) > -1 || pol.partyName.search(regex) > -1 || pol.partySlug.search(regex) > -1 || pol.riding.search(regex) > -1  || pol.riding.search(regex) > -1;
+        }.bind(this));
+      }  
     }
     return filteredList;
   },
+  filterVotes: function() {
+    var sessions = this.state.app.sessions;
+    var filteredVotesBySession = this.state.app.profile.votes.filter(function (vote) {
+      for (var i = 0; i < sessions.length; i++) {
+        if (vote.session_id == sessions[i]) {
+          return true;
+        }
+      }
+      return false;
+    }.bind(this));
+    if (this.state.app.vote.searchValue) {
+      var regex = new RegExp(this.state.app.vote.searchValue, "i");
+      var votes = filteredVotesBySession.filter(function (vote) {
+        return vote.name_en.search(regex) > -1 || vote.number.search(regex) > -1 || vote.short_title_en.search(regex) > -1;
+      });
+    }
+    else {
+      var votes = filteredVotesBySession;
+    }
+    return votes;
+  },
 
   sessionToggle: function(sessionNumber) {
-    console.log('toggled');
-    console.log(sessionNumber);
-    console.log(this.state.app.sessions.length);
-
     var newSessions = [];
     var $inArray = false;
     if (this.state.app.sessions.length == 1) {
@@ -332,9 +361,46 @@ var App = React.createClass({
     this.setState({app: appState});
   },
 
+  expandSessions: function () {
+    appState = this.cloneAppState(this.state.app);
+      appState.expandState = !this.state.app.expandState;
+    this.setState({app: appState});
+  },
+
+  getPoliticianByID: function(id) {
+    if (id) {
+      for (i=0;i<this.state.app.politicianList.length;i++) {
+        if (this.state.app.politicianList[i].id == id) {
+          return this.state.app.politicianList[i];
+        }
+      }
+    }
+    return false;
+  },
+  getPartyByID: function(id) {
+    if (id) {
+      if (this.state.app.partiesList[id].slug) {
+        return this.state.app.partiesList[id].slug;
+      }
+      else {
+        return this.state.app.partiesList[id].name;
+      }
+    }
+    return false;
+  },
+  getRidingByID: function(id) {
+    if (id) {
+      return this.state.app.ridingsList[id].name;
+    }
+    return false;
+  },
+
   render: function() {
     var loading = (this.state.app.vote.isLoading) ? "loading" : "loaded";
     var filteredPoliticianList = this.filterPoliticians().slice(0, this.state.app.search.max);
+    var currentProfile = this.getPoliticianByID(this.state.app.profile.id);
+    var getters = [this.getPoliticianByID,this.getPartyByID,this.getRidingByID];
+    var votes = this.filterVotes();
     return (
       <div className="box search">
         <SearchBox
@@ -347,9 +413,51 @@ var App = React.createClass({
           search={this.state.app.search}
           onSearchScroll={this.onSearchScroll}
           onSearchChange={this.onSearchChange}
-          sessionToggle={this.sessionToggle} />
+          sessionToggle={this.sessionToggle}
+          expandSessions={this.expandSessions}
+          expandState={this.state.app.expandState}
+          getters = {getters}
+          currentProfileID = {this.state.app.profile.id} />
+        <ProfileBox 
+          box={this.state.app.box} //temp
+          getters = {getters}
+          profile={currentProfile}
+          votes={votes} 
+          currentVote={this.state.app.vote}
+          onBillSearchChange={this.onBillSearchChange} 
+          getBillInfo = {this.getBillInfo}
+          billInfo = {this.state.app.vote.data}
+          getPolitician = {this.getPolitician} />
       </div>
     );
+  },
+
+  getBillInfo: function(object, event) {
+    if (object.props.vote.votequestion_id == this.state.app.vote.id) {
+      appState = this.cloneAppState(this.state.app);
+        appState.vote.id = 0;
+        appState.vote.votes = {};
+      this.setState({app: appState});
+    }
+    else {
+      this.getVoteInformation(object.props.vote.votequestion_id);
+      appState = this.cloneAppState(this.state.app);
+        appState.vote.id = object.props.vote.votequestion_id;
+        appState.vote.data = {};
+      this.setState({app: appState});
+    }
+  },
+  getPolitician: function(politicians, id) {
+    //if (typeof(politicians)==='undefined') politicians = this.state.politicians;
+    //if (typeof(id)==='undefined') id = this.state.id;
+    //if (id) {
+    //  for (i = 0; i < politicians.length; i++) {
+    //    if (politicians[i].id == id) {
+    //      return politicians[i];
+    //    }
+    //  }
+    //}
+    return [];
   },
   
 });

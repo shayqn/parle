@@ -16,10 +16,12 @@ SessionSelector = React.createClass({
 			sessionButtons.push(session);
 			key++;
 		}
+		var className = "sessionsSelector " + this.props.expandState;
 		return (
-			<div className="sessionsSelector">
-				<div className="title"><h2>Sessions</h2></div>
+			<div className={className}>
+				<h2>Sessions</h2>
 				<div className="buttons">{sessionButtons.reverse()}</div>
+				<div className="expandSessions" onClick={this.props.expandSessions}></div>
 			</div>
 		);
 	}

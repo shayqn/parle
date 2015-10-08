@@ -2,7 +2,7 @@
 
 SessionButton = React.createClass({
 	render: function() {
-		className = "sessionButton";
+		var className = "sessionButton";
 		var sessionNumber = this.props.sessionNumber;
 		for (i=0;i<this.props.currentSessions.length;i++) {
 			if (sessionNumber == this.props.currentSessions[i]) {
@@ -10,9 +10,11 @@ SessionButton = React.createClass({
 			}
 		}
 		return (
-			<div className={className} key={this.props.key}>
-				<a onClick={this.props.sessionToggle.bind(null, sessionNumber)}>{sessionNumber}</a>
-			</div>
+			<a onClick={this.props.sessionToggle.bind(null, sessionNumber)}>
+				<div className={className} key={this.props.key}>
+					{sessionNumber}
+				</div>
+			</a>
 		);
 	}
 });

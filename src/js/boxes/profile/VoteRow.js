@@ -28,10 +28,9 @@ var VoteRow = React.createClass({
       var name = this.props.vote.name_en;
     }
     var voteRowClass = "voteRow row";
-    if (this.props.vote.votequestion_id == this.props.currentVote) {
+    if (this.props.vote.votequestion_id == this.props.currentVote.id) {
       voteRowClass += " current";
     }
-
     return (
       <div className={voteRowClass} key={this.props.key}>
         <div onClick={this.props.onClick.bind(null, this)} className="main row">
@@ -60,11 +59,11 @@ var VoteInfoRow = React.createClass({
     var infoClass = "row info";
     var getPolitician = this.props.getPolitician;
     var sponsorComponent = null;
-    if (this.props.voteQuestionID == this.props.currentVote) {
+    if (this.props.voteQuestionID == this.props.currentVote.id) {
       infoClass += ' current';
       var lawString =  'Law: ' + this.props.lawText;
       var voteInformation = <div className="col billInfo">{lawString}</div>
-      if (undefined != this.props.billInfo.votes) {
+      if (undefined != this.props.billInfo) {
         var partyVoteNodes = [];
         var i = 0;
         var node = (
@@ -79,12 +78,12 @@ var VoteInfoRow = React.createClass({
         yesCount = 0;
         noCount = 0;
         abstainCount = 0;
-        for (var key in this.props.billInfo.votes) {
+        for (var key in this.props.billInfo) {
           i++;
           var partyName = key;
-          var yes = this.props.billInfo.votes[key]['Y'];
-          var no = this.props.billInfo.votes[key]['N'];
-          var abstain = this.props.billInfo.votes[key]['A'];
+          var yes = this.props.billInfo[key]['Y'];
+          var no = this.props.billInfo[key]['N'];
+          var abstain = this.props.billInfo[key]['A'];
           var noClass = "no";
           var yesClass = "yes";
           var abstainClass = "abstain";
@@ -220,41 +219,6 @@ var ArrowIcon = React.createClass({
     );
   }
 });
-var BillSearch = React.createClass({
-  render: function() {
-    if (this.props.session == '') {
-      var selectText = 'any session';
-    }
-    else {
-      var selectText = this.props.session;
-    }
-    var sessionsVotes = this.props.sessionsVotes;
-    var toggleClass = 'sessionSelect' + (this.props.sessionToggle ? '' : ' collapsed');
-    var objectNodes = this.props.sessionsList.map(function (object, i) {
-        var sum = sessionsVotes[object.id];
-        if (sum) {
-          var string = object.id + ' - (' + sum + ')';
-          return (
-            <li onClick={this.props.onSessionSelect.bind(null,object)} key={i}><span className="session">{object.id}</span> <span className="sum">{sum}</span></li>
-          );
-        }
-    }.bind(this));
-    return (
-      <div className="billSearch">
-        <form>
-          <input type="search" placeholder="Search bills by name or number..." onChange={this.props.onBillSearchChange} />  
-          <div className={toggleClass}>    
-          <span className="select" onClick={this.props.onSessionSelectToggle}>{selectText}</span>  
-          <ul>
-            <li className="sessionOption" onClick={this.props.onSessionSelect.bind(null,'')}><span className="session">any session</span> <span className="sum">{sessionsVotes['sum']}</span></li>
-            {objectNodes}
-          </ul>
-          </div>
-        </form>
-      </div>
-      
-    );
-  }
-});
+
 
 module.exports = VoteRow;

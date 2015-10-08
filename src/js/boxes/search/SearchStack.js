@@ -3,34 +3,28 @@
 var SearchStack = React.createClass({displayName: "SearchStack",
   render: function() {
     classString = "searchStack";
-    var currentProfileID = this.props.profile.id;
+    var currentProfileID = this.props.currentProfileID;
     var politicianNodes = [];
+    var getPoliticianByID = this.props.getters[0];
+    var getPartyByID = this.props.getters[1];
+    var getRidingByID = this.props.getters[2];
     if (this.props.politicians.length > 0) {
-      politicianNodes = this.props.politicians.map(function (object, i) {
-        var headshot = object.headshot.split('/').pop();
+      politicianNodes = this.props.politicians.map(function (politician, i) {
+        var headshot = politician.headshot.split('/').pop();
         var imgURL = "url('/static/headshots/" + headshot + "')";
         var classString = '';
-        if (object.id == currentProfileID) {
+        if (politician.id == currentProfileID) {
           classString += 'active ';
         }
-        if ((object.id == currentProfileID)&&(this.props.box == 'profile')) {
+        if ((politician.id == currentProfileID)&&(this.props.box == 'profile')) {
           var href = '/#/';
         }
         else {
-          var href = '/#/profile/' + object.id;
+          var href = '/#/profile/' + politician.id;
         }
-        if (object.active) {
-          classString += 'current ';
-        }
-        if (!object.party_slug) {
-          var partyName = object.party_name;
-        }
-        else {
-          classString += object.party_slug;
-          var partyName = object.party_slug;
-        }
-        if (object.name.length>19) {
-          if (object.name.length > 22) {
+        var partyName = getPartyByID(politician.parties[0]);
+        if (politician.name.length>19) {
+          if (politician.name.length > 22) {
             classString += ' reduce-large'
           }
           else {
@@ -38,11 +32,11 @@ var SearchStack = React.createClass({displayName: "SearchStack",
           }
         }
         return (
-          React.createElement("a", {className: classString, href: href, key: i}, 
-            React.createElement("div", {style: {backgroundImage: imgURL}}), 
-            React.createElement("h3", null, object.name), 
-            React.createElement("span", {className: "party"}, partyName)
-          )
+          <a className={classString} href={href} key={i} >
+            <div style={{backgroundImage: imgURL}}></div>
+            <h3>{politician.name}</h3>
+            <span className="party">{partyName}</span>
+          </a>
         );
       }.bind(this));  
     }
@@ -58,10 +52,16 @@ var SearchStack = React.createClass({displayName: "SearchStack",
       }
     }
     return (
-      React.createElement("div", {className: classString}, 
-        React.createElement("h2", null, "Members of Parliament", React.createElement("span", {className: "leaf"})), 
-        politicianNodes
-      )
+      <div className={classString}>
+        <SessionSelector 
+         sessionsList={this.props.sessionsList}
+         currentSessions={this.props.currentSessions}
+         sessionToggle = {this.props.sessionToggle}
+         expandSessions = {this.props.expandSessions}
+          expandState = {this.props.expandState} />
+        <h2>Members of Parliament<span className="leaf"></span></h2>
+        {politicianNodes}
+      </div>
     );
   }
 });

@@ -54,34 +54,10 @@ var InfoText = React.createClass({displayName: "InfoText",
 
 var BillSearch = React.createClass({displayName: "BillSearch",
   render: function() {
-    if (this.props.session == '') {
-      var selectText = 'any session';
-    }
-    else {
-      var selectText = this.props.session;
-    }
-    var sessionsVotes = this.props.sessionsVotes;
-    var toggleClass = 'sessionSelect' + (this.props.sessionToggle ? '' : ' collapsed');
-    var objectNodes = this.props.sessionsList.map(function (object, i) {
-        var sum = sessionsVotes[object.id];
-        if (sum) {
-          var string = object.id + ' - (' + sum + ')';
-          return (
-            React.createElement("li", {onClick: this.props.onSessionSelect.bind(null,object), key: i}, React.createElement("span", {className: "session"}, object.id), " ", React.createElement("span", {className: "sum"}, sum))
-          );
-        }
-    }.bind(this));
     return (
       React.createElement("div", {className: "billSearch"}, 
         React.createElement("form", null, 
-          React.createElement("input", {type: "search", placeholder: "Search bills by name or number...", onChange: this.props.onBillSearchChange}), 
-          React.createElement("div", {className: toggleClass}, 
-          React.createElement("span", {className: "select", onClick: this.props.onSessionSelectToggle}, selectText), 
-          React.createElement("ul", null, 
-            React.createElement("li", {className: "sessionOption", onClick: this.props.onSessionSelect.bind(null,'')}, React.createElement("span", {className: "session"}, "any session"), " ", React.createElement("span", {className: "sum"}, sessionsVotes['sum'])), 
-            objectNodes
-          )
-          )
+          React.createElement("input", {type: "search", placeholder: "Search bills by name or number...", onChange: this.props.onBillSearchChange})
         )
       )
       
@@ -114,28 +90,6 @@ var BillStack = React.createClass({displayName: "BillStack",
             getPolitician: this.props.getPolitician})
         );
       }.bind(this));
-    }
-    else if (this.props.retrievingVotes) {
-      
-      for (var i = 0; i < 15; i++) {
-        var emptyRow = (
-          React.createElement("div", {key: i, className: "voteRow row empty"}, 
-            React.createElement("div", {className: "main row"}, 
-              React.createElement("div", {className: "col spacer left"}), 
-              React.createElement("div", {className: "col session"}), 
-              React.createElement("div", {className: "col number"}), 
-              React.createElement("div", {className: "col vote full-layout"}), 
-              React.createElement("div", {className: "col shortname"}, React.createElement("span", null, "no result")), 
-              React.createElement("div", {className: "col vote mobile-only"}), 
-              React.createElement("div", {className: "col law"}), 
-              React.createElement("div", {className: "col dropdown"}), 
-              React.createElement("div", {className: "col spacer right"})
-            )
-          )
-        );
-        voteRows.push(emptyRow);
-      }
-      loader = React.createElement("div", {className: "loader-container"}, React.createElement("div", {className: "loader"}));
     }
     else {
       var noResultsRow = (
@@ -181,11 +135,13 @@ var ProfileBox = React.createClass({displayName: "ProfileBox",
   render: function() {
     var classes = 'profileBox ' + this.props.box;
     var closeClass = 'close ' + this.props.box;
-    if (!this.props.profile.party_slug) {
-      var partyName = this.props.profile.party_name;
+    if (this.props.profile) {
+      var partyName = this.props.getters[1](this.props.profile.parties[0]);
+      var ridingName = this.props.getters[2](this.props.profile.ridings[0]);
     }
     else {
-      var partyName = this.props.profile.party_slug;
+      var partyName = '';
+      var ridingName = '';
     }
     return (
       React.createElement("div", {className: classes}, 
@@ -193,19 +149,11 @@ var ProfileBox = React.createClass({displayName: "ProfileBox",
           React.createElement("a", {className: "return", href: "/#/"}, React.createElement("div", {className: "icon"}), React.createElement("span", null, "return to MP search")), 
           React.createElement("a", {className: closeClass, href: "/#/"}), 
           React.createElement("h2", {className: "name"}, this.props.profile.name), 
-          React.createElement("span", {className: "info"}, React.createElement("h3", {className: "riding"}, this.props.profile.riding), React.createElement("h3", {className: "party"}, partyName)), 
-          React.createElement(BillSearch, {
-            onBillSearchChange: this.props.onBillSearchChange, 
-            onSessionSelectToggle: this.props.onSessionSelectToggle, 
-            onSessionSelect: this.props.onSessionSelect, 
-            sessionsList: this.props.sessionsList, 
-            sessionToggle: this.props.sessionToggle, 
-            session: this.props.session, 
-            sessionsVotes: this.props.sessionsVotes})
+          React.createElement("span", {className: "info"}, React.createElement("h3", {className: "riding"}, ridingName), React.createElement("h3", {className: "party"}, partyName)), 
+          React.createElement(BillSearch, {onBillSearchChange: this.props.onBillSearchChange})
       ), 
       React.createElement(BillStack, {
         votes: this.props.votes, 
-        retrievingVotes: this.props.retrievingVotes, 
         getBillInfo: this.props.getBillInfo, 
         currentVote: this.props.currentVote, 
         billInfo: this.props.billInfo, 
@@ -487,27 +435,28 @@ var SessionSelector = require('./SessionSelector.js');
 SearchBox = React.createClass({displayName: "SearchBox",
   render: function() {
     var classes = 'searchBox ' + this.props.box; //temp
+    var noscrollClasses = 'searchBox-noscroll ' + this.props.box; //temp
     return (
-      React.createElement("div", {className: "searchBox-noscroll search"}, 
+      React.createElement("div", {className: noscrollClasses}, 
         React.createElement("div", {className: classes, onScroll: this.props.onSearchScroll.bind(null, this)}, 
           React.createElement("div", {className: "topLinks"}, React.createElement("a", {href: "/#/info", className: "info"}), React.createElement("a", {href: "https://github.com/shayqn/parle", className: "github"})), 
-          React.createElement("form", null, 
+          React.createElement("div", {className: "searchForm"}, 
             React.createElement("input", {type: "search", placeholder: "Search...", onChange: this.props.onSearchChange}), 
             React.createElement("button", {type: "submit"}, "Search"), 
             React.createElement("span", null, "by name, riding, or postal code")
-          ), 
-          React.createElement("div", {className: "sessionSelectorContainer"}, 
-            React.createElement(SessionSelector, {
-             sessionsList: this.props.sessionsList, 
-             currentSessions: this.props.sessions, 
-             sessionToggle: this.props.sessionToggle})
           ), 
           React.createElement("div", {className: "searchContent"}, 
             React.createElement(SearchStack, {
               box: this.props.box, 
               politicians: this.props.politicianList, 
-              profile: [null], 
-              searching: this.props.search.isSearching})
+              currentProfileID: this.props.currentProfileID, 
+              searching: this.props.search.isSearching, 
+              sessionsList: this.props.sessionsList, 
+              currentSessions: this.props.sessions, 
+              sessionToggle: this.props.sessionToggle, 
+              expandSessions: this.props.expandSessions, 
+              expandState: this.props.expandState, 
+              getters: this.props.getters})
           )
         )
       )
@@ -522,34 +471,28 @@ module.exports = SearchBox;
 var SearchStack = React.createClass({displayName: "SearchStack",
   render: function() {
     classString = "searchStack";
-    var currentProfileID = this.props.profile.id;
+    var currentProfileID = this.props.currentProfileID;
     var politicianNodes = [];
+    var getPoliticianByID = this.props.getters[0];
+    var getPartyByID = this.props.getters[1];
+    var getRidingByID = this.props.getters[2];
     if (this.props.politicians.length > 0) {
-      politicianNodes = this.props.politicians.map(function (object, i) {
-        var headshot = object.headshot.split('/').pop();
+      politicianNodes = this.props.politicians.map(function (politician, i) {
+        var headshot = politician.headshot.split('/').pop();
         var imgURL = "url('/static/headshots/" + headshot + "')";
         var classString = '';
-        if (object.id == currentProfileID) {
+        if (politician.id == currentProfileID) {
           classString += 'active ';
         }
-        if ((object.id == currentProfileID)&&(this.props.box == 'profile')) {
+        if ((politician.id == currentProfileID)&&(this.props.box == 'profile')) {
           var href = '/#/';
         }
         else {
-          var href = '/#/profile/' + object.id;
+          var href = '/#/profile/' + politician.id;
         }
-        if (object.active) {
-          classString += 'current ';
-        }
-        if (!object.party_slug) {
-          var partyName = object.party_name;
-        }
-        else {
-          classString += object.party_slug;
-          var partyName = object.party_slug;
-        }
-        if (object.name.length>19) {
-          if (object.name.length > 22) {
+        var partyName = getPartyByID(politician.parties[0]);
+        if (politician.name.length>19) {
+          if (politician.name.length > 22) {
             classString += ' reduce-large'
           }
           else {
@@ -559,7 +502,7 @@ var SearchStack = React.createClass({displayName: "SearchStack",
         return (
           React.createElement("a", {className: classString, href: href, key: i}, 
             React.createElement("div", {style: {backgroundImage: imgURL}}), 
-            React.createElement("h3", null, object.name), 
+            React.createElement("h3", null, politician.name), 
             React.createElement("span", {className: "party"}, partyName)
           )
         );
@@ -578,6 +521,12 @@ var SearchStack = React.createClass({displayName: "SearchStack",
     }
     return (
       React.createElement("div", {className: classString}, 
+        React.createElement(SessionSelector, {
+         sessionsList: this.props.sessionsList, 
+         currentSessions: this.props.currentSessions, 
+         sessionToggle: this.props.sessionToggle, 
+         expandSessions: this.props.expandSessions, 
+          expandState: this.props.expandState}), 
         React.createElement("h2", null, "Members of Parliament", React.createElement("span", {className: "leaf"})), 
         politicianNodes
       )
@@ -592,7 +541,7 @@ module.exports = SearchStack;
 
 SessionButton = React.createClass({displayName: "SessionButton",
 	render: function() {
-		className = "sessionButton";
+		var className = "sessionButton";
 		var sessionNumber = this.props.sessionNumber;
 		for (i=0;i<this.props.currentSessions.length;i++) {
 			if (sessionNumber == this.props.currentSessions[i]) {
@@ -600,8 +549,10 @@ SessionButton = React.createClass({displayName: "SessionButton",
 			}
 		}
 		return (
-			React.createElement("div", {className: className, key: this.props.key}, 
-				React.createElement("a", {onClick: this.props.sessionToggle.bind(null, sessionNumber)}, sessionNumber)
+			React.createElement("a", {onClick: this.props.sessionToggle.bind(null, sessionNumber)}, 
+				React.createElement("div", {className: className, key: this.props.key}, 
+					sessionNumber
+				)
 			)
 		);
 	}
@@ -627,9 +578,12 @@ SessionSelector = React.createClass({displayName: "SessionSelector",
 			sessionButtons.push(session);
 			key++;
 		}
+		var className = "sessionsSelector " + this.props.expandState;
 		return (
-			React.createElement("div", {className: "sessionsSelector"}, 
-				sessionButtons.reverse()
+			React.createElement("div", {className: className}, 
+				React.createElement("h2", null, "Sessions"), 
+				React.createElement("div", {className: "buttons"}, sessionButtons.reverse()), 
+				React.createElement("div", {className: "expandSessions", onClick: this.props.expandSessions})
 			)
 		);
 	}
@@ -728,12 +682,13 @@ var App = React.createClass({displayName: "App",
       ridingsList: {},
       sessionsList: {},
       sessions: ['41-2', '41-1'],
+      expandState: true,
       search: {
+        max: 10,
+        isLoading: true,
         isSearching: false,
         searchValue: '',
         riding: '',
-        max: 10,
-        isLoading: true,
       },
       profile: {
         id: 0,
@@ -745,6 +700,7 @@ var App = React.createClass({displayName: "App",
         data: {},
         sponsor: 0,
         isLoading: false,
+        searchValue: '',
       },
       bill: {
         id: 0,
@@ -764,7 +720,7 @@ var App = React.createClass({displayName: "App",
         newAppState.box = 'profile';
         newAppState.profile.isLoading = true;
         newAppState.profile.id = urlParameters[1];
-        newAppState.profile.votes = {};
+        newAppState.profile.votes = [];
       }
       else if ((urlParameters[0] == 'bill') && !isNaN(urlParameters[1])) {
         newAppState.box = 'bill';
@@ -867,6 +823,7 @@ var App = React.createClass({displayName: "App",
     var parsedData = JSON.parse(data);
     appState = this.cloneAppState(this.state.app);
       appState.vote.data = parsedData['votes'];
+      appState.vote.data = parsedData['votes'];
       appState.vote.sponsor = parsedData['sponsor'];
       appState.vote.isLoading = false;
     this.setState({app: appState});
@@ -954,6 +911,12 @@ var App = React.createClass({displayName: "App",
     }
   },
 
+  onBillSearchChange: function(event) {
+    appState = this.cloneAppState(this.state.app);
+      appState.vote.searchValue = event.target.value;
+    this.setState({app: appState});
+  },
+
   filterPoliticians: function() {
     var filteredList = this.state.app.politicianList.filter(function (pol) {
       for (var i = 0; i < pol.sessions.length; i++) {
@@ -983,32 +946,98 @@ var App = React.createClass({displayName: "App",
     }
     return filteredList;
   },
+  filterVotes: function() {
+    var sessions = this.state.app.sessions;
+    var filteredVotesBySession = this.state.app.profile.votes.filter(function (vote) {
+      for (var i = 0; i < sessions.length; i++) {
+        if (vote.session_id == sessions[i]) {
+          return true;
+        }
+      }
+      return false;
+    }.bind(this));
+    if (this.state.app.vote.searchValue) {
+      var regex = new RegExp(this.state.app.vote.searchValue, "i");
+      var votes = filteredVotesBySession.filter(function (vote) {
+        return vote.name_en.search(regex) > -1 || vote.number.search(regex) > -1 || vote.short_title_en.search(regex) > -1;
+      });
+    }
+    else {
+      var votes = filteredVotesBySession;
+    }
+    return votes;
+  },
 
   sessionToggle: function(sessionNumber) {
-    console.log('toggled');
-    console.log(sessionNumber);
-
     var newSessions = [];
     var $inArray = false;
-    for (i=0;i<this.state.app.sessions.length;i++) {
-      if (this.state.app.sessions[i]!=sessionNumber) {
-        newSessions.push(this.state.app.sessions[i]);
+    if (this.state.app.sessions.length == 1) {
+      if (this.state.app.sessions[0] == sessionNumber) {
+        newSessions = [sessionNumber];
       }
       else {
-        $inArray = true;
+        newSessions.push(this.state.app.sessions[0]);
+        newSessions.push(sessionNumber);
       }
     }
-    if (!$inArray) {
-      newSessions.push(sessionNumber);
+    else {
+      for (i=0;i<this.state.app.sessions.length;i++) {
+        if (this.state.app.sessions[i]!=sessionNumber) {
+          newSessions.push(this.state.app.sessions[i]);
+        }
+        else {
+          $inArray = true;
+        }
+      }
+      if (!$inArray) {
+        newSessions.push(sessionNumber);
+      }
     }
     appState = this.cloneAppState(this.state.app);
       appState.sessions = newSessions;
     this.setState({app: appState});
   },
 
+  expandSessions: function () {
+    appState = this.cloneAppState(this.state.app);
+      appState.expandState = !this.state.app.expandState;
+    this.setState({app: appState});
+  },
+
+  getPoliticianByID: function(id) {
+    if (id) {
+      for (i=0;i<this.state.app.politicianList.length;i++) {
+        if (this.state.app.politicianList[i].id == id) {
+          return this.state.app.politicianList[i];
+        }
+      }
+    }
+    return false;
+  },
+  getPartyByID: function(id) {
+    if (id) {
+      if (this.state.app.partiesList[id].slug) {
+        return this.state.app.partiesList[id].slug;
+      }
+      else {
+        return this.state.app.partiesList[id].name;
+      }
+    }
+    return false;
+  },
+  getRidingByID: function(id) {
+    if (id) {
+      return this.state.app.ridingsList[id].name;
+    }
+    return false;
+  },
+
   render: function() {
     var loading = (this.state.app.vote.isLoading) ? "loading" : "loaded";
     var filteredPoliticianList = this.filterPoliticians().slice(0, this.state.app.search.max);
+    var currentProfile = this.getPoliticianByID(this.state.app.profile.id);
+    var getters = [this.getPoliticianByID,this.getPartyByID,this.getRidingByID];
+    var votes = this.filterVotes();
     return (
       React.createElement("div", {className: "box search"}, 
         React.createElement(SearchBox, {
@@ -1021,9 +1050,52 @@ var App = React.createClass({displayName: "App",
           search: this.state.app.search, 
           onSearchScroll: this.onSearchScroll, 
           onSearchChange: this.onSearchChange, 
-          sessionToggle: this.sessionToggle})
+          sessionToggle: this.sessionToggle, 
+          expandSessions: this.expandSessions, 
+          expandState: this.state.app.expandState, 
+          getters: getters, 
+          currentProfileID: this.state.app.profile.id}), 
+        React.createElement(ProfileBox, {
+          box: this.state.app.box, //temp
+          getters: getters, 
+          profile: currentProfile, 
+          votes: votes, 
+          currentVote: this.state.app.vote, 
+          onBillSearchChange: this.onBillSearchChange, 
+          getBillInfo: this.getBillInfo, 
+          billInfo: this.state.billInfo, 
+          getPolitician: this.getPolitician})
       )
     );
+  },
+
+  getBillInfo: function(object, event) {
+    //console.log("invoked"); 
+    //console.log(object);
+    //console.log(event);
+    if (object.props.vote.votequestion_id == this.state.app.vote.id) {
+      appState = this.cloneAppState(this.state.app);
+        appState.vote.id = 0;
+        appState.vote.votes = {};
+      this.setState({app: appState});
+    }
+    else {
+      appState = this.cloneAppState(this.state.app);
+        appState.vote.id = object.props.vote.votequestion_id;
+      this.setState({app: appState});
+    }
+  },
+  getPolitician: function(politicians, id) {
+    //if (typeof(politicians)==='undefined') politicians = this.state.politicians;
+    //if (typeof(id)==='undefined') id = this.state.id;
+    //if (id) {
+    //  for (i = 0; i < politicians.length; i++) {
+    //    if (politicians[i].id == id) {
+    //      return politicians[i];
+    //    }
+    //  }
+    //}
+    return [];
   },
   
 });

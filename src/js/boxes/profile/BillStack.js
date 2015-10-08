@@ -21,28 +21,6 @@ var BillStack = React.createClass({
         );
       }.bind(this));
     }
-    else if (this.props.retrievingVotes) {
-      
-      for (var i = 0; i < 15; i++) {
-        var emptyRow = (
-          <div key={i} className="voteRow row empty">
-            <div className="main row">
-              <div className="col spacer left"></div>
-              <div className="col session"></div>
-              <div className="col number"></div>
-              <div className="col vote full-layout"></div>
-              <div className="col shortname"><span>no result</span></div>
-              <div className="col vote mobile-only"></div>
-              <div className="col law"></div>
-              <div className="col dropdown"></div>
-              <div className="col spacer right"></div> 
-            </div>
-          </div>
-        );
-        voteRows.push(emptyRow);
-      }
-      loader = <div className="loader-container"><div className="loader"></div></div>;
-    }
     else {
       var noResultsRow = (
           <div className="voteRow row noresults">
