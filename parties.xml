@@ -1,0 +1,32 @@
+<Parties>
+    <Party>
+        <Name>Liberal</Name>
+        <PluralName>Liberals</PluralName>
+        <Abbreviation>Lib</Abbreviation>
+        <FullName>Liberal Party of Canada</FullName>
+    </Party>
+    <Party>
+        <Name>Conservative</Name>
+        <PluralName>Conservatives</PluralName>
+        <Abbreviation>CPC</Abbreviation>
+        <FullName>Conservative Party of Canada</FullName>
+    </Party>
+    <Party>
+        <Name>NDP</Name>
+        <PluralName>NDP</PluralName>
+        <Abbreviation>NDP</Abbreviation>
+        <FullName>New Democratic Party of Canada</FullName>
+    </Party>
+    <Party>
+        <Name>Green Party</Name>
+        <PluralName>Green</PluralName>
+        <Abbreviation>GP</Abbreviation>
+        <FullName>Green Party</FullName>
+    </Party>
+    <Party>
+        <Name>Bloc Québécois</Name>
+        <PluralName>Bloc Québécois</PluralName>
+        <Abbreviation>BQ</Abbreviation>
+        <FullName>Bloc Québécois</FullName>
+    </Party>
+</Parties>
