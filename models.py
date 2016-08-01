@@ -313,11 +313,11 @@ def get_votes():
     #             member = Member.query.filter_by(first_name=first_name, last_name=last_name).first()
     #             db.session.add(Vote(member, event, vote, constituency, caucus))
 
-#get_session()
-#get_parties()
-#get_members()
-#get_bills()
-#get_events()
+get_session()
+get_parties()
+get_members()
+get_bills()
+get_events()
 get_votes()
 db.session.commit()
 
